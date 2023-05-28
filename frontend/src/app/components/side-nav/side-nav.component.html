@@ -1,0 +1,17 @@
+<mat-sidenav-container [hasBackdrop]="false">
+  <mat-sidenav mode="push" [opened]="true" disableClose></mat-sidenav>
+  <mat-sidenav-content>
+    <ul>
+      <li *ngFor="let page of pages">
+        <h3 *ngIf="!page.link">{{ page.name }}</h3>
+        <a
+          *ngIf="page.link"
+          [class]="{ selected: page.link === currentRoute }"
+          [routerLink]="page.link">
+          <ng-icon *ngIf="page.icon" [name]="page.icon" size="24"></ng-icon>
+          <p>{{ page.name }}</p>
+        </a>
+      </li>
+    </ul>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,14 @@
+{
+  "name": "taskapp",
+  "private": true,
+  "workspaces": [
+    "taskapp-common",
+    "taskapp-frontend",
+    "taskapp-backend"
+  ],
+  "scripts": {
+    "common": "cd common && npm run build:dev",
+    "backend": "cd backend && npm run start:dev",
+    "frontend": "cd frontend && npm run start"
+  }
+}

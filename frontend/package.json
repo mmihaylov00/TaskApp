@@ -1,0 +1,40 @@
+{
+  "name": "taskapp-frontend",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~16.0.3",
+    "@angular/common": "~16.0.3",
+    "@angular/compiler": "~16.0.3",
+    "@angular/core": "~16.0.3",
+    "@angular/forms": "~16.0.3",
+    "@angular/material": "~16.0.2",
+    "@angular/platform-browser": "~16.0.3",
+    "@angular/platform-browser-dynamic": "~16.0.3",
+    "@angular/router": "~16.0.3",
+    "@ng-icons/core": "^25.0.1",
+    "@ng-icons/heroicons": "^25.0.1",
+    "rxjs": "~7.5.7",
+    "tslib": "^2.3.1",
+    "zone.js": "~0.13.0",
+    "taskapp-common": "file:../common"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^16.0.3",
+    "@angular-devkit/core": "~16.0.3",
+    "@angular-devkit/schematics": "~16.0.3",
+    "@angular/cli": "^16.0.3",
+    "@angular/compiler-cli": "^16.0.3",
+    "@schematics/angular": "^16.0.3",
+    "@types/node": "^20.2.5",
+    "prettier": "^2.8.8",
+    "sass": "^1.62.1",
+    "typescript": "^5.0.4"
+  }
+}

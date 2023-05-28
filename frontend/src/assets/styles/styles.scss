@@ -1,0 +1,45 @@
+@import 'variables';
+@import url('https://fonts.googleapis.com/css?family=Signika');
+@import url('https://fonts.googleapis.com/css?family=Secular+One');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  font-family: 'Secular One', serif;
+  z-index: 1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+ng-icon,
+div {
+  font-family: 'Signika', serif;
+  color: $primaryText;
+}
+
+a {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+}
+
+body {
+  background: $background;
+}
+
+.hover-pointer:hover {
+  cursor: pointer;
+}
+
+.d-none {
+  display: none;
+}
