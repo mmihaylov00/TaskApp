@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
@@ -45,9 +45,10 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
       heroClipboard,
       heroUser,
       heroUserGroup,
-      heroBriefcase,
+      heroBriefcase
     }),
     MatSidenavModule,
+    NgOptimizedImage
   ],
   exports: [CommonModule],
   providers: [],

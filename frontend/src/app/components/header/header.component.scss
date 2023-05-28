@@ -30,14 +30,12 @@ header {
   margin-right: 24px;
 }
 
-.profile {
+app-avatar {
   min-width: 7vh;
   width: 7vh;
   height: 7vh;
   margin-top: 12px;
   margin-right: 14px;
-  border: 2px solid $primaryColor;
-  border-radius: 50%;
 }
 
 h1 {

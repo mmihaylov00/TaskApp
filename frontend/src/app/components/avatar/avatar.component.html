@@ -1,1 +1,8 @@
-<p>avatar works!</p>
+<img
+  *ngIf='url'
+  alt="P"
+  [ngSrc]='url'
+/>
+<div class='username-avatar' *ngIf='!url'>
+  <span>{{username[0]}}</span>
+</div>
