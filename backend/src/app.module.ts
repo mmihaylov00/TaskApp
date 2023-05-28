@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { options } from '../ormconfig';
+import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { options } from '../ormconfig';
       isGlobal: true
     }),
     AuthModule,
-    UserModule
+    UserModule,
+    ProjectModule
   ],
   providers: []
 })

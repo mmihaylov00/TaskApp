@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { RoleEnum } from './enums/role.enum';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from 'taskapp-common/dist/src/enums/role.enum';
+import { Project } from '../project/project.entity';
 
 @Entity('user')
 export class User {
@@ -22,7 +23,10 @@ export class User {
 
   @Column({
     type: "enum",
-    enum: RoleEnum
+    enum: Role
   })
-  role: RoleEnum;
+  role: Role;
+
+  @ManyToMany(() => Project)
+  projects: Project[];
 }
