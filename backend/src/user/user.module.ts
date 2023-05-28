@@ -7,7 +7,7 @@ import { AuthModule } from '../auth/auth.module';
 import { Project } from '../project/project.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Project]), AuthModule],
+  imports: [TypeOrmModule.forFeature([User, Project])],
   providers: [UserService],
   controllers: [UserController],
   exports: [UserService],

@@ -4,7 +4,7 @@ import { User } from '../user/user.entity';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { Roles } from '../auth/decorator/role.decorator';
 
-@Controller('project')
+@Controller('projects')
 export class ProjectController {
 
   @Get()

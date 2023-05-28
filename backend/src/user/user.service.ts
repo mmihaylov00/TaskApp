@@ -24,9 +24,6 @@ export class UserService {
 
   async loginUser(email: string, pass: string): Promise<User> {
     const user = await this.findByEmail(email);
-    if (await bcrypt.compare(pass, user.password)) {
-      return user;
-    }
-    return null;
+    return await bcrypt.compare(pass, user.password) ? user : null;
   }
 }

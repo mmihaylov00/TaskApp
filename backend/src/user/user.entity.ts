@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, Generated, ManyToMany, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { Project } from '../project/project.entity';
 
@@ -21,6 +21,13 @@ export class User {
   @Column()
   lastName?: string;
 
+  @Column()
+  enabled: boolean = false;
+
+  @Column()
+  @Generated("uuid")
+  invitationLink?: string;
+
   @Column({
     type: "enum",
     enum: Role
@@ -29,4 +36,11 @@ export class User {
 
   @ManyToMany(() => Project)
   projects: Project[];
+
+  @OneToOne(type => User, user => user.id, {
+    cascade: true,
+    onDelete: "CASCADE"
+  })
+  @JoinColumn()
+  invitedBy?: User;
 }
