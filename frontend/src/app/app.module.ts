@@ -22,6 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MyTasksComponent } from './pages/my-tasks/my-tasks.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
+import { TaskBoardComponent } from './pages/task-board/task-board.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
     SideNavComponent,
     MyTasksComponent,
     AvatarComponent,
+    TaskBoardComponent,
   ],
   imports: [
     CommonModule,

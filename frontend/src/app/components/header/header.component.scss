@@ -27,15 +27,16 @@ header {
 }
 
 .bell {
-  margin-right: 24px;
+  margin-right: 11vh;
 }
 
 app-avatar {
   min-width: 7vh;
   width: 7vh;
   height: 7vh;
-  margin-top: 12px;
-  margin-right: 14px;
+  position: fixed;
+  top: 1vh;
+  right: 1vh;
 }
 
 h1 {

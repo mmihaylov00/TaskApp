@@ -21,9 +21,10 @@
     "@ng-icons/core": "^25.0.1",
     "@ng-icons/heroicons": "^25.0.1",
     "rxjs": "~7.5.7",
+    "sortablejs": "^1.15.0",
+    "taskapp-common": "file:../common",
     "tslib": "^2.3.1",
-    "zone.js": "~0.13.0",
-    "taskapp-common": "file:../common"
+    "zone.js": "~0.13.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.0.3",
@@ -33,6 +34,7 @@
     "@angular/compiler-cli": "^16.0.3",
     "@schematics/angular": "^16.0.3",
     "@types/node": "^20.2.5",
+    "@types/sortablejs": "^1.15.1",
     "prettier": "^2.8.8",
     "sass": "^1.62.1",
     "typescript": "^5.0.4"

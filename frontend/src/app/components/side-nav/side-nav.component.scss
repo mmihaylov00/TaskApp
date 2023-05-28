@@ -2,7 +2,8 @@
 
 mat-sidenav-container {
   width: 240px;
-  height: 93vh;
+  height: 100vh;
+  top: 7vh;
   border-right: 1px solid $primaryColor;
   background-color: $navigationBackground;
   margin-right: 10px;

@@ -1,4 +1,20 @@
 .page-content {
   display: flex;
+  position: relative;
+  overflow: auto;
+  width: calc(100% - 240px);
+  top: 7vh;
+  left: 240px;
   height: 93vh;
+  z-index: 100;
+  padding: 10px;
+}
+
+app-header, app-side-nav {
+  overflow: hidden;
+  position: fixed;
+}
+
+app-header {
+  width: 100vw;
 }
