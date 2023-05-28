@@ -45,6 +45,8 @@ Thumbs.db
 .env
 backend/dist
 frontend/dist
-
-# Project exclude paths
-/frontend/.angular/
+common/dist
+backend/node_modules
+frontend/node_modules
+common/node_modules
+frontend/.angular
