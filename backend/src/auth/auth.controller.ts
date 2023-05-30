@@ -1,10 +1,7 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
-import { LoginRequestDto, LoginResponseDto, UserDetailsDto } from 'common/src/dto/auth.dto';
-import { JwtGuard } from './guard/jwt.guard';
-import { Authenticated } from './decorator/authenticated.decorator';
-import { User } from '../user/user.entity';
+import { LoginRequestDto, LoginResponseDto } from 'taskapp-common/src/dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {

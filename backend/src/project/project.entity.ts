@@ -1,18 +1,22 @@
-import { Column, Entity, PrimaryGeneratedColumn, JoinTable, ManyToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { User } from '../user/user.entity';
+import { Board } from '../board/board.entity';
 
-@Entity('project')
+@Entity('projects')
 export class Project {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column()
   color: string;
 
   @ManyToMany(() => User)
-  @JoinTable({name: 'project_users'})
+  @JoinTable({ name: 'project_users' })
   users: User[];
+
+  @OneToMany(() => Board, board => board.project)
+  boards: Board[];
 }

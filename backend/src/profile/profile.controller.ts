@@ -1,12 +1,9 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
-import { LoginRequestDto, LoginResponseDto, UserDetailsDto } from 'common/src/dto/auth.dto';
-import { AuthService } from '../auth/auth.service';
+import { Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
-import { Roles } from '../auth/decorator/role.decorator';
-import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
+import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 
 
 @Controller('profile')

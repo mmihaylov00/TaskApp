@@ -1,8 +1,18 @@
-import { Column, Entity, OneToOne, Generated, ManyToMany, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToOne,
+  Generated,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  OneToMany
+} from 'typeorm';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { Project } from '../project/project.entity';
+import { Task } from '../task/task.entity';
 
-@Entity('user')
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -36,6 +46,12 @@ export class User {
 
   @ManyToMany(() => Project)
   projects: Project[];
+
+  @OneToMany(() => Task, task => task.author)
+  createdTasks: Task[];
+
+  @OneToMany(() => Task, task => task.assignee)
+  assignedTasks: Task[];
 
   @OneToOne(type => User, user => user.id, {
     cascade: true,
