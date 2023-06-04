@@ -4,12 +4,10 @@ import { Stage } from '../stage/stage.entity';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { TaskPriority } from 'taskapp-common/dist/src/enums/task-priority.enum';
 import { User } from '../user/user.entity';
+import { UUIDEntity } from '../abstract/uuid.entity';
 
 @Entity('tasks')
-export class Task {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Task extends UUIDEntity{
   @Column()
   name: string;
 
@@ -34,4 +32,8 @@ export class Task {
 
   @Column('date', { nullable: true })
   deadline?: Date;
+
+  delete() {
+    this.deleted = true;
+  }
 }

@@ -16,12 +16,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  redis:
-    image: redis:7
-    ports:
-      - "6379:6379"
-    command: redis-server --save 20 1 --loglevel warning
-
 networks:
   default:
     name: taskapp-network

@@ -1,25 +1,13 @@
-import {
-  Column,
-  Entity,
-  OneToOne,
-  Generated,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  JoinColumn,
-  OneToMany
-} from 'typeorm';
+import { Column, Entity, Generated, JoinColumn, ManyToMany, OneToMany, OneToOne } from 'typeorm';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { Project } from '../project/project.entity';
 import { Task } from '../task/task.entity';
+import { UUIDEntity } from '../abstract/uuid.entity';
 
 @Entity('users')
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+export class User extends UUIDEntity {
 
-  @Column({
-    unique: true
-  })
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -31,15 +19,12 @@ export class User {
   @Column()
   lastName?: string;
 
-  @Column()
-  enabled: boolean = false;
-
-  @Column()
-  @Generated("uuid")
+  @Column({ nullable: true })
+  @Generated('uuid')
   invitationLink?: string;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: Role
   })
   role: Role;
@@ -53,10 +38,14 @@ export class User {
   @OneToMany(() => Task, task => task.assignee)
   assignedTasks: Task[];
 
-  @OneToOne(type => User, user => user.id, {
+  @OneToMany(type => User, user => user.id, {
     cascade: true,
-    onDelete: "CASCADE"
+    onDelete: 'CASCADE'
   })
   @JoinColumn()
   invitedBy?: User;
+
+  public isPartOfProject(project: Project) {
+    return project.users.some(u => u.id = this.id);
+  }
 }

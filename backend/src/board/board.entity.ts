@@ -1,12 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Project } from '../project/project.entity';
 import { Stage } from '../stage/stage.entity';
+import { UUIDEntity } from '../abstract/uuid.entity';
 
 @Entity('boards')
-export class Board {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Board extends UUIDEntity {
   @Column()
   name: string;
 
@@ -18,4 +16,9 @@ export class Board {
 
   @OneToMany(() => Stage, stage => stage.board)
   stages: Stage[];
+
+  delete() {
+    this.deleted = true;
+    this.stages.forEach((stage) => stage.delete());
+  }
 }
