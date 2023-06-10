@@ -1,21 +1,19 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Board } from '../board/board.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { Stage } from '../stage/stage.entity';
-import { Role } from 'taskapp-common/dist/src/enums/role.enum';
-import { TaskPriority } from 'taskapp-common/dist/src/enums/task-priority.enum';
 import { User } from '../user/user.entity';
 import { UUIDEntity } from '../abstract/uuid.entity';
+import { TaskPriority } from 'taskapp-common/dist/src/dto/task.dto';
 
 @Entity('tasks')
-export class Task extends UUIDEntity{
+export class Task extends UUIDEntity {
   @Column()
   name: string;
 
-  @Column("text")
+  @Column('text')
   description: string;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: TaskPriority,
     nullable: true
   })
@@ -27,7 +25,7 @@ export class Task extends UUIDEntity{
   @ManyToOne(() => User, user => user.createdTasks)
   author: User;
 
-  @ManyToOne(() => User, user => user.assignedTasks, {nullable: true})
+  @ManyToOne(() => User, user => user.assignedTasks, { nullable: true })
   assignee?: User;
 
   @Column('date', { nullable: true })

@@ -11,11 +11,6 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {
   }
 
-  @Get()
-  async list(@Authenticated() user: User): Promise<void> {
-    //todo
-  }
-
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Authenticated() user: User, @Body() data: CreateProjectDto): Promise<void> {

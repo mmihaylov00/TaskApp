@@ -69,7 +69,7 @@ export class BoardService {
     try {
       await this.repository.save(board);
     } catch (_) {
-      throw new TaskAppError('project_not_deleted', HttpStatus.BAD_REQUEST);
+      throw new TaskAppError('board_not_deleted', HttpStatus.BAD_REQUEST);
     }
   }
 
