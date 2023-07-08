@@ -7,7 +7,6 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = environment.siteName;
   protected readonly localStorage = localStorage;
   isLogged = !!localStorage.getItem('token');
 }

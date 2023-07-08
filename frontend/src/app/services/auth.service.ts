@@ -16,8 +16,14 @@ export class AuthService {
     return this.http.post<LoginResponseDto>('auth', request);
   }
 
+  setToken(token) {
+    localStorage.setItem('token', token);
+    location.reload();
+  }
+
   async logout() {
     localStorage.removeItem('token');
-    return this.router.navigate(['/']);
+    await this.router.navigate(['/']);
+    location.reload();
   }
 }

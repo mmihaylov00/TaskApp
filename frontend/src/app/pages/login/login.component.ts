@@ -14,7 +14,11 @@ export class LoginComponent {
   error: string;
   passwordVisible = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+  ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -32,8 +36,7 @@ export class LoginComponent {
     if (this.form.valid) {
       this.authService.login(val).subscribe({
         next: (response) => {
-          console.log(response);
-          localStorage.setItem('token', response.token);
+          this.authService.setToken(response.token);
         },
         error: (err) => {
           this.error = 'Invalid email or password!';
