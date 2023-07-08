@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-avatar[username]',
@@ -8,7 +10,6 @@ import { Component, Input, OnInit } from '@angular/core';
 export class AvatarComponent implements OnInit {
   @Input() url?: string;
   @Input() username: string;
-  constructor() {}
 
   ngOnInit(): void {}
 }

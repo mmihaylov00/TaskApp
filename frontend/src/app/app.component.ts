@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
-import { environment } from '../environments/environment';
+import { Component, inject } from '@angular/core';
+import { ProfileService } from './services/profile.service';
+import { Store } from '@ngrx/store';
+import { setProfileData } from './states/profile.reducer';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +9,16 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  protected readonly localStorage = localStorage;
   isLogged = !!localStorage.getItem('token');
+
+  constructor(readonly profileService: ProfileService, store: Store) {
+    if (!this.isLogged) return;
+
+    profileService.getProfile().subscribe({
+      next: (value) => {
+        localStorage.setItem('token', value.token);
+        store.dispatch(setProfileData(value));
+      },
+    });
+  }
 }

@@ -10,14 +10,14 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HeaderComponent } from './components/header/header.component';
 import {
   heroBell,
-  heroMagnifyingGlass,
+  heroBriefcase,
   heroClipboard,
+  heroExclamationCircle,
+  heroMagnifyingGlass,
   heroUser,
   heroUserGroup,
-  heroBriefcase,
-  heroExclamationCircle,
 } from '@ng-icons/heroicons/outline';
-import { heroEyeSolid, heroEyeSlashSolid } from '@ng-icons/heroicons/solid';
+import { heroEyeSlashSolid, heroEyeSolid } from '@ng-icons/heroicons/solid';
 import { NgIconsModule } from '@ng-icons/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,6 +29,10 @@ import { LoginComponent } from './pages/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './guard/auth.interceptor';
+import { StoreModule } from '@ngrx/store';
+import { profileReducer } from './states/profile.reducer';
+import { ProfileService } from './services/profile.service';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [
@@ -63,15 +67,18 @@ import { AuthInterceptor } from './guard/auth.interceptor';
     NgOptimizedImage,
     ReactiveFormsModule,
     HttpClientModule,
+    StoreModule.forRoot({ profileData: profileReducer }, {}),
   ],
-  exports: [CommonModule],
   providers: [
+    AuthService,
+    ProfileService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
     },
   ],
+  exports: [CommonModule],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -4,19 +4,15 @@ import { User } from '../user/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly jwtService: JwtService
-  ) {
-  }
+  constructor(private readonly jwtService: JwtService) {}
 
   login(user: User): string {
     return this.jwtService.sign({
       id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
-  };
-
+  }
 
   decodeToken(token: string): any {
     return this.jwtService.decode(token);

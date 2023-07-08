@@ -10,7 +10,10 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly router: Router,
+  ) {}
 
   login(request: LoginRequestDto) {
     return this.http.post<LoginResponseDto>('auth', request);
