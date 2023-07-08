@@ -15,7 +15,9 @@ import {
   heroUser,
   heroUserGroup,
   heroBriefcase,
+  heroExclamationCircle,
 } from '@ng-icons/heroicons/outline';
+import { heroEyeSolid, heroEyeSlashSolid } from '@ng-icons/heroicons/solid';
 import { NgIconsModule } from '@ng-icons/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,6 +25,10 @@ import { MyTasksComponent } from './pages/my-tasks/my-tasks.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TaskBoardComponent } from './pages/task-board/task-board.component';
+import { LoginComponent } from './pages/login/login.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './guard/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -34,6 +40,7 @@ import { TaskBoardComponent } from './pages/task-board/task-board.component';
     MyTasksComponent,
     AvatarComponent,
     TaskBoardComponent,
+    LoginComponent,
   ],
   imports: [
     CommonModule,
@@ -47,13 +54,24 @@ import { TaskBoardComponent } from './pages/task-board/task-board.component';
       heroClipboard,
       heroUser,
       heroUserGroup,
-      heroBriefcase
+      heroBriefcase,
+      heroEyeSolid,
+      heroEyeSlashSolid,
+      heroExclamationCircle,
     }),
     MatSidenavModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    ReactiveFormsModule,
+    HttpClientModule,
   ],
   exports: [CommonModule],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

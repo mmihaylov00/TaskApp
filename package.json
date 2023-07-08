@@ -7,8 +7,18 @@
     "taskapp-backend"
   ],
   "scripts": {
-    "common": "cd common && npm run build:dev",
-    "backend": "cd backend && npm run start:dev",
-    "frontend": "cd frontend && npm run start"
+    "start-all": "run-p start:**",
+    "start:common": "cd common && npm run build:dev",
+    "start:backend": "cd backend && npm run start:dev",
+    "start:frontend": "cd frontend && npm run start",
+    "install-all": "npm i && run-s install:**",
+    "install:common": "cd common && npm i",
+    "install:backend": "cd backend && npm i",
+    "install:frontend": "cd frontend && npm i"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
   }
 }

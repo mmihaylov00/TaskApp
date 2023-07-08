@@ -35,8 +35,6 @@
     "@schematics/angular": "^16.0.3",
     "@types/node": "^20.2.5",
     "@types/sortablejs": "^1.15.1",
-    "prettier": "^2.8.8",
-    "sass": "^1.62.1",
-    "typescript": "^5.0.4"
+    "sass": "^1.62.1"
   }
 }

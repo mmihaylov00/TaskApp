@@ -1,5 +1,10 @@
-<app-header></app-header>
-<app-side-nav></app-side-nav>
-<div class="page-content">
+<ng-container *ngIf="isLogged">
+  <app-header></app-header>
+  <app-side-nav></app-side-nav>
+  <div class="page-content">
+    <router-outlet></router-outlet>
+  </div>
+</ng-container>
+<ng-container *ngIf="!isLogged">
   <router-outlet></router-outlet>
-</div>
+</ng-container>

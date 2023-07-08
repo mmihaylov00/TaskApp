@@ -1,0 +1,46 @@
+<div class="limiter">
+  <div class="container">
+    <div class="login-wrap">
+      <form [formGroup]="form">
+        <div class="title">{{ environment.siteName }}</div>
+
+        <div class="input-wrap">
+          <input
+            type="text"
+            placeholder=" "
+            name="email"
+            formControlName="email" />
+          <span class="focus" data-placeholder="Email"></span>
+        </div>
+
+        <div class="input-wrap">
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            placeholder=" "
+            name="pass"
+            formControlName="password" />
+          <span class="focus" data-placeholder="Password"></span>
+          <span class="btn-show-pass" (click)="togglePasswordVisibility()">
+            <ng-icon
+              size="16"
+              [name]="
+                passwordVisible ? 'heroEyeSlashSolid' : 'heroEyeSolid'
+              "></ng-icon>
+          </span>
+        </div>
+
+        <div class="error-message" [ngClass]="error ? 'visible' : 'hidden'">
+          <ng-icon name="heroExclamationCircle" size="16"></ng-icon>
+          <p>{{ error }}</p>
+        </div>
+
+        <div class="login-button-container">
+          <div class="login-button-wrap">
+            <div class="login-button-background"></div>
+            <button (click)="login()">Login</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

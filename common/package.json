@@ -10,8 +10,6 @@
     "class-validator": "^0.13.2"
   },
   "devDependencies": {
-    "@types/node": "18.16.12",
-    "prettier": "^2.8.8",
-    "typescript": "^5.0.4"
+    "@types/node": "18.16.12"
   }
 }
