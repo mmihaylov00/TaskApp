@@ -11,10 +11,35 @@ mat-sidenav-container {
 
 ul {
   margin: 10px;
+  padding-bottom: 1px;
   list-style-type: none;
+  transition: all 0.2s linear;
+  overflow: hidden;
+
+  &.compact {
+    height: 0 !important;
+  }
+
+  .submenu {
+    margin-top: 2px;
+  }
 
   li {
     margin-top: 10px;
+
+    .compact-toggle {
+      cursor: pointer;
+      transition: all 0.2s linear;
+      margin-left: 12px;
+
+      &.active {
+        transform: rotate(-180deg);
+      }
+    }
+
+    .compact-toggle + a {
+      margin-left: 4px;
+    }
 
     a {
       display: inline-flex;
@@ -23,6 +48,7 @@ ul {
 
       ng-icon {
         transition: all 0.5s linear;
+        align-self: baseline;
       }
 
       p {
@@ -52,6 +78,10 @@ ul {
           width: calc(100% + 34px);
         }
       }
+
+      .board {
+        font-size: 16px;
+      }
     }
   }
 
@@ -60,5 +90,6 @@ ul {
     margin-left: 10px;
     color: $primaryColor;
     text-shadow: 1px 3px 0 #a56ea342;
+    user-select: none;
   }
 }

@@ -1,20 +1,43 @@
+@import 'variables';
+
 .page-content {
   display: flex;
-  position: relative;
+  position: fixed;
   overflow: auto;
   width: calc(100% - 240px);
   top: 7vh;
   left: 240px;
   height: 93vh;
-  z-index: 100;
+  z-index: 0;
   padding: 10px;
 }
 
-app-header, app-side-nav {
+app-header,
+app-side-nav {
   overflow: hidden;
   position: fixed;
 }
 
 app-header {
   width: 100vw;
+  height: 7vh;
+}
+
+app-popup {
+  position: absolute;
+
+  &#profile {
+    top: 5%;
+    right: calc(140px + 3vw);
+  }
+
+  div {
+    padding: 10px;
+    font-size: 15px;
+    cursor: pointer;
+
+    &:not(:first-child) {
+      border-top: $primaryColor solid 1px;
+    }
+  }
 }

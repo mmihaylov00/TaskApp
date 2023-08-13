@@ -22,6 +22,10 @@ header {
   align-items: center;
 }
 
+.icon {
+  cursor: pointer;
+}
+
 .search {
   margin-right: 24px;
 }
@@ -31,12 +35,13 @@ header {
 }
 
 app-avatar {
-  min-width: 7vh;
-  width: 7vh;
-  height: 7vh;
+  min-width: 6vh;
+  width: 6vh;
+  height: 6vh;
   position: fixed;
-  top: 1vh;
+  top: 0.5vh;
   right: 1vh;
+  cursor: pointer;
 }
 
 h1 {

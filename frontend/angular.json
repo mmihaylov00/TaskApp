@@ -32,6 +32,7 @@
               "includePaths": ["src/assets/styles"]
             },
             "styles": [
+              "@angular/material/prebuilt-themes/deeppurple-amber.css",
               "src/assets/styles/variables.scss",
               "src/assets/styles/styles.scss"
             ],

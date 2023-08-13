@@ -1,8 +1,9 @@
 <header>
   <h1>{{ SITE_NAME }}</h1>
   <div class="right">
-    <ng-icon class="search" size="26" name="heroMagnifyingGlass"></ng-icon>
-    <ng-icon class="bell" size="34" name="heroBell"></ng-icon>
-    <app-avatar [username]="username"></app-avatar>
+    <ng-icon class="icon search" size="29" name="heroMagnifyingGlass"></ng-icon>
+    <ng-icon class="icon bell" size="30" name="heroBell"></ng-icon>
   </div>
 </header>
+
+<app-avatar (click)="openProfileDropdown()" [username]="username"></app-avatar>

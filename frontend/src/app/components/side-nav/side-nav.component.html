@@ -8,8 +8,51 @@
           *ngIf="page.link"
           [class]="{ selected: page.link === currentRoute }"
           [routerLink]="page.link">
-          <ng-icon *ngIf="page.icon" [name]="page.icon" size="24"></ng-icon>
+          <ng-icon *ngIf="page.icon" [name]="page.icon" size="18"></ng-icon>
           <p>{{ page.name }}</p>
+        </a>
+      </li>
+      <li *ngFor="let project of projects">
+        <ng-icon
+          [class]="{ active: project.compact, 'compact-toggle': true }"
+          name="heroChevronDown"
+          (click)="toggleProject(project.id)"></ng-icon>
+        <a
+          [class]="{ selected: project.link === currentRoute }"
+          [routerLink]="project.link">
+          <ng-icon
+            name="heroSquares2x2Solid"
+            [color]="project.color"
+            size="20"></ng-icon>
+          <p [style]="'color: ' + project.color + '!important'">
+            {{ project.name }}
+          </p>
+        </a>
+        <ul
+          class="submenu"
+          [id]="project.id"
+          [class]="{ compact: project.compact }">
+          <li *ngFor="let board of project.boards">
+            <a
+              [class]="{ selected: board.link === currentRoute }"
+              [routerLink]="board.link">
+              <ng-icon
+                [name]="board.isFavourite ? 'heroStarSolid' : 'heroStar'"
+                [color]="board.color"
+                size="16"></ng-icon>
+              <p class="board" [style]="'color: ' + board.color + '!important'">
+                {{ board.name }}
+              </p>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a
+          [class]="{ selected: '/project' === currentRoute }"
+          (click)="createNewProject()">
+          <ng-icon name="heroPlusCircle" size="20"></ng-icon>
+          <p>New Project</p>
         </a>
       </li>
     </ul>

@@ -11,13 +11,21 @@ import { HeaderComponent } from './components/header/header.component';
 import {
   heroBell,
   heroBriefcase,
+  heroChevronDown,
   heroClipboard,
   heroExclamationCircle,
   heroMagnifyingGlass,
+  heroPlusCircle,
+  heroStar,
   heroUser,
   heroUserGroup,
 } from '@ng-icons/heroicons/outline';
-import { heroEyeSlashSolid, heroEyeSolid } from '@ng-icons/heroicons/solid';
+import {
+  heroEyeSlashSolid,
+  heroEyeSolid,
+  heroSquares2x2Solid,
+  heroStarSolid,
+} from '@ng-icons/heroicons/solid';
 import { NgIconsModule } from '@ng-icons/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -26,13 +34,26 @@ import { AvatarComponent } from './components/avatar/avatar.component';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TaskBoardComponent } from './pages/task-board/task-board.component';
 import { LoginComponent } from './pages/login/login.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './guard/auth.interceptor';
 import { StoreModule } from '@ngrx/store';
 import { profileReducer } from './states/profile.reducer';
 import { ProfileService } from './services/profile.service';
 import { AuthService } from './services/auth.service';
+import { PopupComponent } from './components/popup/popup.component';
+import { popupReducer } from './states/popup.reducer';
+import { CreateProjectModal } from './modal/create-project-modal/create-project-modal.component';
+import {
+  MAT_DIALOG_DEFAULT_OPTIONS,
+  MatDialogModule,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -45,6 +66,8 @@ import { AuthService } from './services/auth.service';
     AvatarComponent,
     TaskBoardComponent,
     LoginComponent,
+    PopupComponent,
+    CreateProjectModal,
   ],
   imports: [
     CommonModule,
@@ -62,12 +85,27 @@ import { AuthService } from './services/auth.service';
       heroEyeSolid,
       heroEyeSlashSolid,
       heroExclamationCircle,
+      heroStar,
+      heroStarSolid,
+      heroSquares2x2Solid,
+      heroPlusCircle,
+      heroChevronDown,
     }),
     MatSidenavModule,
+    MatDialogModule,
+    FormsModule,
+    MatButtonModule,
+    MatListModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatInputModule,
     NgOptimizedImage,
     ReactiveFormsModule,
     HttpClientModule,
-    StoreModule.forRoot({ profileData: profileReducer }, {}),
+    StoreModule.forRoot(
+      { profileData: profileReducer, popupData: popupReducer },
+      {},
+    ),
   ],
   providers: [
     AuthService,
@@ -76,6 +114,14 @@ import { AuthService } from './services/auth.service';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
+    },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        hasBackdrop: true,
+        height: '400px',
+        width: '600px',
+      },
     },
   ],
   exports: [CommonModule],

@@ -1,0 +1,30 @@
+<div class="custom-modal">
+  <mat-dialog-content>
+    <div class="top-row">
+      <mat-form-field>
+        <mat-label>Project Name</mat-label>
+        <input type="text" matInput [formControl]="projectNameControl" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Color</mat-label>
+        <input type="color" matInput [formControl]="colorControl" />
+      </mat-form-field>
+    </div>
+    <mat-label>Team Access</mat-label>
+    <div class="team-list">
+      <mat-spinner class="center-loading" *ngIf="isLoading"></mat-spinner>
+      <mat-selection-list>
+        <mat-list-option *ngFor="let team of teams">
+          <div class="team-item">
+            <div>{{ team.name }}</div>
+            <p class="members">{{ team.members }} members</p>
+          </div>
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="bottom-buttons">
+    <button mat-dialog-close mat-stroked-button color="warn">Cancel</button>
+    <button mat-flat-button color="primary" (click)="create()">Create</button>
+  </mat-dialog-actions>
+</div>

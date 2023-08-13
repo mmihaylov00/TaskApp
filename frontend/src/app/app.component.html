@@ -1,6 +1,11 @@
 <ng-container *ngIf="isLogged">
   <app-header></app-header>
   <app-side-nav></app-side-nav>
+  <app-popup id="profile" name="profile" additionalClasses="item-list">
+    <div *ngFor="let item of DROPDOWN_ITEMS" (click)="item.onClick()">
+      {{ item.title }}
+    </div>
+  </app-popup>
   <div class="page-content">
     <router-outlet></router-outlet>
   </div>

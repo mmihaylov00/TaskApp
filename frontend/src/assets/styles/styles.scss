@@ -1,14 +1,130 @@
+@use '@angular/material' as mat;
+@use '@angular/material/theming' as mat-theme;
 @import 'variables';
 @import url('https://fonts.googleapis.com/css?family=Signika');
 @import '../fonts/Helvetica/helvetica.font-face';
+
+@include mat.core();
+
+$project-primary: mat.define-palette(
+  (
+    50: $primaryColor,
+    100: $primaryColor,
+    200: $primaryColor,
+    300: $primaryColor,
+    400: $primaryColor,
+    500: $primaryColor,
+    600: $primaryColor,
+    700: $primaryColor,
+    800: $primaryColor,
+    900: $primaryColor,
+    A100: $primaryColor,
+    A200: $primaryColor,
+    A400: $primaryColor,
+    A700: $primaryColor,
+    contrast: (
+      50: $secondaryText,
+      100: $secondaryText,
+      200: $secondaryText,
+      300: $secondaryText,
+      400: $secondaryText,
+      500: $secondaryText,
+      600: $secondaryText,
+      700: $secondaryText,
+      800: $secondaryText,
+      900: $secondaryText,
+      A100: $secondaryText,
+      A200: $secondaryText,
+      A400: $secondaryText,
+      A700: $secondaryText,
+    ),
+  )
+);
+$project-accent: mat.define-palette(
+  (
+    50: $primaryText,
+    100: $primaryText,
+    200: $primaryText,
+    300: $primaryText,
+    400: $primaryText,
+    500: $primaryText,
+    600: $primaryText,
+    700: $primaryText,
+    800: $primaryText,
+    900: $primaryText,
+    A100: $primaryText,
+    A200: $primaryText,
+    A400: $primaryText,
+    A700: $primaryText,
+    contrast: (
+      50: $secondaryText,
+      100: $secondaryText,
+      200: $secondaryText,
+      300: $secondaryText,
+      400: $secondaryText,
+      500: $secondaryText,
+      600: $secondaryText,
+      700: $secondaryText,
+      800: $secondaryText,
+      900: $secondaryText,
+      A100: $secondaryText,
+      A200: $secondaryText,
+      A400: $secondaryText,
+      A700: $secondaryText,
+    ),
+  )
+);
+$project-typography: mat.define-typography-config('Helvetica');
+
+$project-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $project-primary,
+      accent: $project-accent,
+    ),
+    typography: $project-typography,
+    density: 0,
+  )
+);
+
+@include mat.core-theme($project-theme);
+@include mat.button-theme($project-theme);
+@include mat.list-theme($project-theme);
+@include mat.progress-spinner-theme($project-theme);
+
+.center-loading {
+  position: absolute !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-size: 18px;
+  font-size: 16px;
   font-family: 'Helvetica', serif;
   z-index: 1;
+
+  scrollbar-width: auto;
+  scrollbar-color: $primaryColor;
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: $primaryColor;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+  }
 }
 
 h1,
@@ -44,6 +160,10 @@ body {
   display: none;
 }
 
+.d-flex {
+  display: flex;
+}
+
 @keyframes fadeInFromNone {
   0% {
     opacity: 0;
@@ -57,4 +177,18 @@ body {
 .hidden {
   opacity: 0;
   border: transparent solid 1px !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.mat-mdc-dialog-surface {
+  border: $primaryColor solid 2px;
 }
