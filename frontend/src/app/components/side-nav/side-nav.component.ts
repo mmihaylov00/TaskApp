@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateProjectModal } from '../../modal/create-project-modal/create-project-modal.component';
+import { ProjectService } from '../../services/project.service';
+import { select, Store } from '@ngrx/store';
+import { ProjectData, setProjectState } from '../../states/project.reducer';
+import { state } from '@angular/animations';
+import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
 
 @Component({
   selector: 'app-side-nav',
@@ -9,6 +14,24 @@ import { CreateProjectModal } from '../../modal/create-project-modal/create-proj
   styleUrls: ['./side-nav.component.scss'],
 })
 export class SideNavComponent implements OnInit {
+  constructor(
+    private readonly store: Store,
+    private readonly router: Router,
+    private readonly dialog: MatDialog,
+    private readonly projectService: ProjectService,
+  ) {
+    this.store
+      .pipe(select((value: any) => value.projectData))
+      .subscribe((value: ProjectData) => {
+        this.projects = value.projects.map((project) => {
+          return {
+            compact: false,
+            ...project,
+          };
+        });
+      });
+  }
+
   readonly pages = [
     {
       name: 'Home',
@@ -43,62 +66,20 @@ export class SideNavComponent implements OnInit {
 
   currentRoute = '/';
 
-  projects = [
-    {
-      id: 'a',
-      name: 'Test Project',
-      color: 'green',
-      link: '/project/a',
-      compact: false,
-      boards: [
-        {
-          id: 'b',
-          name: 'board',
-          isFavourite: true,
-          link: '/project/a/board/b',
-        },
-      ],
-    },
-    {
-      id: 'c',
-      name: 'Second Project',
-      color: 'black',
-      link: '/project/c',
-      compact: false,
-      boards: [
-        {
-          id: 'd',
-          name: 'Testing',
-          color: 'red',
-          isFavourite: true,
-          link: '/project/c/board/d',
-        },
-        {
-          id: 'e',
-          name: 'More boards',
-          color: 'cyan',
-          isFavourite: false,
-          link: '/project/c/board/e',
-        },
-      ],
-    },
-  ];
-
-  constructor(
-    private readonly router: Router,
-    private readonly dialog: MatDialog,
-  ) {}
+  projects = [];
 
   createNewProject() {
     this.dialog.open(CreateProjectModal, {});
   }
 
   toggleProject(id: string) {
-    let project = this.projects.find((project) => project.id === id);
+    const project = this.projects.find((project) => project.id === id);
     project.compact = !project.compact;
+    this.store.dispatch(setProjectState({ projects: this.projects }));
   }
 
   ngOnInit(): void {
+    this.loadProjects();
     this.router.events.subscribe((event) => {
       if (!(event instanceof NavigationEnd)) return;
       this.currentRoute = event.url;
@@ -110,5 +91,18 @@ export class SideNavComponent implements OnInit {
         element.style.height = initialHeight + 'px';
       }
     }, 1);
+  }
+
+  loadProjects() {
+    this.projectService.list(100).subscribe((page) => {
+      const projects: ProjectDto[] = page.items.map((project) => {
+        return {
+          ...project,
+          compact:
+            this.projects.find((p) => p.id == project.id)?.compact || false,
+        };
+      });
+      this.store.dispatch(setProjectState({ projects }));
+    });
   }
 }

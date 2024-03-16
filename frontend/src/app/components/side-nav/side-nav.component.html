@@ -19,7 +19,7 @@
           (click)="toggleProject(project.id)"></ng-icon>
         <a
           [class]="{ selected: project.link === currentRoute }"
-          [routerLink]="project.link">
+          [routerLink]="'/project/' + project.id">
           <ng-icon
             name="heroSquares2x2Solid"
             [color]="project.color"
@@ -35,7 +35,7 @@
           <li *ngFor="let board of project.boards">
             <a
               [class]="{ selected: board.link === currentRoute }"
-              [routerLink]="board.link">
+              [routerLink]="'/project/' + project.id + '/board/' + board.id">
               <ng-icon
                 [name]="board.isFavourite ? 'heroStarSolid' : 'heroStar'"
                 [color]="board.color"

@@ -1,6 +1,7 @@
 import { UserDetailsDto } from './auth.dto';
 
 export interface TaskDto {
+  id: string;
   title: string;
   description: string;
   priority?: TaskPriority;
@@ -12,5 +13,5 @@ export interface TaskDto {
 export enum TaskPriority {
   LOW,
   NORMAL,
-  HIGH
+  HIGH,
 }

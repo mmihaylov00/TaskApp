@@ -6,10 +6,10 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-
-  constructor(@InjectRepository(User)
-              private readonly repository: Repository<User>) {
-  }
+  constructor(
+    @InjectRepository(User)
+    private readonly repository: Repository<User>,
+  ) {}
 
   findByEmail(email: string): Promise<User> {
     return this.repository.findOneBy({ email });
@@ -18,13 +18,13 @@ export class UserService {
   getUserData(id: string): Promise<User> {
     return this.repository.findOne({
       where: { id },
-      select: ['firstName', 'lastName', 'role']
+      select: ['id', 'firstName', 'lastName', 'email', 'role'],
     });
   }
 
   async loginUser(email: string, pass: string): Promise<User> {
     const user = await this.findByEmail(email);
     if (!user) return null;
-    return await bcrypt.compare(pass, user.password) ? user : null;
+    return (await bcrypt.compare(pass, user.password)) ? user : null;
   }
 }

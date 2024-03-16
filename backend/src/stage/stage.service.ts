@@ -7,30 +7,32 @@ import { BoardService } from '../board/board.service';
 import { ManageStageDto } from 'taskapp-common/dist/src/dto/stage.dto';
 import { TaskAppError } from '../error/task-app.error';
 import { ProjectService } from '../project/project.service';
+import { JwtUser } from '../auth/decorator/jwt-user.dto';
 
 @Injectable()
 export class StageService {
+  constructor(
+    @InjectRepository(Stage)
+    private readonly repository: Repository<Stage>,
+    private readonly boardService: BoardService,
+    private readonly projectService: ProjectService,
+  ) {}
 
-  constructor(@InjectRepository(Stage)
-              private readonly repository: Repository<Stage>,
-              private readonly boardService: BoardService,
-              private readonly projectService: ProjectService) {
-  }
-
-  async list(user: User, boardId: string) {
+  async list(user: JwtUser, boardId: string) {
     const board = await this.boardService.getBoard(boardId, user);
     const stages = await this.repository.findBy({
-      deleted: false, board: {
-        id: board.id
-      }
+      deleted: false,
+      board: {
+        id: board.id,
+      },
     });
     //todo load tasks into stage
-    return stages.map(stage => {
+    return stages.map((stage) => {
       return { ...stage, tasks: [] };
     });
   }
 
-  async create(user: User, data: ManageStageDto) {
+  async create(user: JwtUser, data: ManageStageDto) {
     const board = await this.boardService.getBoard(data.boardId, user);
     try {
       await this.repository.insert({ ...data, board });
@@ -39,7 +41,7 @@ export class StageService {
     }
   }
 
-  async update(user: User, id: string, data: ManageStageDto) {
+  async update(user: JwtUser, id: string, data: ManageStageDto) {
     const stage = await this.getStage(id, user);
     stage.name = data.name;
     stage.color = data.color;
@@ -51,7 +53,7 @@ export class StageService {
     }
   }
 
-  async delete(user: User, id: string) {
+  async delete(user: JwtUser, id: string) {
     const stage = await this.getStage(id, user);
     stage.delete();
 
@@ -61,7 +63,7 @@ export class StageService {
       throw new TaskAppError('stage_not_deleted', HttpStatus.BAD_REQUEST);
     }
   }
-  async getStage(id: string, user?: User) {
+  async getStage(id: string, user?: JwtUser) {
     const stage = await this.repository.findOneBy({ id, deleted: false });
     this.projectService.checkAccess(stage?.board?.project, user);
 

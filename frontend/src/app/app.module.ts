@@ -52,8 +52,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { projectReducer } from './states/project.reducer';
 
 @NgModule({
   declarations: [
@@ -103,7 +103,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ReactiveFormsModule,
     HttpClientModule,
     StoreModule.forRoot(
-      { profileData: profileReducer, popupData: popupReducer },
+      {
+        profileData: profileReducer,
+        popupData: popupReducer,
+        projectData: projectReducer,
+      },
       {},
     ),
   ],

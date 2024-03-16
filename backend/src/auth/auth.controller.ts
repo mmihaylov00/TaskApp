@@ -17,8 +17,9 @@ export class AuthController {
   @Post()
   async login(@Body() data: LoginRequestDto): Promise<LoginResponseDto> {
     const user = await this.userService.loginUser(data.email, data.password);
-    if (!user || user.deleted)
+    if (!user || user.deleted) {
       throw new TaskAppError('bad_credentials', HttpStatus.BAD_REQUEST);
+    }
 
     return {
       token: this.authService.login(user),

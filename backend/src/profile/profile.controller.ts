@@ -5,8 +5,10 @@ import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import { AuthService } from '../auth/auth.service';
+import { JwtUser } from '../auth/decorator/jwt-user.dto';
 
 @Controller('profile')
+@UseGuards(JwtGuard)
 export class ProfileController {
   constructor(
     private readonly userService: UserService,
@@ -14,30 +16,28 @@ export class ProfileController {
   ) {}
 
   @Get()
-  @UseGuards(JwtGuard)
-  async details(@Authenticated() user: User): Promise<UserDetailsDto> {
+  async details(@Authenticated() user: JwtUser): Promise<UserDetailsDto> {
     const u = await this.userService.getUserData(user.id);
     return {
       firstName: u.firstName,
       lastName: u.lastName,
       role: u.role,
-      token: this.authService.login(user),
+      token: this.authService.login(u),
     };
   }
 
   @Put()
-  @UseGuards(JwtGuard)
-  async update(@Authenticated() user: User): Promise<void> {
+  async update(@Authenticated() user: JwtUser): Promise<void> {
     //todo
   }
 
   @Get('/:token')
-  async getSetupData(@Authenticated() user: User): Promise<void> {
+  async getSetupData(@Authenticated() user: JwtUser): Promise<void> {
     //todo initial setup from invite token, return given email
   }
 
   @Post()
-  async setup(@Authenticated() user: User): Promise<void> {
+  async setup(@Authenticated() user: JwtUser): Promise<void> {
     //todo initial setup from invite link
   }
 }

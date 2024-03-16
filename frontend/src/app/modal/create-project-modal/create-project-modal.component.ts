@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ProjectService } from '../../services/project.service';
+import { addProject } from '../../states/project.reducer';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-create-project-modal',
@@ -10,6 +12,7 @@ import { ProjectService } from '../../services/project.service';
 })
 export class CreateProjectModal {
   constructor(
+    private readonly store: Store,
     private readonly dialogRef: MatDialogRef<CreateProjectModal>,
     private readonly projectService: ProjectService,
   ) {}
@@ -39,7 +42,10 @@ export class CreateProjectModal {
         name: this.projectNameControl.value,
         color: this.colorControl.value,
       })
-      .subscribe(() => {
+      .subscribe((project) => {
+        this.store.dispatch(
+          addProject({ project: { ...project, compact: false } }),
+        );
         this.dialogRef.close();
       });
   }

@@ -13,11 +13,11 @@ import { Page } from 'taskapp-common/dist/src/dto/list.dto';
 export class ProjectService {
   constructor(private readonly http: HttpClient) {}
 
-  list() {
-    return this.http.get<Page<ProjectDto>>('projects');
+  list(pageSize: number = 20) {
+    return this.http.get<Page<ProjectDto>>('projects?pageSize=' + pageSize);
   }
 
   create(data: CreateProjectDto) {
-    return this.http.post<void>('projects', data);
+    return this.http.post<ProjectDto>('projects', data);
   }
 }
