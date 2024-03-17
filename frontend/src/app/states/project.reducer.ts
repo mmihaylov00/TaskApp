@@ -26,6 +26,14 @@ export const updateProject = createAction(
 );
 
 export const addBoard = createAction('Add Board', props<{ board: BoardDto }>());
+export const updateBoard = createAction(
+  'Update Board',
+  props<{ board: BoardDto }>(),
+);
+export const removeBoard = createAction(
+  'Remove Board',
+  props<{ board: BoardDto }>(),
+);
 
 export const projectReducer = createReducer(
   initialState,
@@ -48,6 +56,44 @@ export const projectReducer = createReducer(
 
     const project = { ...projects.splice(index, 1)[0] };
     project.boards = [...project.boards, board].sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+    projects.splice(index, 0, project);
+
+    localStorage.setItem('projects', JSON.stringify(projects));
+    return { projects };
+  }),
+  on(removeBoard, (state, { board }) => {
+    const projects = [...state.projects];
+    const index = projects.findIndex(
+      (project) => project.id === board.projectId,
+    );
+
+    const project = { ...projects.splice(index, 1)[0] };
+
+    const boardIndex = project.boards.findIndex((b) => b.id === board.id);
+    const boards = [...project.boards];
+    boards.splice(boardIndex, 1);
+
+    project.boards = [...boards].sort((a, b) => a.name.localeCompare(b.name));
+    projects.splice(index, 0, project);
+
+    localStorage.setItem('projects', JSON.stringify(projects));
+    return { projects };
+  }),
+  on(updateBoard, (state, { board }) => {
+    const projects = [...state.projects];
+    const index = projects.findIndex(
+      (project) => project.id === board.projectId,
+    );
+
+    const project = { ...projects.splice(index, 1)[0] };
+
+    const boardIndex = project.boards.findIndex((b) => b.id === board.id);
+    const boards = [...project.boards];
+    boards.splice(boardIndex, 1);
+
+    project.boards = [...boards, board].sort((a, b) =>
       a.name.localeCompare(b.name),
     );
     projects.splice(index, 0, project);

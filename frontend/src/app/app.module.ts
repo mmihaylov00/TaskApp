@@ -42,7 +42,7 @@ import { MatTableModule } from '@angular/material/table';
 import { TableComponent } from './components/table/table.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CreateBoardModal } from './modal/create-board/create-board.modal';
+import { ManageBoardModal } from './modal/create-board/manage-board.modal';
 import { CardComponent } from './components/card/card.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { UsersComponent } from './pages/users/users.component';
@@ -71,7 +71,7 @@ import { UserSearchComponent } from './components/user-search/user-search.compon
     PopupComponent,
     InviteUserModal,
     CreateProjectModal,
-    CreateBoardModal,
+    ManageBoardModal,
     EditUserModal,
     EditProjectModal,
     AddUserModal,

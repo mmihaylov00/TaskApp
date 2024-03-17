@@ -20,6 +20,9 @@ export class Board extends UUIDEntity {
   @Column
   declare color: string;
 
+  @Column({ defaultValue: false })
+  declare archived: boolean;
+
   @BelongsTo(() => Project, { foreignKey: 'projectId', constraints: false })
   declare project: Project;
 

@@ -4,13 +4,15 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { BoardService } from '../../services/board.service';
 import { BoardDto } from 'taskapp-common/dist/src/dto/board.dto';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateBoardModal } from '../../modal/create-board/create-board.modal';
+import { ManageBoardModal } from '../../modal/create-board/manage-board.modal';
 import { ProjectService } from '../../services/project.service';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { EditProjectModal } from '../../modal/edit-project/edit-project.modal';
 import { ConfirmModal } from '../../modal/confirm/confirm.modal';
 import { AddUserModal } from '../../modal/add-user/add-user.modal';
+import { addBoard, removeBoard } from '../../states/project.reducer';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-project',
@@ -24,6 +26,7 @@ export class ProjectComponent implements OnInit {
     private readonly projectService: ProjectService,
     private readonly boardService: BoardService,
     private readonly route: ActivatedRoute,
+    private readonly store: Store,
     private readonly dialog: MatDialog,
   ) {}
 
@@ -96,68 +99,114 @@ export class ProjectComponent implements OnInit {
   }
 
   editProject() {
-    let dialog = this.dialog.open(EditProjectModal, {
-      data: {
-        project: {
-          id: this.projectId,
-          name: this.projectData.name,
-          color: this.projectData.values[0].value,
+    this.dialog
+      .open(EditProjectModal, {
+        data: {
+          project: {
+            id: this.projectId,
+            name: this.projectData.name,
+            color: this.projectData.values[0].value,
+          },
         },
-      },
-    });
-    dialog.afterClosed().subscribe((result) => {
-      if (!result) return;
-      this.projectData.name = result.name;
-      this.projectData.values[0].value = result.color;
-    });
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (!result) return;
+        this.projectData.name = result.name;
+        this.projectData.values[0].value = result.color;
+      });
   }
 
-  editBoard(data) {
-    console.log('edit');
+  editBoard(board: BoardDto) {
+    this.dialog
+      .open(ManageBoardModal, {
+        data: { projectId: this.projectId, board },
+      })
+      .afterClosed()
+      .subscribe((board) => {
+        if (!board) return;
+        this.removeBoard(board);
+        this.addBoard(board);
+      });
+  }
+
+  archiveBoard(board: BoardDto) {
+    this.dialog
+      .open(ConfirmModal, {
+        data: {
+          title: 'Archive Board - ' + board.name,
+          action: 'archive this board?',
+        },
+      })
+      .afterClosed()
+      .subscribe((value) => {
+        if (!value) return;
+
+        this.boardService.delete(board.id).subscribe(() => {
+          this.removeBoard(board);
+          this.boardData = [...this.boardData];
+          this.store.dispatch(removeBoard({ board }));
+        });
+      });
+  }
+
+  removeBoard(board: BoardDto) {
+    const boardIndex = this.boardData.findIndex((b) => b.id === board.id);
+    this.boardData.splice(boardIndex, 1);
+  }
+
+  addBoard(board: BoardDto) {
+    this.boardData.push(board);
+    this.boardData = [
+      ...this.boardData.sort((a, b) => a.name.localeCompare(b.name)),
+    ];
+    this.projectData.values[2].value = this.boardData.length;
   }
 
   removeUser(user: UserDetailsDto) {
-    const title = `Remove ${user.firstName} ${user.lastName} (${user.email})`;
+    this.dialog
+      .open(ConfirmModal, {
+        data: {
+          title: `Remove ${user.firstName} ${user.lastName} (${user.email})`,
+          action: 'remove this user from project ' + this.projectData.name,
+        },
+      })
+      .afterClosed()
+      .subscribe((value) => {
+        if (!value) return;
 
-    const dialog = this.dialog.open(ConfirmModal, {
-      data: {
-        title,
-        action: 'remove this user from project ' + this.projectData.name,
-      },
-    });
-    dialog.afterClosed().subscribe((value) => {
-      if (!value) return;
-
-      this.projectService.removeUser(this.projectId, user.id).subscribe(() => {
-        this.loadUsers();
+        this.projectService
+          .removeUser(this.projectId, user.id)
+          .subscribe(() => {
+            this.loadUsers();
+          });
       });
-    });
   }
 
   inviteUser() {
-    const dialog = this.dialog.open(AddUserModal, {
-      data: {
-        project: { id: this.projectId, name: this.projectData.name },
-      },
-    });
-    dialog.afterClosed().subscribe((value) => {
-      if (!value) return;
+    this.dialog
+      .open(AddUserModal, {
+        data: {
+          project: { id: this.projectId, name: this.projectData.name },
+        },
+      })
+      .afterClosed()
+      .subscribe((value) => {
+        if (!value) return;
 
-      this.loadUsers();
-    });
+        this.loadUsers();
+      });
   }
 
   createBoard() {
-    let dialog = this.dialog.open(CreateBoardModal, {
-      data: { projectId: this.projectId },
-    });
-    dialog.afterClosed().subscribe((result) => {
-      if (!result) return;
-      this.boardData.push(result);
-      this.boardData = [
-        ...this.boardData.sort((a, b) => a.name.localeCompare(b.name)),
-      ];
-      this.projectData.values[2].value = this.boardData.length;
-    });
+    this.dialog
+      .open(ManageBoardModal, {
+        data: { projectId: this.projectId },
+      })
+      .afterClosed()
+      .subscribe((board) => {
+        if (!board) return;
+        this.addBoard(board);
+      });
   }
 }

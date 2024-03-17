@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { select, Store } from '@ngrx/store';
 import { ProfileData } from '../../states/profile.reducer';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 import { setProfileOpenState } from '../../states/popup.reducer';
 
 @Component({
@@ -15,11 +13,7 @@ export class HeaderComponent implements OnInit {
   readonly SITE_NAME = environment.siteName;
   username = '';
 
-  constructor(
-    private readonly store: Store,
-    private readonly router: Router,
-    private readonly authService: AuthService,
-  ) {
+  constructor(private readonly store: Store) {
     this.store
       .pipe(select((value: any) => value.profileData))
       .subscribe((value: ProfileData) => {

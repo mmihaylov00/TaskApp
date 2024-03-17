@@ -33,13 +33,15 @@ export class UsersComponent implements OnInit {
   loading = false;
 
   inviteUser() {
-    const dialog = this.dialog.open(InviteUserModal);
-    dialog.afterClosed().subscribe((value) => {
-      if (value) {
-        this.userData = undefined;
-        this.loadUsers();
-      }
-    });
+    this.dialog
+      .open(InviteUserModal)
+      .afterClosed()
+      .subscribe((value) => {
+        if (value) {
+          this.userData = undefined;
+          this.loadUsers();
+        }
+      });
   }
 
   ngOnInit() {
@@ -61,38 +63,46 @@ export class UsersComponent implements OnInit {
   }
 
   editUser(user: UserDetailsDto) {
-    const dialog = this.dialog.open(EditUserModal, { data: { user } });
-    dialog.afterClosed().subscribe((value) => {
-      if (value) {
-        this.userData = undefined;
-        this.loadUsers();
-      }
-    });
+    this.dialog
+      .open(EditUserModal, { data: { user } })
+      .afterClosed()
+      .subscribe((value) => {
+        if (value) {
+          this.userData = undefined;
+          this.loadUsers();
+        }
+      });
   }
 
   changeStatus(user: UserDetailsDto) {
     if (user.status === UserStatus.INVITED) return;
 
     const action = user.status === UserStatus.DISABLED ? 'Activate' : 'Disable';
-    const title = `${action} ${user.firstName} ${user.lastName} (${user.email})`;
 
-    const dialog = this.dialog.open(ConfirmModal, {
-      data: { title, action: `${action.toLowerCase()} this user` },
-    });
-    dialog.afterClosed().subscribe((value) => {
-      if (value) {
-        user.status =
-          user.status === UserStatus.ACTIVE
-            ? UserStatus.DISABLED
-            : UserStatus.ACTIVE;
-        this.userService.changeStatus(user.id, user.status).subscribe(() => {
-          const index = this.userData.items.findIndex((u) => u.id === user.id);
-          this.userData.items.splice(index, 1, user);
-        });
-      } else {
-        this.userData = JSON.parse(JSON.stringify(this.userData));
-      }
-    });
+    this.dialog
+      .open(ConfirmModal, {
+        data: {
+          title: `${action} ${user.firstName} ${user.lastName} (${user.email})`,
+          action: `${action.toLowerCase()} this user`,
+        },
+      })
+      .afterClosed()
+      .subscribe((value) => {
+        if (value) {
+          user.status =
+            user.status === UserStatus.ACTIVE
+              ? UserStatus.DISABLED
+              : UserStatus.ACTIVE;
+          this.userService.changeStatus(user.id, user.status).subscribe(() => {
+            const index = this.userData.items.findIndex(
+              (u) => u.id === user.id,
+            );
+            this.userData.items.splice(index, 1, user);
+          });
+        } else {
+          this.userData = JSON.parse(JSON.stringify(this.userData));
+        }
+      });
   }
 
   protected readonly UserStatus = UserStatus;

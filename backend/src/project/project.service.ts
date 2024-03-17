@@ -18,10 +18,11 @@ export class ProjectService {
   constructor() {}
 
   async list(user: JwtUser, page: PageRequestDto) {
+    const boardInclude = { model: Board, where: { archived: false } };
     const include =
       user.role !== Role.ADMIN
         ? [
-            Board,
+            boardInclude,
             {
               model: User,
               where: {
@@ -29,7 +30,7 @@ export class ProjectService {
               },
             },
           ]
-        : [Board];
+        : [boardInclude];
 
     const { count, rows } = await Project.findAndCountAll(
       Page.paged(

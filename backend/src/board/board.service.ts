@@ -24,7 +24,11 @@ export class BoardService {
         ? [projectInclude, userInclude]
         : [projectInclude];
 
-    return Board.findAll({ include, order: ['name'] });
+    return Board.findAll({
+      where: { archived: false },
+      include,
+      order: ['name'],
+    });
   }
 
   async create(user: JwtUser, data: CreateBoardDto) {
@@ -53,8 +57,10 @@ export class BoardService {
   async delete(user: JwtUser, id: string) {
     const board = await this.getBoard(id, user);
 
+    board.archived = true;
+
     try {
-      await board.destroy();
+      await board.save();
     } catch (_) {
       throw new TaskAppError('board_not_deleted', HttpStatus.BAD_REQUEST);
     }
