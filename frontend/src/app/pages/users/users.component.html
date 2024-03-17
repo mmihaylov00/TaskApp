@@ -1,0 +1,34 @@
+<app-table
+  header="Users"
+  [columns]="userColumns"
+  [data]="userData"
+  [loading]="loading"
+  (changePage)="changePage($event)"
+  [page]="userPage">
+  <button actions mat-flat-button color="primary" (click)="inviteUser()">
+    Invite
+  </button>
+  <ng-template #row let-element>
+    <div class="d-flex flex-justify-end flex-align-items-center">
+      <button
+        mat-button
+        matTooltip="Edit"
+        color="accent"
+        (click)="editUser(element)">
+        <mat-icon class="text-primary" fontIcon="edit" />
+      </button>
+      <mat-slide-toggle
+        [checked]="element.status === UserStatus.ACTIVE"
+        [disabled]="element.status === UserStatus.INVITED"
+        color="primary"
+        (click)="changeStatus(element)"
+        [matTooltip]="
+          element.status === UserStatus.ACTIVE
+            ? 'Disable'
+            : element.status === UserStatus.DISABLED
+            ? 'Activate'
+            : ''
+        " />
+    </div>
+  </ng-template>
+</app-table>

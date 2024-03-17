@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
-import { User } from '../user/user.entity';
+import { User } from '../database/entity/user.entity';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { Roles } from '../auth/decorator/role.decorator';
 import { StageService } from './stage.service';

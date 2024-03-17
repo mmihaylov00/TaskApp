@@ -1,7 +1,7 @@
 @import 'variables';
 
 .page-content {
-  display: flex;
+  display: grid;
   position: fixed;
   overflow: auto;
   width: calc(100% - 240px);
@@ -10,6 +10,14 @@
   height: 93vh;
   z-index: 0;
   padding: 10px;
+}
+
+router-outlet {
+  display: none;
+}
+
+.page-inner {
+  width: 100%;
 }
 
 app-header,

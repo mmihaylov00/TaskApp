@@ -17,15 +17,13 @@ export class AuthController {
   @Post()
   async login(@Body() data: LoginRequestDto): Promise<LoginResponseDto> {
     const user = await this.userService.loginUser(data.email, data.password);
-    if (!user || user.deleted) {
+    if (!user || user.deletedAt || user.disabled) {
       throw new TaskAppError('bad_credentials', HttpStatus.BAD_REQUEST);
     }
 
     return {
+      ...user.toDto(),
       token: this.authService.login(user),
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role,
     };
   }
 }

@@ -11,7 +11,13 @@ export interface TaskDto {
 }
 
 export enum TaskPriority {
-  LOW,
-  NORMAL,
-  HIGH,
+  LOW = 'LOW',
+  NORMAL = 'NORMAL',
+  HIGH = 'HIGH',
 }
+
+export const TASK_PRIORITIES = [
+  TaskPriority.LOW,
+  TaskPriority.NORMAL,
+  TaskPriority.HIGH,
+];

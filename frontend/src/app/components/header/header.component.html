@@ -1,8 +1,17 @@
 <header>
   <h1>{{ SITE_NAME }}</h1>
   <div class="right">
-    <ng-icon class="icon search" size="29" name="heroMagnifyingGlass"></ng-icon>
-    <ng-icon class="icon bell" size="30" name="heroBell"></ng-icon>
+    <button mat-icon-button matTooltip="Search" class="search" color="primary">
+      <mat-icon fontIcon="search" />
+    </button>
+    <button
+      class="d-flex flex-justify-center bell"
+      mat-icon-button
+      matTooltip="Notifications"
+      color="primary">
+      <!--      is there are notifications: notifications_active-->
+      <mat-icon fontIcon="notifications" />
+    </button>
   </div>
 </header>
 

@@ -1,8 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Board } from './board.entity';
-import { User } from '../user/user.entity';
+import { Board } from '../database/entity/board.entity';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { ProjectService } from '../project/project.service';
 import {
@@ -11,45 +8,31 @@ import {
 } from 'taskapp-common/dist/src/dto/board.dto';
 import { TaskAppError } from '../error/task-app.error';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
+import { Project } from '../database/entity/project.entity';
+import { User } from '../database/entity/user.entity';
 
 @Injectable()
 export class BoardService {
-  constructor(
-    @InjectRepository(Board)
-    private readonly repository: Repository<Board>,
-    private readonly projectService: ProjectService,
-  ) {}
+  constructor(private readonly projectService: ProjectService) {}
 
   async list(user: JwtUser, projectId?: string) {
-    const query = this.repository
-      .createQueryBuilder('b')
-      .innerJoin('b.project', 'p')
-      .where('b.deleted IS NOT true');
+    const projectWhere = projectId ? { id: projectId } : undefined;
+    const projectInclude = { model: Project, where: projectWhere };
+    const userInclude = { model: User, where: { id: user.id } };
+    const include =
+      user.role !== Role.ADMIN
+        ? [projectInclude, userInclude]
+        : [projectInclude];
 
-    if (user.role !== Role.ADMIN) {
-      query
-        .innerJoin('p.users', 'u')
-        .andWhere('u.id = :userId', { userId: user.id });
-    }
-
-    if (projectId) {
-      query.andWhere('p.id = :projectId', { projectId });
-    }
-
-    const boards = await query.getMany();
-    return boards.map((board) => {
-      return {
-        ...board,
-        projectId: board.project.id,
-      };
-    });
+    return Board.findAll({ include, order: ['name'] });
   }
 
   async create(user: JwtUser, data: CreateBoardDto) {
     const project = await this.projectService.getProject(data.projectId, user);
 
     try {
-      await this.repository.insert({ ...data, project });
+      const board = await Board.create({ ...data, project });
+      return board.toDto();
     } catch (_) {
       throw new TaskAppError('board_creation_failed', HttpStatus.BAD_REQUEST);
     }
@@ -61,7 +44,7 @@ export class BoardService {
     board.name = data.name;
 
     try {
-      await this.repository.save(board);
+      await board.save();
     } catch (_) {
       throw new TaskAppError('board_update_failed', HttpStatus.CONFLICT);
     }
@@ -69,18 +52,20 @@ export class BoardService {
 
   async delete(user: JwtUser, id: string) {
     const board = await this.getBoard(id, user);
-    board.delete();
 
     try {
-      await this.repository.save(board);
+      await board.destroy();
     } catch (_) {
       throw new TaskAppError('board_not_deleted', HttpStatus.BAD_REQUEST);
     }
   }
 
   async getBoard(id: string, user?: JwtUser) {
-    const board = await this.repository.findOneBy({ id, deleted: false });
-    this.projectService.checkAccess(board?.project, user);
+    const board = await Board.findOne({
+      where: { id },
+      include: { model: Project, include: [User] },
+    });
+    await this.projectService.checkAccess(board?.project, user);
 
     return board;
   }

@@ -1,0 +1,27 @@
+<mat-form-field class="w-100">
+  <mat-label>Select User...</mat-label>
+  <input
+    type="text"
+    matInput
+    (input)="loadUsers()"
+    [formControl]="userControl"
+    [matAutocomplete]="auto" />
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let user of users" [value]="user.id">
+      {{ displayUserFunction(user) }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+<mat-label>Selected Users</mat-label>
+<div class="user-list">
+  <mat-selection-list>
+    <mat-list-option
+      (click)="removeItem(user)"
+      *ngFor="let user of selectedUsers">
+      <div class="d-flex flex-justify-between">
+        <div>{{ displayUserFunction(user) }}</div>
+        <mat-icon fontIcon="cancel" color="warn" />
+      </div>
+    </mat-list-option>
+  </mat-selection-list>
+</div>

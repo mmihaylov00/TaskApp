@@ -1,0 +1,33 @@
+@import '../../assets/styles/variables';
+
+mat-form-field {
+  width: 96%;
+}
+
+.bottom-buttons {
+  padding-right: 24px;
+}
+
+.custom-modal {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+  height: 98%;
+}
+
+.team-list {
+  min-height: 64%;
+  max-height: 64%;
+  overflow-y: scroll;
+  border: $primaryColor solid 1px;
+
+  .team-item {
+    display: flex;
+    justify-content: space-between;
+
+    .members {
+      font-size: 12px;
+      color: $secondaryText;
+    }
+  }
+}

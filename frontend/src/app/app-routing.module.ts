@@ -4,6 +4,9 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MyTasksComponent } from './pages/my-tasks/my-tasks.component';
 import { LoginComponent } from './pages/login/login.component';
+import { TaskBoardComponent } from './pages/task-board/task-board.component';
+import { ProjectComponent } from './pages/project/project.component';
+import { UsersComponent } from './pages/users/users.component';
 
 const routes: Route[] = [
   {
@@ -19,6 +22,21 @@ const routes: Route[] = [
   {
     path: 'tasks',
     component: MyTasksComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'users',
+    component: UsersComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'project/:projectId',
+    component: ProjectComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'project/:projectId/board/:boardId',
+    component: TaskBoardComponent,
     pathMatch: 'full',
   },
 ];

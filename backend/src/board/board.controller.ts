@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
-import { User } from '../user/user.entity';
+import { User } from '../database/entity/user.entity';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { Roles } from '../auth/decorator/role.decorator';
 import { BoardService } from './board.service';
@@ -28,7 +28,7 @@ export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
   @Get()
-  async list(@Authenticated() user: JwtUser): Promise<BoardDto[]> {
+  async list(@Authenticated() user: JwtUser) {
     return this.boardService.list(user);
   }
 
@@ -36,7 +36,7 @@ export class BoardController {
   async listByProject(
     @Authenticated() user: JwtUser,
     @Param('projectId') projectId: string,
-  ): Promise<BoardDto[]> {
+  ) {
     return this.boardService.list(user, projectId);
   }
 
@@ -44,7 +44,7 @@ export class BoardController {
   @Roles(Role.ADMIN, Role.PROJECT_MANAGER)
   @HttpCode(HttpStatus.CREATED)
   async create(@Authenticated() user: JwtUser, @Body() data: CreateBoardDto) {
-    await this.boardService.create(user, data);
+    return this.boardService.create(user, data);
   }
 
   @Put('/:id')

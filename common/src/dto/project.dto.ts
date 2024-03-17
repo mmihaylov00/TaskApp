@@ -11,4 +11,5 @@ export interface ProjectDto {
 export interface CreateProjectDto {
   name: string;
   color: string;
+  userIds: string[];
 }

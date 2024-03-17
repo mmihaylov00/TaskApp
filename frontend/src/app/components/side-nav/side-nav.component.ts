@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateProjectModal } from '../../modal/create-project-modal/create-project-modal.component';
 import { ProjectService } from '../../services/project.service';
 import { select, Store } from '@ngrx/store';
 import { ProjectData, setProjectState } from '../../states/project.reducer';
-import { state } from '@angular/animations';
 import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
+import { Role } from 'taskapp-common/dist/src/enums/role.enum';
+import { ProfileData } from '../../states/profile.reducer';
+import { CreateProjectModal } from '../../modal/create-project/create-project.modal';
 
 @Component({
   selector: 'app-side-nav',
@@ -21,6 +22,12 @@ export class SideNavComponent implements OnInit {
     private readonly projectService: ProjectService,
   ) {
     this.store
+      .pipe(select((value: any) => value.profileData))
+      .subscribe((value: ProfileData) => {
+        this.role = value.role;
+      });
+
+    this.store
       .pipe(select((value: any) => value.projectData))
       .subscribe((value: ProjectData) => {
         this.projects = value.projects.map((project) => {
@@ -32,37 +39,42 @@ export class SideNavComponent implements OnInit {
       });
   }
 
+  role = Role.DEVELOPER;
+
   readonly pages = [
     {
       name: 'Home',
     },
     {
       name: 'Dashboard',
-      icon: 'heroClipboard',
+      icon: 'dashboard',
       link: '/',
     },
     {
       name: 'My Tasks',
-      icon: 'heroBriefcase',
-      link: '/tasks',
+      icon: 'work',
+      link: '/team',
     },
     {
       name: 'Administration',
+      roles: [Role.PROJECT_MANAGER, Role.ADMIN],
     },
     {
       name: 'Users',
-      icon: 'heroUser',
+      icon: 'person',
       link: '/users',
-    },
-    {
-      name: 'Teams',
-      icon: 'heroUserGroup',
-      link: '/teams',
+      roles: [Role.ADMIN],
     },
     {
       name: 'Projects',
+      roles: [Role.PROJECT_MANAGER, Role.ADMIN],
     },
   ];
+
+  hasRole(item: { roles: Role[] }) {
+    if (!item.roles) return true;
+    return item.roles.includes(this.role);
+  }
 
   currentRoute = '/';
 
@@ -105,4 +117,11 @@ export class SideNavComponent implements OnInit {
       this.store.dispatch(setProjectState({ projects }));
     });
   }
+
+  truncate(name: string) {
+    if (name.length >= 12) return name.slice(0, 10) + '...';
+    return name;
+  }
+
+  protected readonly Role = Role;
 }

@@ -1,0 +1,10 @@
+<div class="custom-modal">
+  <h2 mat-dialog-title>{{data.title}}</h2>
+  <mat-dialog-content>
+    Are you sure you want to {{data.action}}?
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="bottom-buttons">
+    <button mat-dialog-close mat-stroked-button color="primary">Cancel</button>
+    <button mat-flat-button color="warn" (click)="confirm()">Confirm</button>
+  </mat-dialog-actions>
+</div>

@@ -1,31 +1,33 @@
 <mat-sidenav-container [hasBackdrop]="false">
   <mat-sidenav mode="push" [opened]="true" disableClose></mat-sidenav>
   <mat-sidenav-content>
-    <ul>
+    <ul class="main-ul">
       <li *ngFor="let page of pages">
-        <h3 *ngIf="!page.link">{{ page.name }}</h3>
-        <a
-          *ngIf="page.link"
-          [class]="{ selected: page.link === currentRoute }"
-          [routerLink]="page.link">
-          <ng-icon *ngIf="page.icon" [name]="page.icon" size="18"></ng-icon>
-          <p>{{ page.name }}</p>
-        </a>
+        <ng-container *ngIf="hasRole(page)">
+          <h3 *ngIf="!page.link">{{ page.name }}</h3>
+          <a
+            *ngIf="page.link"
+            [class]="{ selected: page.link === currentRoute }"
+            [routerLink]="page.link">
+            <mat-icon *ngIf="page.icon" [fontIcon]="page.icon" class="icon" />
+            <p>{{ page.name }}</p>
+          </a>
+        </ng-container>
       </li>
       <li *ngFor="let project of projects">
-        <ng-icon
+        <mat-icon
           [class]="{ active: project.compact, 'compact-toggle': true }"
-          name="heroChevronDown"
-          (click)="toggleProject(project.id)"></ng-icon>
+          fontIcon="expand_more"
+          (click)="toggleProject(project.id)" />
         <a
-          [class]="{ selected: project.link === currentRoute }"
+          [class]="{ selected: '/project/' + project.id === currentRoute }"
           [routerLink]="'/project/' + project.id">
-          <ng-icon
-            name="heroSquares2x2Solid"
-            [color]="project.color"
-            size="20"></ng-icon>
-          <p [style]="'color: ' + project.color + '!important'">
-            {{ project.name }}
+          <mat-icon
+            class="icon"
+            fontIcon="widgets"
+            [style]="'color: ' + project.color" />
+          <p>
+            {{ truncate(project.name) }}
           </p>
         </a>
         <ul
@@ -34,24 +36,29 @@
           [class]="{ compact: project.compact }">
           <li *ngFor="let board of project.boards">
             <a
-              [class]="{ selected: board.link === currentRoute }"
+              [class]="{
+                selected:
+                  '/project/' + project.id + '/board/' + board.id ===
+                  currentRoute
+              }"
               [routerLink]="'/project/' + project.id + '/board/' + board.id">
-              <ng-icon
-                [name]="board.isFavourite ? 'heroStarSolid' : 'heroStar'"
-                [color]="board.color"
-                size="16"></ng-icon>
-              <p class="board" [style]="'color: ' + board.color + '!important'">
-                {{ board.name }}
+              <mat-icon
+                fontIcon="circle"
+                class="circle"
+                [style]="'color: ' + board.color" />
+              <p class="board">
+                {{ truncate(board.name) }}
               </p>
             </a>
           </li>
         </ul>
+        <mat-divider />
       </li>
-      <li>
+      <li *ngIf="hasRole({ roles: [Role.ADMIN, Role.PROJECT_MANAGER] })">
         <a
           [class]="{ selected: '/project' === currentRoute }"
           (click)="createNewProject()">
-          <ng-icon name="heroPlusCircle" size="20"></ng-icon>
+          <mat-icon fontIcon="add_box" class="icon" />
           <p>New Project</p>
         </a>
       </li>

@@ -1,23 +1,14 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Stage } from './stage.entity';
-import { Board } from '../board/board.entity';
 import { StageService } from './stage.service';
 import { StageController } from './stage.controller';
-import { Task } from '../task/task.entity';
 import { BoardModule } from '../board/board.module';
 import { BoardService } from '../board/board.service';
 import { ProjectService } from '../project/project.service';
 import { ProjectModule } from '../project/project.module';
-import { User } from '../user/user.entity';
-import { Project } from '../project/project.entity';
+import { DatabaseModule } from '../database/database.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Project, Board, Stage, Task, User]),
-    BoardModule,
-    ProjectModule,
-  ],
+  imports: [DatabaseModule, BoardModule, ProjectModule],
   providers: [StageService, BoardService, ProjectService],
   controllers: [StageController],
   exports: [StageService],

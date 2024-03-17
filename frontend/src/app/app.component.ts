@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { ProfileService } from './services/profile.service';
+import { Component } from '@angular/core';
+import { UserService } from './services/user.service';
 import { Store } from '@ngrx/store';
 import { setProfileData } from './states/profile.reducer';
 import { AuthService } from './services/auth.service';
@@ -27,12 +27,12 @@ export class AppComponent {
   constructor(
     private readonly authService: AuthService,
     private readonly router: Router,
-    readonly profileService: ProfileService,
+    readonly userService: UserService,
     readonly store: Store,
   ) {
     if (!this.isLogged) return;
 
-    profileService.getProfile().subscribe({
+    userService.getProfile().subscribe({
       next: (value) => {
         localStorage.setItem('token', value.token);
         store.dispatch(setProfileData(value));

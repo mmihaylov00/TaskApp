@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { select, Store } from '@ngrx/store';
-import { ProfileData, setProfileData } from '../../states/profile.reducer';
+import { ProfileData } from '../../states/profile.reducer';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { setProfileOpenState } from '../../states/popup.reducer';

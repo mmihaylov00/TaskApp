@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-avatar[username]',

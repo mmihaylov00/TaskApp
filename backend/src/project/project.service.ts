@@ -1,10 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { User } from '../user/user.entity';
+import { User } from '../database/entity/user.entity';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Project } from './project.entity';
-import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import {
   CreateProjectDto,
   ProjectDto,
@@ -12,47 +8,72 @@ import {
 import { TaskAppError } from '../error/task-app.error';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
+import { Project } from '../database/entity/project.entity';
+import { Board } from '../database/entity/board.entity';
+import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
+import { UserProject } from '../database/entity/user-project.entity';
 
 @Injectable()
 export class ProjectService {
-  constructor(
-    @InjectRepository(Project)
-    private readonly repository: Repository<Project>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+  constructor() {}
 
   async list(user: JwtUser, page: PageRequestDto) {
-    const query = this.repository
-      .createQueryBuilder('p')
-      .leftJoinAndSelect('p.boards', 'b')
-      .where('p.deleted IS NOT true')
-      .andWhere('b.deleted IS NOT true')
-      .orderBy('p.name');
-    if (user.role !== Role.ADMIN) {
-      query
-        .leftJoinAndSelect('p.users', 'u')
-        .andWhere('u.id = :userId', { userId: user.id });
-    }
+    const include =
+      user.role !== Role.ADMIN
+        ? [
+            Board,
+            {
+              model: User,
+              where: {
+                id: user.id,
+              },
+            },
+          ]
+        : [Board];
 
-    return Page.getPageData<Project, ProjectDto>(query, page, (p) => p.toDto());
+    const { count, rows } = await Project.findAndCountAll(
+      Page.paged(
+        {
+          include,
+          order: ['name'],
+        },
+        page,
+      ),
+    );
+
+    return Page.getPageData<Project, ProjectDto>(
+      rows,
+      page,
+      count,
+      (projects) => projects.toDto(),
+    );
   }
 
   async create(user: JwtUser, data: CreateProjectDto): Promise<ProjectDto> {
     try {
-      const result = await this.repository.insert({
-        ...data,
-        users: [user],
-      });
-      return { ...data, id: result.identifiers[0]['id'], boards: [] };
-    } catch (_) {
+      const dbUser = await User.findByPk(user.id);
+
+      const project = await Project.create({ ...data });
+
+      await UserProject.create({ userId: dbUser.id, projectId: project.id });
+
+      const userProjects: any[] = data.userIds.map(
+        (id) => <UserProject>{ userId: id, projectId: project.id },
+      );
+      await UserProject.bulkCreate(userProjects);
+
+      return { ...data, id: project.id, boards: [] };
+    } catch (e) {
       throw new TaskAppError('project_not_created', HttpStatus.BAD_REQUEST);
     }
   }
 
   async update(id: string, data: CreateProjectDto) {
     try {
-      await this.repository.update(id, { ...data });
+      await Project.update(
+        { name: data.name, color: data.color },
+        { where: { id } },
+      );
     } catch (_) {
       throw new TaskAppError('project_not_created', HttpStatus.BAD_REQUEST);
     }
@@ -60,68 +81,77 @@ export class ProjectService {
 
   async delete(id: string) {
     const project = await this.getProject(id);
-    project.delete();
-
     try {
-      await this.repository.save(project);
+      await project.destroy();
     } catch (_) {
       throw new TaskAppError('project_not_deleted', HttpStatus.BAD_REQUEST);
     }
   }
 
+  async listProjects(id: string) {
+    const projects = await Project.findAll({
+      include: { model: User, where: { id } },
+    });
+    return projects.map((project) => project.toDto());
+  }
+
   async listUsers(user: JwtUser, id: string, page: PageRequestDto) {
     await this.getProject(id, user);
 
-    const query = this.userRepository
-      .createQueryBuilder('u')
-      .innerJoin('u.projects', 'p')
-      .where('p.id = :id', { id });
+    const { count, rows } = await User.findAndCountAll(
+      Page.paged(
+        {
+          where: { disabled: false },
+          include: { model: Project, where: { id } },
+          order: ['role', 'firstName', 'lastName'],
+        },
+        page,
+      ),
+    );
 
-    return Page.getPageData<User, UserDetailsDto>(query, page, (u) =>
+    return Page.getPageData<User, UserDetailsDto>(rows, page, count, (u) =>
       u.toDto(),
     );
   }
 
   async addUser(manager: JwtUser, id: string, userId: string) {
-    const project = await this.getProject(id, manager);
+    await this.getProject(id, manager);
 
-    if (project.users?.some((u) => u.id === id)) {
+    try {
+      await UserProject.create({ projectId: id, userId });
+    } catch (_) {
       throw new TaskAppError('user_already_added', HttpStatus.CONFLICT);
     }
-
-    if (!project.users) project.users = [];
-
-    const user = await this.userRepository.findOneBy({ id: userId });
-    project.users.push(user);
-    await this.repository.save(project);
   }
 
   async removeUser(manager: JwtUser, id: string, userId: string) {
-    const project = await this.getProject(id, manager);
+    await this.getProject(id, manager);
 
-    if (!project.users?.some((u) => u.id === id)) {
+    const deletedCount = await UserProject.destroy({
+      where: { userId, projectId: id },
+    });
+
+    if (!deletedCount) {
       throw new TaskAppError('user_not_added', HttpStatus.CONFLICT);
     }
-
-    project.users = project.users?.filter((u) => u.id !== userId);
-    await this.repository.save(project);
   }
 
   async getProject(id: string, manager?: JwtUser) {
-    const project = await this.repository.findOneBy({ id, deleted: false });
-    this.checkAccess(project, manager);
+    const project = await Project.findOne({ where: { id }, include: User });
+    await this.checkAccess(project, manager);
 
     return project;
   }
 
-  checkAccess(project?: Project, manager?: JwtUser) {
+  async checkAccess(project?: Project, manager?: JwtUser) {
     if (!project) {
       throw new TaskAppError('project_not_found', HttpStatus.NOT_FOUND);
     }
 
     if (
       manager &&
-      (manager.role != Role.ADMIN || !manager.isPartOfProject(project))
+      manager.role != Role.ADMIN &&
+      !manager.isPartOfProject(project)
     ) {
       throw new TaskAppError('no_access', HttpStatus.FORBIDDEN);
     }

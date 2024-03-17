@@ -1,5 +1,5 @@
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
-import { Project } from '../../project/project.entity';
+import { Project } from '../../database/entity/project.entity';
 
 export class JwtUser {
   id: string;
@@ -13,6 +13,6 @@ export class JwtUser {
   }
 
   public isPartOfProject(project: Project) {
-    return project.users.some((u) => (u.id = this.id));
+    return project.users?.some((u) => (u.id = this.id));
   }
 }

@@ -1,41 +1,39 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Stage } from './stage.entity';
-import { User } from '../user/user.entity';
+import { Stage } from '../database/entity/stage.entity';
 import { BoardService } from '../board/board.service';
-import { ManageStageDto } from 'taskapp-common/dist/src/dto/stage.dto';
+import {
+  ManageStageDto,
+  StageDto,
+} from 'taskapp-common/dist/src/dto/stage.dto';
 import { TaskAppError } from '../error/task-app.error';
 import { ProjectService } from '../project/project.service';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
+import { Board } from '../database/entity/board.entity';
+import { Task } from '../database/entity/task.entity';
+import { Project } from '../database/entity/project.entity';
+import { User } from '../database/entity/user.entity';
+import { TaskDto } from 'taskapp-common/dist/src/dto/task.dto';
 
 @Injectable()
 export class StageService {
   constructor(
-    @InjectRepository(Stage)
-    private readonly repository: Repository<Stage>,
     private readonly boardService: BoardService,
     private readonly projectService: ProjectService,
   ) {}
 
   async list(user: JwtUser, boardId: string) {
-    const board = await this.boardService.getBoard(boardId, user);
-    const stages = await this.repository.findBy({
-      deleted: false,
-      board: {
-        id: board.id,
-      },
+    const board = await Board.findOne({
+      where: { id: boardId },
+      include: { model: Stage, include: [Task] },
     });
-    //todo load tasks into stage
-    return stages.map((stage) => {
-      return { ...stage, tasks: [] };
-    });
+    return board.stages.map((stage) => stage.toDto());
   }
 
   async create(user: JwtUser, data: ManageStageDto) {
     const board = await this.boardService.getBoard(data.boardId, user);
+
     try {
-      await this.repository.insert({ ...data, board });
+      await Project.create({ ...data, board });
     } catch (_) {
       throw new TaskAppError('stage_creation_failed', HttpStatus.BAD_REQUEST);
     }
@@ -47,7 +45,7 @@ export class StageService {
     stage.color = data.color;
 
     try {
-      await this.repository.save(stage);
+      await stage.save();
     } catch (_) {
       throw new TaskAppError('stage_update_failed', HttpStatus.CONFLICT);
     }
@@ -55,17 +53,19 @@ export class StageService {
 
   async delete(user: JwtUser, id: string) {
     const stage = await this.getStage(id, user);
-    stage.delete();
 
     try {
-      await this.repository.save(stage);
+      await stage.destroy();
     } catch (_) {
       throw new TaskAppError('stage_not_deleted', HttpStatus.BAD_REQUEST);
     }
   }
+
   async getStage(id: string, user?: JwtUser) {
-    const stage = await this.repository.findOneBy({ id, deleted: false });
-    this.projectService.checkAccess(stage?.board?.project, user);
+    const stage = await Stage.findByPk(id, {
+      include: { model: Board, include: [{ model: Project, include: [User] }] },
+    });
+    await this.projectService.checkAccess(stage?.board?.project, user);
 
     return stage;
   }

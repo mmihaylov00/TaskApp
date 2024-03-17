@@ -21,16 +21,13 @@
             formControlName="password" />
           <span class="focus" data-placeholder="Password"></span>
           <span class="btn-show-pass" (click)="togglePasswordVisibility()">
-            <ng-icon
-              size="16"
-              [name]="
-                passwordVisible ? 'heroEyeSlashSolid' : 'heroEyeSolid'
-              "></ng-icon>
+            <mat-icon
+              [fontIcon]="passwordVisible ? 'visibility' : 'visibility_off'" />
           </span>
         </div>
 
         <div class="error-message" [ngClass]="error ? 'visible' : 'hidden'">
-          <ng-icon name="heroExclamationCircle" size="16"></ng-icon>
+          <mat-icon fontIcon="error" />
           <p>{{ error }}</p>
         </div>
 

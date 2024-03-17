@@ -1,0 +1,77 @@
+<app-card [header]="'Project ' + (projectData.name || '')">
+  <button actions mat-flat-button color="primary" (click)="editProject()">
+    Edit
+  </button>
+  <div content class="w-25">
+    <table mat-table *ngIf="projectData" [dataSource]="projectData.values">
+      <ng-container matColumnDef="key">
+        <td class="w-50" mat-cell *matCellDef="let element">
+          {{ element.key }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="value">
+        <td class="w-50" mat-cell *matCellDef="let element">
+          <ng-container *ngIf="element.value != -1">
+            <div
+              [style]="{
+                color: element.key == 'Color' ? element.value : undefined
+              }">
+              {{ element.value }}
+            </div>
+          </ng-container>
+          <ng-container *ngIf="element.value == -1">
+            <ngx-skeleton-loader appearance="line" />
+          </ng-container>
+        </td>
+      </ng-container>
+      <tr mat-row *matRowDef="let row; columns: ['key', 'value']"></tr>
+    </table>
+  </div>
+</app-card>
+
+<app-table header="Boards" [columns]="boardColumns" [data]="boardData">
+  <button actions mat-flat-button color="primary" (click)="createBoard()">
+    Create
+  </button>
+  <ng-template #row let-element>
+    <div class="d-flex flex-justify-end">
+      <button
+        mat-icon-button
+        matTooltip="Edit"
+        color="primary"
+        (click)="editBoard(element)">
+        <mat-icon class="text-accent" fontIcon="edit" />
+      </button>
+      <button
+        mat-icon-button
+        matTooltip="Delete"
+        color="primary"
+        (click)="editBoard(element)">
+        <mat-icon class="text-danger" fontIcon="delete_forever" />
+      </button>
+    </div>
+  </ng-template>
+</app-table>
+
+<app-table
+  header="Users"
+  [columns]="userColumns"
+  [loading]="userLoading"
+  [data]="userData"
+  [page]="userPage">
+  <button actions mat-flat-button color="primary" (click)="inviteUser()">
+    Invite
+  </button>
+  <ng-template #row let-element>
+    <div class="d-flex flex-justify-end">
+      <button
+        mat-icon-button
+        matTooltip="Remove"
+        color="primary"
+        (click)="removeUser(element)">
+        <mat-icon class="text-danger" fontIcon="cancel" />
+      </button>
+    </div>
+  </ng-template>
+</app-table>

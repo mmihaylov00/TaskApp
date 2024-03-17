@@ -1,9 +1,10 @@
 import { createAction, createReducer, on, props } from '@ngrx/store';
+import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 
 export interface ProfileData {
   firstName?: string;
   lastName?: string;
-  role?: string;
+  role?: Role;
 }
 
 export const initialState: ProfileData = {};

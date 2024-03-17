@@ -152,18 +152,6 @@ body {
   background: $background;
 }
 
-.hover-pointer:hover {
-  cursor: pointer;
-}
-
-.d-none {
-  display: none;
-}
-
-.d-flex {
-  display: flex;
-}
-
 @keyframes fadeInFromNone {
   0% {
     opacity: 0;

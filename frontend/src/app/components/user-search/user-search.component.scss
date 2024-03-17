@@ -1,0 +1,18 @@
+@import 'variables';
+
+mat-list-option::ng-deep {
+  &.mdc-list-item__end {
+    display: none;
+  }
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.user-list {
+  min-height: 54%;
+  max-height: 54%;
+  overflow-y: scroll;
+  border: $primaryColor solid 1px;
+}

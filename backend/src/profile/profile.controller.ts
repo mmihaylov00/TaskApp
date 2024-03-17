@@ -1,7 +1,13 @@
-import { Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
-import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import { AuthService } from '../auth/auth.service';
@@ -18,10 +24,11 @@ export class ProfileController {
   @Get()
   async details(@Authenticated() user: JwtUser): Promise<UserDetailsDto> {
     const u = await this.userService.getUserData(user.id);
+    if (!u) {
+      throw new UnauthorizedException();
+    }
     return {
-      firstName: u.firstName,
-      lastName: u.lastName,
-      role: u.role,
+      ...u.toDto(),
       token: this.authService.login(u),
     };
   }

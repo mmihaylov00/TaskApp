@@ -1,0 +1,19 @@
+<div class="custom-modal">
+  <h2 mat-dialog-title>Create Board</h2>
+  <mat-dialog-content>
+    <div class="d-flex flex-justify-between flex-wrap">
+      <mat-form-field>
+        <mat-label>Board Name</mat-label>
+        <input type="text" matInput [formControl]="boardNameControl" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Color</mat-label>
+        <input type="color" matInput [formControl]="colorControl" />
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="bottom-buttons">
+    <button mat-dialog-close mat-stroked-button color="warn">Cancel</button>
+    <button mat-flat-button color="primary" (click)="create()">Create</button>
+  </mat-dialog-actions>
+</div>

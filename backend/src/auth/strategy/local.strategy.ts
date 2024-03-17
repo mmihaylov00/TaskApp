@@ -12,7 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(username: string, password: string): Promise<any> {
     const user = await this.userService.loginUser(username, password);
 
-    if (!user || user.deleted) {
+    if (!user || user.deletedAt || user.disabled) {
       throw new UnauthorizedException();
     }
     return user;

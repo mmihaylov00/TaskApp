@@ -1,5 +1,6 @@
 export enum Role {
   DEVELOPER = 'DEVELOPER',
   PROJECT_MANAGER = 'PROJECT_MANAGER',
-  ADMIN = 'ADMIN'
+  ADMIN = 'ADMIN',
 }
+export const ROLES = [Role.DEVELOPER, Role.PROJECT_MANAGER, Role.ADMIN];

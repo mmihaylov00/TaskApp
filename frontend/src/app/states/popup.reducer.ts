@@ -1,5 +1,4 @@
 import { createAction, createReducer, on, props } from '@ngrx/store';
-import { ProfileData } from './profile.reducer';
 
 export interface PopupData {
   profile: boolean;

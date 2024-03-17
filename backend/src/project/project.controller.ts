@@ -11,7 +11,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
-import { User } from '../user/user.entity';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { Roles } from '../auth/decorator/role.decorator';
 import { PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
@@ -41,10 +40,20 @@ export class ProjectController {
     return this.projectService.create(user, data);
   }
 
+  @Get('/:id')
+  @Roles(Role.ADMIN)
+  async get(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    return (await this.projectService.getProject(id, user)).toDto();
+  }
+
   @Put('/:id')
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async update(@Param('id') id: string, @Body() data: CreateProjectDto) {
+  async update(
+    @Authenticated() user: JwtUser,
+    @Param('id') id: string,
+    @Body() data: CreateProjectDto,
+  ) {
     await this.projectService.update(id, data);
   }
 
@@ -53,6 +62,12 @@ export class ProjectController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string) {
     await this.projectService.delete(id);
+  }
+
+  @Get('/user/:id')
+  @Roles(Role.ADMIN)
+  async listProjects(@Param('id') id: string) {
+    return this.projectService.listProjects(id);
   }
 
   @Get('/:id/user')
@@ -64,7 +79,7 @@ export class ProjectController {
     return this.projectService.listUsers(user, id, pageParams);
   }
 
-  @Post('/:id/user/:userId')
+  @Put('/:id/user/:userId')
   @Roles(Role.ADMIN, Role.PROJECT_MANAGER)
   @HttpCode(HttpStatus.NO_CONTENT)
   async addUser(
