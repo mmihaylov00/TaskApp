@@ -1,5 +1,10 @@
 <header>
-  <h1>{{ SITE_NAME }}</h1>
+  <div class="header d-flex flex-align-items-center">
+    <button mat-icon-button (click)="toggleMenu()">
+      <mat-icon fontIcon="menu" color="primary" />
+    </button>
+    <h1>{{ SITE_NAME }}</h1>
+  </div>
   <div class="right">
     <button mat-icon-button matTooltip="Search" class="search" color="primary">
       <mat-icon fontIcon="search" />
@@ -15,4 +20,13 @@
   </div>
 </header>
 
-<app-avatar (click)="openProfileDropdown()" [username]="username"></app-avatar>
+<app-avatar [matMenuTriggerFor]="menu" [username]="username"></app-avatar>
+<mat-menu #menu="matMenu">
+  <button
+    mat-menu-item
+    *ngFor="let item of DROPDOWN_ITEMS"
+    (click)="item.onClick()">
+    <mat-icon [fontIcon]="item.icon" />
+    {{ item.title }}
+  </button>
+</mat-menu>

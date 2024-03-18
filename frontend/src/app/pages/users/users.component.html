@@ -8,24 +8,24 @@
   <button actions mat-flat-button color="primary" (click)="inviteUser()">
     Invite
   </button>
-  <ng-template #row let-element>
+  <ng-template #row let-data>
     <div class="d-flex flex-justify-end flex-align-items-center">
       <button
         mat-button
         matTooltip="Edit"
         color="accent"
-        (click)="editUser(element)">
+        (click)="editUser(data.element)">
         <mat-icon class="text-primary" fontIcon="edit" />
       </button>
       <mat-slide-toggle
-        [checked]="element.status === UserStatus.ACTIVE"
-        [disabled]="element.status === UserStatus.INVITED"
+        [checked]="data.element.status === UserStatus.ACTIVE"
+        [disabled]="data.element.status === UserStatus.INVITED"
         color="primary"
-        (click)="changeStatus(element)"
+        (click)="changeStatus(data.element)"
         [matTooltip]="
-          element.status === UserStatus.ACTIVE
+          data.element.status === UserStatus.ACTIVE
             ? 'Disable'
-            : element.status === UserStatus.DISABLED
+            : data.element.status === UserStatus.DISABLED
             ? 'Activate'
             : ''
         " />

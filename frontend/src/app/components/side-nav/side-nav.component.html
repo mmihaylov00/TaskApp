@@ -1,67 +1,79 @@
-<mat-sidenav-container [hasBackdrop]="false">
-  <mat-sidenav mode="push" [opened]="true" disableClose></mat-sidenav>
-  <mat-sidenav-content>
-    <ul class="main-ul">
-      <li *ngFor="let page of pages">
-        <ng-container *ngIf="hasRole(page)">
-          <h3 *ngIf="!page.link">{{ page.name }}</h3>
-          <a
-            *ngIf="page.link"
-            [class]="{ selected: page.link === currentRoute }"
-            [routerLink]="page.link">
-            <mat-icon *ngIf="page.icon" [fontIcon]="page.icon" class="icon" />
-            <p>{{ page.name }}</p>
-          </a>
-        </ng-container>
-      </li>
-      <li *ngFor="let project of projects">
-        <mat-icon
-          [class]="{ active: project.compact, 'compact-toggle': true }"
-          fontIcon="expand_more"
-          (click)="toggleProject(project.id)" />
-        <a
-          [class]="{ selected: '/project/' + project.id === currentRoute }"
-          [routerLink]="'/project/' + project.id">
-          <mat-icon
-            class="icon"
-            fontIcon="widgets"
-            [style]="'color: ' + project.color" />
-          <p>
-            {{ truncate(project.name) }}
-          </p>
-        </a>
-        <ul
-          class="submenu"
-          [id]="project.id"
-          [class]="{ compact: project.compact }">
-          <li *ngFor="let board of project.boards">
+<mat-drawer-container class="page-content">
+  <mat-drawer [opened]="navOpen" mode="side">
+    <mat-sidenav-container [hasBackdrop]="false">
+      <mat-sidenav mode="push" [opened]="true" disableClose></mat-sidenav>
+      <mat-sidenav-content>
+        <ul class="main-ul">
+          <li *ngFor="let page of pages">
+            <ng-container *ngIf="hasRole(page)">
+              <h3 *ngIf="!page.link">{{ page.name }}</h3>
+              <a
+                *ngIf="page.link"
+                [class]="{ selected: page.link === currentRoute }"
+                [routerLink]="page.link">
+                <mat-icon
+                  *ngIf="page.icon"
+                  [fontIcon]="page.icon"
+                  class="icon" />
+                <p>{{ page.name }}</p>
+              </a>
+            </ng-container>
+          </li>
+          <li *ngFor="let project of projects">
+            <mat-icon
+              [class]="{ active: project.compact, 'compact-toggle': true }"
+              fontIcon="expand_more"
+              (click)="toggleProject(project.id)" />
             <a
-              [class]="{
-                selected:
-                  '/project/' + project.id + '/board/' + board.id ===
-                  currentRoute
-              }"
-              [routerLink]="'/project/' + project.id + '/board/' + board.id">
+              [class]="{ selected: '/project/' + project.id === currentRoute }"
+              [routerLink]="'/project/' + project.id">
               <mat-icon
-                fontIcon="circle"
-                class="circle"
-                [style]="'color: ' + board.color" />
-              <p class="board">
-                {{ truncate(board.name) }}
+                class="icon"
+                [fontIcon]="project.icon || 'widgets'"
+                [style]="'color: ' + project.color" />
+              <p>
+                {{ truncate(project.name) }}
               </p>
+            </a>
+            <ul
+              class="submenu"
+              [id]="project.id"
+              [class]="{ compact: project.compact }">
+              <li *ngFor="let board of project.boards">
+                <a
+                  [class]="{
+                    selected:
+                      '/project/' + project.id + '/board/' + board.id ===
+                      currentRoute
+                  }"
+                  [routerLink]="
+                    '/project/' + project.id + '/board/' + board.id
+                  ">
+                  <mat-icon
+                    fontIcon="circle"
+                    class="circle"
+                    [style]="'color: ' + board.color" />
+                  <p class="board">
+                    {{ truncate(board.name) }}
+                  </p>
+                </a>
+              </li>
+            </ul>
+            <mat-divider />
+          </li>
+          <li *ngIf="hasRole({ roles: [Role.ADMIN, Role.PROJECT_MANAGER] })">
+            <a
+              [class]="{ selected: '/project' === currentRoute }"
+              (click)="createNewProject()">
+              <mat-icon fontIcon="add_box" class="icon" />
+              <p>New Project</p>
             </a>
           </li>
         </ul>
-        <mat-divider />
-      </li>
-      <li *ngIf="hasRole({ roles: [Role.ADMIN, Role.PROJECT_MANAGER] })">
-        <a
-          [class]="{ selected: '/project' === currentRoute }"
-          (click)="createNewProject()">
-          <mat-icon fontIcon="add_box" class="icon" />
-          <p>New Project</p>
-        </a>
-      </li>
-    </ul>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </mat-drawer>
+  <mat-drawer-content>
+    <ng-content />
+  </mat-drawer-content>
+</mat-drawer-container>

@@ -13,6 +13,9 @@ export class Project extends UUIDEntity {
   @Column
   declare color: string;
 
+  @Column
+  declare icon: string;
+
   @BelongsToMany(() => User, () => UserProject)
   declare users: User[];
 
@@ -24,6 +27,7 @@ export class Project extends UUIDEntity {
       id: this.id,
       name: this.name,
       color: this.color,
+      icon: this.icon,
       boards: this.boards?.map((value) => value.toDto()),
     };
   }

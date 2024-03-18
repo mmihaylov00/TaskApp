@@ -4,6 +4,7 @@ import { UserStatus } from '../enums/user-status.enum';
 export interface CreateUserDto {
   firstName?: string;
   lastName?: string;
+  password?: string;
   projectIds?: string[];
   email: string;
   role: Role;

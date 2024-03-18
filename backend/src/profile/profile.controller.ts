@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -9,7 +10,10 @@ import {
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
 import { UserService } from '../user/user.service';
-import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
+import {
+  ProfileSetupDto,
+  UserDetailsDto,
+} from 'taskapp-common/dist/src/dto/auth.dto';
 import { AuthService } from '../auth/auth.service';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
 
@@ -38,13 +42,11 @@ export class ProfileController {
     //todo
   }
 
-  @Get('/:token')
-  async getSetupData(@Authenticated() user: JwtUser): Promise<void> {
-    //todo initial setup from invite token, return given email
-  }
-
-  @Post()
-  async setup(@Authenticated() user: JwtUser): Promise<void> {
-    //todo initial setup from invite link
+  @Post('/setup')
+  async setup(
+    @Authenticated() user: JwtUser,
+    @Body() data: ProfileSetupDto,
+  ): Promise<void> {
+    await this.userService.setupProfile(user, data);
   }
 }

@@ -1,0 +1,328 @@
+@import 'variables';
+
+input {
+  outline: none;
+  border: none;
+}
+
+input:focus {
+  color: transparent;
+  border-color: transparent !important;
+
+  &::-webkit-input-placeholder,
+  &::-moz-placeholder,
+  &::-ms-input-placeholder {
+    color: transparent;
+  }
+}
+
+input {
+  &::-webkit-input-placeholder,
+  &:-moz-placeholder,
+  &::-moz-placeholder,
+  &:-ms-input-placeholder {
+    color: #adadad;
+  }
+}
+
+button {
+  outline: none !important;
+  border: none;
+  background: transparent;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.limiter {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background: #f2f2f2;
+}
+
+.login-wrap {
+  width: 390px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 55px;
+
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
+  -o-box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+form {
+  width: 100%;
+}
+
+.title {
+  display: block;
+  font-size: 30px;
+  color: $primaryColor;
+  line-height: 1.2;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.input-wrap {
+  width: 100%;
+  position: relative;
+  border-bottom: 2px solid #adadad;
+  margin-top: 24px;
+  margin-bottom: 20px;
+
+  input {
+    font-size: 15px;
+    color: #555555;
+    line-height: 1.2;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+
+    display: block;
+    width: 100%;
+    height: 45px;
+    background: transparent;
+    padding: 0 5px;
+  }
+
+  .focus {
+    display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      width: 0;
+      height: 2px;
+
+      -webkit-transition: all 0.4s;
+      -o-transition: all 0.4s;
+      -moz-transition: all 0.4s;
+      transition: all 0.4s;
+
+      background: $primaryText;
+      background: -webkit-linear-gradient(to left, $primaryText, $primaryColor);
+      background: -o-linear-gradient(to left, $primaryText, $primaryColor);
+      background: -moz-linear-gradient(to left, $primaryText, $primaryColor);
+      background: linear-gradient(to left, $primaryText, $primaryColor);
+    }
+
+    &::after {
+      font-size: 15px;
+      color: $primaryText;
+      line-height: 1.2;
+
+      content: attr(data-placeholder);
+      display: block;
+      width: 100%;
+      position: absolute;
+      top: 16px;
+      left: 0;
+      padding-left: 6px;
+
+      -webkit-transition: all 0.4s;
+      -o-transition: all 0.4s;
+      -moz-transition: all 0.4s;
+      transition: all 0.4s;
+    }
+  }
+
+  input:focus + .focus::after {
+    top: -16px;
+  }
+
+  input:focus + .focus::before {
+    width: 100%;
+  }
+
+  input:not(:placeholder-shown) + .focus::after {
+    top: -16px;
+  }
+
+  input:not(:placeholder-shown) + .focus::before {
+    width: 100%;
+  }
+
+  .btn-show-pass {
+    font-size: 15px;
+    color: #999999;
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+    padding-right: 5px;
+    cursor: pointer;
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+
+    &:hover {
+      color: $primaryText;
+      color: -webkit-linear-gradient(to left, $primaryText, $primaryColor);
+      color: -o-linear-gradient(to left, $primaryText, $primaryColor);
+      color: -moz-linear-gradient(to left, $primaryText, $primaryColor);
+      color: linear-gradient(to left, $primaryText, $primaryColor);
+    }
+
+    &.active {
+      color: $primaryText;
+      color: -webkit-linear-gradient(to left, $primaryText, $primaryColor);
+      color: -o-linear-gradient(to left, $primaryText, $primaryColor);
+      color: -moz-linear-gradient(to left, $primaryText, $primaryColor);
+      color: linear-gradient(to left, $primaryText, $primaryColor);
+    }
+  }
+}
+
+.error-message {
+  color: $danger;
+  border: $danger solid 1px;
+  width: 100%;
+  padding: 4px;
+  margin-bottom: 12px;
+  height: 32px;
+  display: flex;
+  align-content: center;
+
+  p {
+    color: $danger;
+    align-self: center;
+    font-size: 14px;
+    margin-left: 6px;
+  }
+
+  ng-icon {
+    margin-left: 3px;
+    color: $danger;
+    align-self: center;
+  }
+
+  &.visible {
+    -webkit-animation: fadeInFromNone 0.7s ease-out;
+    -moz-animation: fadeInFromNone 0.7s ease-out;
+    -o-animation: fadeInFromNone 0.7s ease-out;
+    animation: fadeInFromNone 0.7s ease-out;
+  }
+}
+
+.login-button-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 13px;
+
+  .login-button-wrap {
+    width: 100%;
+    display: block;
+    position: relative;
+    z-index: 1;
+    border-radius: 25px;
+    overflow: hidden;
+    margin: 0 auto;
+
+    &:hover .login100-form-bgbtn {
+      left: 0;
+    }
+
+    .login-button-background {
+      position: absolute;
+      z-index: -1;
+      width: 300%;
+      height: 100%;
+      background: #a64bf4;
+      background: -webkit-linear-gradient(
+        right,
+        $primaryText,
+        $primaryColor,
+        $primaryText,
+        $primaryColor
+      );
+      background: -o-linear-gradient(
+        to right,
+        $primaryText,
+        $primaryColor,
+        $primaryText,
+        $primaryColor
+      );
+      background: -moz-linear-gradient(
+        right,
+        $primaryText,
+        $primaryColor,
+        $primaryText,
+        $primaryColor
+      );
+      background: linear-gradient(
+        to right,
+        $primaryText,
+        $primaryColor,
+        $primaryText,
+        $primaryColor
+      );
+      top: 0;
+      left: -100%;
+
+      -webkit-transition: all 0.4s;
+      -o-transition: all 0.4s;
+      -moz-transition: all 0.4s;
+      transition: all 0.4s;
+    }
+
+    button {
+      font-size: 15px;
+      color: #fff;
+      line-height: 1.2;
+      text-transform: uppercase;
+
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 20px;
+      width: 100%;
+      height: 50px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .login-wrap {
+    padding: 77px 15px 33px 15px;
+  }
+}

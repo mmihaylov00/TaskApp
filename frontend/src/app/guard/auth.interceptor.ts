@@ -32,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
       tap({
         error: async (error) => {
           if (error.status === 401) {
-            await this.authService.logout();
+            await this.authService.logout(false);
           }
         },
       }),

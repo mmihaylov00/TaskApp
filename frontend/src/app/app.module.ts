@@ -22,8 +22,7 @@ import { StoreModule } from '@ngrx/store';
 import { profileReducer } from './states/profile.reducer';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
-import { PopupComponent } from './components/popup/popup.component';
-import { popupReducer } from './states/popup.reducer';
+import { navReducer } from './states/nav.reducer';
 import { InviteUserModal } from './modal/invite-user/invite-user.modal';
 import {
   MAT_DIALOG_DEFAULT_OPTIONS,
@@ -42,7 +41,7 @@ import { MatTableModule } from '@angular/material/table';
 import { TableComponent } from './components/table/table.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ManageBoardModal } from './modal/create-board/manage-board.modal';
+import { ManageBoardModal } from './modal/manage-board/manage-board.modal';
 import { CardComponent } from './components/card/card.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { UsersComponent } from './pages/users/users.component';
@@ -56,6 +55,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { EditProjectModal } from './modal/edit-project/edit-project.modal';
 import { AddUserModal } from './modal/add-user/add-user.modal';
 import { UserSearchComponent } from './components/user-search/user-search.component';
+import { ProfileSetupComponent } from './pages/profile-setup/profile-setup.component';
+import { IconSelectComponent } from './components/icon-select/icon-select.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -65,10 +68,10 @@ import { UserSearchComponent } from './components/user-search/user-search.compon
     HeaderComponent,
     SideNavComponent,
     MyTasksComponent,
+    ProfileSetupComponent,
     AvatarComponent,
     TaskBoardComponent,
     LoginComponent,
-    PopupComponent,
     InviteUserModal,
     CreateProjectModal,
     ManageBoardModal,
@@ -81,6 +84,7 @@ import { UserSearchComponent } from './components/user-search/user-search.compon
     CardComponent,
     UsersComponent,
     UserSearchComponent,
+    IconSelectComponent,
   ],
   imports: [
     CommonModule,
@@ -102,7 +106,7 @@ import { UserSearchComponent } from './components/user-search/user-search.compon
     StoreModule.forRoot(
       {
         profileData: profileReducer,
-        popupData: popupReducer,
+        navData: navReducer,
         projectData: projectReducer,
       },
       {},
@@ -117,6 +121,8 @@ import { UserSearchComponent } from './components/user-search/user-search.compon
     MatSelectModule,
     MatIconModule,
     MatAutocompleteModule,
+    MatChipsModule,
+    MatMenuModule,
   ],
   providers: [
     AuthService,

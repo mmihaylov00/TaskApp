@@ -1,0 +1,76 @@
+<div class="limiter">
+  <div class="container">
+    <div class="login-wrap">
+      <form [formGroup]="form" autocomplete="off">
+        <div class="title">{{ environment.siteName }}</div>
+        <div class="input-wrap">
+          <input
+            type="text"
+            placeholder=" "
+            name="firstName"
+            formControlName="firstName" />
+          <span class="focus" data-placeholder="First Name"></span>
+        </div>
+        <div class="input-wrap">
+          <input
+            type="text"
+            placeholder=" "
+            name="lastName"
+            formControlName="lastName" />
+          <span class="focus" data-placeholder="Last Name"></span>
+        </div>
+        <div class="input-wrap">
+          <input
+            autocomplete="off"
+            type="text"
+            placeholder=" "
+            name="email"
+            formControlName="email" />
+          <span class="focus" data-placeholder="E-Mail"></span>
+        </div>
+
+        <div class="input-wrap">
+          <input
+            autocomplete="new-password"
+            [type]="passwordVisible ? 'text' : 'password'"
+            placeholder=" "
+            name="pass"
+            formControlName="password" />
+          <span class="focus" data-placeholder="Password"></span>
+          <span class="btn-show-pass" (click)="togglePasswordVisibility()">
+            <mat-icon
+              [fontIcon]="passwordVisible ? 'visibility' : 'visibility_off'" />
+          </span>
+        </div>
+
+        <div class="input-wrap">
+          <input
+            [type]="confirmPasswordVisible ? 'text' : 'password'"
+            placeholder=" "
+            name="pass"
+            formControlName="confirmPassword" />
+          <span class="focus" data-placeholder="Confirm Password"></span>
+          <span
+            class="btn-show-pass"
+            (click)="toggleConfirmPasswordVisibility()">
+            <mat-icon
+              [fontIcon]="
+                confirmPasswordVisible ? 'visibility' : 'visibility_off'
+              " />
+          </span>
+        </div>
+        <div class="error-message" [ngClass]="error ? 'visible' : 'hidden'">
+          <mat-icon fontIcon="error" />
+          <p>{{ error }}</p>
+        </div>
+
+        <div class="login-button-container">
+          <div class="login-button-wrap">
+            <div class="login-button-background"></div>
+            <button (click)="confirm()">Confirm</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

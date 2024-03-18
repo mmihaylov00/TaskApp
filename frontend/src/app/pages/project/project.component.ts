@@ -4,15 +4,19 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { BoardService } from '../../services/board.service';
 import { BoardDto } from 'taskapp-common/dist/src/dto/board.dto';
 import { MatDialog } from '@angular/material/dialog';
-import { ManageBoardModal } from '../../modal/create-board/manage-board.modal';
+import { ManageBoardModal } from '../../modal/manage-board/manage-board.modal';
 import { ProjectService } from '../../services/project.service';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { EditProjectModal } from '../../modal/edit-project/edit-project.modal';
 import { ConfirmModal } from '../../modal/confirm/confirm.modal';
 import { AddUserModal } from '../../modal/add-user/add-user.modal';
-import { addBoard, removeBoard } from '../../states/project.reducer';
+import { removeBoard } from '../../states/project.reducer';
 import { Store } from '@ngrx/store';
+import { ROLE_COLORS } from 'taskapp-common/dist/src/enums/role.enum';
+import { USER_STATUS_COLORS } from 'taskapp-common/dist/src/enums/user-status.enum';
+import { text } from 'stream/consumers';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-project',
@@ -28,21 +32,33 @@ export class ProjectComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly store: Store,
     private readonly dialog: MatDialog,
-  ) {}
+  ) {
+    this.favourites = JSON.parse(localStorage.getItem('favourites') || '[]');
+  }
 
-  projectData: { name: string; values: { key: string; value: any }[] } = {
+  values: any = {
+    icon: undefined,
+    color: undefined,
+    users: undefined,
+    boards: undefined,
+  };
+  favourites = [];
+
+  projectData: { name: string; values: { title: string; key: any }[] } = {
     name: '',
     values: [
-      { key: 'Color', value: -1 },
-      { key: 'Users', value: -1 },
-      { key: 'Boards', value: -1 },
+      { title: 'Icon', key: 'icon' },
+      { title: 'Color', key: 'color' },
+      { title: 'Users', key: 'users' },
+      { title: 'Boards', key: 'boards' },
     ],
   };
 
   boardColumns: ColumnDto[] = [
+    { key: 'favourite', header: '', type: 'slot', width: 5 },
     { key: 'name', header: 'Title', type: 'text' },
     { key: 'color', header: 'Color', type: 'color' },
-    { key: 'actions', header: '', type: 'slot', width: 50 },
+    { key: 'row-action', header: '', type: 'slot', width: 50 },
   ];
   boardData: BoardDto[] = undefined;
 
@@ -50,7 +66,18 @@ export class ProjectComponent implements OnInit {
     { key: 'firstName', header: 'First Name', type: 'text' },
     { key: 'lastName', header: 'Last Name', type: 'text' },
     { key: 'email', header: 'Email', type: 'text' },
-    { key: 'role', header: 'Role', type: 'text' },
+    {
+      key: 'role',
+      header: 'Role',
+      type: 'chip',
+      colors: ROLE_COLORS,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      type: 'chip',
+      colors: USER_STATUS_COLORS,
+    },
     { key: 'actions', header: '', type: 'slot', width: 25 },
   ];
   userData: Page<UserDetailsDto> = undefined;
@@ -70,14 +97,15 @@ export class ProjectComponent implements OnInit {
     this.boardData = undefined;
     this.boardService.listByProject(this.projectId).subscribe((boards) => {
       this.boardData = boards;
-      this.projectData.values[2].value = this.boardData.length;
+      this.values.boards = this.boardData.length;
     });
   }
 
   loadProject() {
     this.projectService.get(this.projectId).subscribe((project) => {
       this.projectData.name = project.name;
-      this.projectData.values[0].value = project.color;
+      this.values.icon = project.icon;
+      this.values.color = project.color;
     });
   }
 
@@ -94,7 +122,7 @@ export class ProjectComponent implements OnInit {
       .subscribe((users) => {
         this.userData = users;
         this.userLoading = false;
-        this.projectData.values[1].value = users.totalCount;
+        this.values.users = users.totalCount;
       });
   }
 
@@ -105,7 +133,8 @@ export class ProjectComponent implements OnInit {
           project: {
             id: this.projectId,
             name: this.projectData.name,
-            color: this.projectData.values[0].value,
+            icon: this.values.icon,
+            color: this.values.color,
           },
         },
       })
@@ -113,7 +142,8 @@ export class ProjectComponent implements OnInit {
       .subscribe((result) => {
         if (!result) return;
         this.projectData.name = result.name;
-        this.projectData.values[0].value = result.color;
+        this.values.icon = result.icon;
+        this.values.color = result.color;
       });
   }
 
@@ -160,7 +190,7 @@ export class ProjectComponent implements OnInit {
     this.boardData = [
       ...this.boardData.sort((a, b) => a.name.localeCompare(b.name)),
     ];
-    this.projectData.values[2].value = this.boardData.length;
+    this.values.boards = this.boardData.length;
   }
 
   removeUser(user: UserDetailsDto) {
@@ -208,5 +238,15 @@ export class ProjectComponent implements OnInit {
         if (!board) return;
         this.addBoard(board);
       });
+  }
+
+  changeFav(board: BoardDto) {
+    const index = this.favourites.indexOf(board.id);
+    if (index === -1) {
+      this.favourites.push(board.id);
+    } else {
+      this.favourites.splice(index, 1);
+    }
+    localStorage.setItem('favourites', JSON.stringify(this.favourites));
   }
 }

@@ -1,12 +1,15 @@
 @import '../../assets/styles/variables';
 
+.page-content {
+  top: 7vh;
+  height: 93vh;
+}
+
 mat-sidenav-container {
   width: 240px;
-  height: 100vh;
-  top: 7vh;
+  height: 93vh;
   border-right: 1px solid $primaryColor;
   background-color: $navigationBackground;
-  margin-right: 10px;
 }
 
 .icon {

@@ -4,9 +4,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ProjectService } from '../../services/project.service';
 import { addProject } from '../../states/project.reducer';
 import { Store } from '@ngrx/store';
-import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
-import { UserService } from '../../services/user.service';
 import { UserSearchComponent } from '../../components/user-search/user-search.component';
+import { IconSelectComponent } from '../../components/icon-select/icon-select.component';
 
 @Component({
   templateUrl: './create-project.modal.html',
@@ -14,6 +13,7 @@ import { UserSearchComponent } from '../../components/user-search/user-search.co
 })
 export class CreateProjectModal {
   @ViewChild('search') search: UserSearchComponent;
+  @ViewChild('icon') icon: IconSelectComponent;
 
   constructor(
     private readonly store: Store,
@@ -36,6 +36,7 @@ export class CreateProjectModal {
       .create({
         name: this.projectNameControl.value,
         color: this.colorControl.value,
+        icon: this.icon.iconControl.value,
         userIds: this.search.selectedUsers.map((user) => user.id),
       })
       .subscribe((project) => {

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 
 @Component({
   selector: 'app-login',
@@ -35,8 +36,8 @@ export class LoginComponent {
     this.error = undefined;
     if (this.form.valid) {
       this.authService.login(val).subscribe({
-        next: (response) => {
-          this.authService.setToken(response.token);
+        next: async (response) => {
+          await this.authService.setToken(response);
         },
         error: (err) => {
           this.error = 'Invalid email or password!';

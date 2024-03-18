@@ -6,22 +6,35 @@
     <table mat-table *ngIf="projectData" [dataSource]="projectData.values">
       <ng-container matColumnDef="key">
         <td class="w-50" mat-cell *matCellDef="let element">
-          {{ element.key }}
+          {{ element.title }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="value">
         <td class="w-50" mat-cell *matCellDef="let element">
-          <ng-container *ngIf="element.value != -1">
+          <ng-container *ngIf="values[element.key] !== undefined">
             <div
+              *ngIf="element.key !== 'icon'"
               [style]="{
-                color: element.key == 'Color' ? element.value : undefined
+                color: element.key === 'color' ? values['color'] : undefined
               }">
-              {{ element.value }}
+              {{ values[element.key] }}
             </div>
+            <mat-icon
+              *ngIf="element.key == 'icon'"
+              color="primary"
+              [style]="{
+                color: values['color']
+              }"
+              [fontIcon]="values[element.key] || 'widgets'" />
           </ng-container>
-          <ng-container *ngIf="element.value == -1">
-            <ngx-skeleton-loader appearance="line" />
+          <ng-container *ngIf="values[element.key] === undefined">
+            <ngx-skeleton-loader
+              *ngIf="element.key === 'icon'"
+              appearance="circle" />
+            <ngx-skeleton-loader
+              *ngIf="element.key !== 'icon'"
+              appearance="line" />
           </ng-container>
         </td>
       </ng-container>
@@ -34,20 +47,37 @@
   <button actions mat-flat-button color="primary" (click)="createBoard()">
     Create
   </button>
-  <ng-template #row let-element>
-    <div class="d-flex flex-justify-end">
+  <ng-template #row let-data>
+    <div
+      *ngIf="data.column.key === 'favourite'"
+      class="d-flex flex-justify-center">
+      <button
+        mat-icon-button
+        [matTooltip]="favourites.includes(data.element.id) ? 'Unlike' : 'Like'"
+        color="primary"
+        (click)="changeFav(data.element)">
+        <mat-icon
+          [class]="
+            favourites.includes(data.element.id) ? 'text-danger' : 'text-gray'
+          "
+          fontIcon="favorite" />
+      </button>
+    </div>
+    <div
+      *ngIf="data.column.key === 'row-action'"
+      class="d-flex flex-justify-end">
       <button
         mat-icon-button
         matTooltip="Edit"
         color="primary"
-        (click)="editBoard(element)">
+        (click)="editBoard(data.element)">
         <mat-icon class="text-accent" fontIcon="edit" />
       </button>
       <button
         mat-icon-button
         matTooltip="Archive"
         color="primary"
-        (click)="archiveBoard(element)">
+        (click)="archiveBoard(data.element)">
         <mat-icon class="text-danger" fontIcon="archive" />
       </button>
     </div>
@@ -63,13 +93,13 @@
   <button actions mat-flat-button color="primary" (click)="inviteUser()">
     Invite
   </button>
-  <ng-template #row let-element>
+  <ng-template #row let-data>
     <div class="d-flex flex-justify-end">
       <button
         mat-icon-button
         matTooltip="Remove"
         color="primary"
-        (click)="removeUser(element)">
+        (click)="removeUser(data.element)">
         <mat-icon class="text-danger" fontIcon="cancel" />
       </button>
     </div>

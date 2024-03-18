@@ -48,6 +48,19 @@ export const projectReducer = createReducer(
     localStorage.setItem('projects', JSON.stringify(projects));
     return { projects };
   }),
+  on(updateProject, (state, { project }) => {
+    const projects = [...state.projects];
+    const index = projects.findIndex((p) => p.id === project.id);
+
+    const p = { ...projects.splice(index, 1)[0] };
+    p.name = project.name;
+    p.color = project.color;
+    p.icon = project.icon;
+    projects.splice(index, 0, p);
+
+    localStorage.setItem('projects', JSON.stringify(projects));
+    return { projects };
+  }),
   on(addBoard, (state, { board }) => {
     const projects = [...state.projects];
     const index = projects.findIndex(
@@ -97,18 +110,6 @@ export const projectReducer = createReducer(
       a.name.localeCompare(b.name),
     );
     projects.splice(index, 0, project);
-
-    localStorage.setItem('projects', JSON.stringify(projects));
-    return { projects };
-  }),
-  on(updateProject, (state, { project }) => {
-    const projects = [...state.projects];
-    const index = projects.findIndex((p) => p.id === project.id);
-
-    const p = { ...projects.splice(index, 1)[0] };
-    p.name = project.name;
-    p.color = project.color;
-    projects.splice(index, 0, p);
 
     localStorage.setItem('projects', JSON.stringify(projects));
     return { projects };

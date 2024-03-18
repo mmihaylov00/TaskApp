@@ -1,11 +1,8 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ProjectService } from '../../services/project.service';
 import { UserService } from '../../services/user.service';
 import { FormControl } from '@angular/forms';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
-import { AddUserModal } from '../../modal/add-user/add-user.modal';
 
 @Component({
   selector: 'app-user-search',
@@ -13,6 +10,8 @@ import { AddUserModal } from '../../modal/add-user/add-user.modal';
   styleUrls: ['./user-search.component.scss'],
 })
 export class UserSearchComponent {
+  @Input('height') height: number = 64;
+
   constructor(
     private readonly store: Store,
     private readonly userService: UserService,

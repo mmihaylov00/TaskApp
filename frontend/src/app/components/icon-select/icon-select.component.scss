@@ -1,0 +1,14 @@
+@import '../../assets/styles/variables';
+
+mat-chip-listbox {
+  margin-bottom: 12px;
+  margin-top: 4px;
+}
+
+mat-icon {
+  padding-top: 2px;
+}
+mat-label {
+  color: $primaryText;
+  margin-left: 2px;
+}

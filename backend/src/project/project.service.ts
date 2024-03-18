@@ -12,17 +12,18 @@ import { Project } from '../database/entity/project.entity';
 import { Board } from '../database/entity/board.entity';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { UserProject } from '../database/entity/user-project.entity';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ProjectService {
   constructor() {}
 
   async list(user: JwtUser, page: PageRequestDto) {
-    const boardInclude = { model: Board, where: { archived: false } };
+    //todo don't select archived boards
     const include =
       user.role !== Role.ADMIN
         ? [
-            boardInclude,
+            Board,
             {
               model: User,
               where: {
@@ -30,7 +31,7 @@ export class ProjectService {
               },
             },
           ]
-        : [boardInclude];
+        : [Board];
 
     const { count, rows } = await Project.findAndCountAll(
       Page.paged(
@@ -72,7 +73,7 @@ export class ProjectService {
   async update(id: string, data: CreateProjectDto) {
     try {
       await Project.update(
-        { name: data.name, color: data.color },
+        { name: data.name, color: data.color, icon: data.icon },
         { where: { id } },
       );
     } catch (_) {
@@ -102,7 +103,6 @@ export class ProjectService {
     const { count, rows } = await User.findAndCountAll(
       Page.paged(
         {
-          where: { disabled: false },
           include: { model: Project, where: { id } },
           order: ['role', 'firstName', 'lastName'],
         },

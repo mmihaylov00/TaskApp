@@ -25,8 +25,21 @@
               </p>
             </ng-container>
             <ng-container *ngIf="column.type == 'slot'">
-              <ng-container
-                *ngTemplateOutlet="row; context: { $implicit: element }" />
+              <ng-content
+                *ngTemplateOutlet="
+                  row;
+                  context: { $implicit: { element, column } }
+                " />
+            </ng-container>
+            <ng-container *ngIf="column.type == 'chip'">
+              <mat-chip
+                class="chip"
+                color="primary"
+                [style]="{'background-color': column.colors?.[element[column.key]] || undefined}"
+                highlighted
+                disableRipple>
+                {{ element[column.key] }}
+              </mat-chip>
             </ng-container>
           </td>
           <td mat-footer-cell *matFooterCellDef style="padding-top: 20px">

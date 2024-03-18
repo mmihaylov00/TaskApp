@@ -23,15 +23,36 @@ export class InviteUserModal {
     this.loadProjects();
   }
 
+  private readonly chars =
+    '0123456789abcdefghijklmnopqrstuvwxyz!@_-ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  private readonly passwordLength = 24;
+
   firstNameControl = new FormControl('', []);
   lastNameControl = new FormControl('', []);
   emailControl = new FormControl('', [Validators.required, Validators.email]);
+  passwordControl = new FormControl(this.generatePassword(), []);
   roleControl = new FormControl('', [Validators.required]);
   projectIdsControl = new FormControl([], []);
 
   projects: ProjectDto[] = undefined;
 
   isLoading = false;
+  isCopied = false;
+
+  async copy(copyTooltip) {
+    copyTooltip.show();
+    this.isCopied = true;
+    await navigator.clipboard.writeText(this.passwordControl.value);
+  }
+
+  generatePassword() {
+    let password = '';
+    for (let i = 0; i <= this.passwordLength; i++) {
+      const randomNumber = Math.floor(Math.random() * this.chars.length);
+      password += this.chars.substring(randomNumber, randomNumber + 1);
+    }
+    return password;
+  }
 
   loadProjects() {
     this.store
@@ -54,6 +75,7 @@ export class InviteUserModal {
         firstName: this.firstNameControl.value,
         lastName: this.lastNameControl.value,
         email: this.emailControl.value,
+        password: this.passwordControl.value,
         role: this.getRole(),
         projectIds: this.projectIdsControl.value,
       })

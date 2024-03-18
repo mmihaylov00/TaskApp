@@ -6,8 +6,12 @@ import { UserService } from '../../services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { InviteUserModal } from '../../modal/invite-user/invite-user.modal';
 import { EditUserModal } from '../../modal/edit-user/edit-user.modal';
-import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
+import {
+  USER_STATUS_COLORS,
+  UserStatus,
+} from 'taskapp-common/dist/src/enums/user-status.enum';
 import { ConfirmModal } from '../../modal/confirm/confirm.modal';
+import { ROLE_COLORS } from 'taskapp-common/dist/src/enums/role.enum';
 
 @Component({
   selector: 'app-users',
@@ -24,8 +28,18 @@ export class UsersComponent implements OnInit {
     { key: 'firstName', header: 'First Name', type: 'text' },
     { key: 'lastName', header: 'Last Name', type: 'text' },
     { key: 'email', header: 'Email', type: 'text' },
-    { key: 'role', header: 'Role', type: 'text' },
-    { key: 'status', header: 'Status', type: 'text' },
+    {
+      key: 'role',
+      header: 'Role',
+      type: 'chip',
+      colors: ROLE_COLORS,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      type: 'chip',
+      colors: USER_STATUS_COLORS,
+    },
     { key: 'actions', header: '', type: 'slot', width: 25 },
   ];
   userData: Page<UserDetailsDto> = undefined;
@@ -55,7 +69,6 @@ export class UsersComponent implements OnInit {
   }
 
   loadUsers() {
-    console.log('close');
     this.userService.list(this.userPage).subscribe((page) => {
       this.userData = { ...page };
       this.loading = false;

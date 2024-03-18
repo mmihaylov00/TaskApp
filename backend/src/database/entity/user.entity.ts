@@ -13,9 +13,13 @@ import {
 import { UserProject } from './user-project.entity';
 import { Project } from './project.entity';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
-import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
+import {
+  USER_STATUSES,
+  UserStatus,
+} from 'taskapp-common/dist/src/enums/user-status.enum';
 import { sql } from '@sequelize/core';
 import { DataTypes } from 'sequelize';
+
 @Table({ paranoid: true })
 export class User extends UUIDEntity {
   @Column({ unique: true })
@@ -30,18 +34,15 @@ export class User extends UUIDEntity {
   @Column({ allowNull: true })
   declare lastName?: string;
 
-  @Column({
-    allowNull: true,
-    type: DataTypes.UUID,
-    defaultValue: sql.uuidV4.asJavaScript,
-  })
-  declare invitationLink?: string;
-
   @Column({ type: DataType.ENUM, values: ROLES })
   declare role: Role;
 
-  @Column({ defaultValue: false })
-  declare disabled: boolean;
+  @Column({
+    type: DataType.ENUM,
+    values: USER_STATUSES,
+    defaultValue: UserStatus.INVITED,
+  })
+  declare status: UserStatus;
 
   @BelongsToMany(() => Project, () => UserProject)
   declare projects: Project[];
@@ -62,17 +63,7 @@ export class User extends UUIDEntity {
       lastName: this.lastName,
       email: this.email,
       role: this.role,
-      status: this.status(),
+      status: this.status,
     };
-  }
-
-  status(): UserStatus {
-    if (!this.password) {
-      return UserStatus.INVITED;
-    }
-    if (this.disabled) {
-      return UserStatus.DISABLED;
-    }
-    return UserStatus.ACTIVE;
   }
 }

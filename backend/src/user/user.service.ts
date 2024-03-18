@@ -3,14 +3,17 @@ import { User } from '../database/entity/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
-import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
+import {
+  ProfileSetupDto,
+  UserDetailsDto,
+} from 'taskapp-common/dist/src/dto/auth.dto';
 import { Project } from '../database/entity/project.entity';
 import {
   CreateUserDto,
   SearchUserDto,
 } from 'taskapp-common/dist/src/dto/user.dto';
 import { TaskAppError } from '../error/task-app.error';
-import { col, Op } from '@sequelize/core';
+import { Op } from '@sequelize/core';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { UserProject } from '../database/entity/user-project.entity';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
@@ -27,8 +30,25 @@ export class UserService {
   getUserData(id: string): Promise<User> {
     return User.findOne({
       where: { id },
-      attributes: ['id', 'firstName', 'lastName', 'email', 'role'],
+      attributes: ['id', 'firstName', 'lastName', 'email', 'role', 'status'],
     });
+  }
+
+  async setupProfile(user: JwtUser, data: ProfileSetupDto) {
+    const dbUser = await User.findByPk(user.id);
+    if (dbUser.status !== UserStatus.INVITED) {
+      throw new TaskAppError('user_profile_completed', HttpStatus.BAD_REQUEST);
+    }
+    const salt = await bcrypt.genSalt(10);
+    const password: string = await bcrypt.hash(data.password, salt);
+
+    dbUser.firstName = data.firstName;
+    dbUser.lastName = data.lastName;
+    dbUser.email = data.email;
+    dbUser.password = password;
+    dbUser.status = UserStatus.ACTIVE;
+
+    await dbUser.save();
   }
 
   async loginUser(email: string, pass: string): Promise<User> {
@@ -61,8 +81,12 @@ export class UserService {
         where: { id: data.projectIds },
       });
 
+      const salt = await bcrypt.genSalt(10);
+      const password: string = await bcrypt.hash(data.password, salt);
+
       const createdUser = await User.create({
         ...data,
+        password,
         invitedBy: user.id,
       });
 
@@ -122,7 +146,7 @@ export class UserService {
   ): Promise<void> {
     try {
       let dbUser = await User.findByPk(id);
-      dbUser.disabled = status === UserStatus.DISABLED;
+      dbUser.status = status;
       await dbUser.save();
     } catch (_) {
       throw new TaskAppError('user_exists', HttpStatus.BAD_REQUEST);

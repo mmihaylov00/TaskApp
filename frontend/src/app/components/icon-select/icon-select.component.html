@@ -1,0 +1,8 @@
+<mat-label>Project Icon</mat-label>
+<mat-chip-listbox
+  [formControl]="iconControl"
+  [hideSingleSelectionIndicator]="true">
+  <mat-chip-option [value]="icon" *ngFor="let icon of icons" color="primary">
+    <mat-icon [style]="{color}" [fontIcon]="icon" />
+  </mat-chip-option>
+</mat-chip-listbox>

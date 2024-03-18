@@ -10,6 +10,7 @@
         <mat-label>Color</mat-label>
         <input type="color" matInput [formControl]="colorControl" />
       </mat-form-field>
+      <app-icon-select #icon [color]="colorControl.value" class="w-100" />
     </div>
   </mat-dialog-content>
   <mat-dialog-actions align="end" class="bottom-buttons">

@@ -1,7 +1,11 @@
 @import 'variables';
 
-mat-form-field {
-  width: 48%;
+.col-3 {
+  width: 24%;
+}
+
+.col-6 {
+  width: 49%;
 }
 
 .bottom-buttons {
@@ -16,8 +20,44 @@ mat-form-field {
 }
 
 .list {
-  min-height: 64%;
-  max-height: 64%;
+  min-height: 66%;
+  max-height: 66%;
   overflow-y: scroll;
   border: $primaryColor solid 1px;
+}
+.btn-copy {
+  font-size: 15px;
+  color: #999999;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  right: 0;
+  padding-right: 5px;
+  cursor: pointer;
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+
+  &:hover {
+    color: $primaryText;
+    color: -webkit-linear-gradient(to left, $primaryText, $primaryColor);
+    color: -o-linear-gradient(to left, $primaryText, $primaryColor);
+    color: -moz-linear-gradient(to left, $primaryText, $primaryColor);
+    color: linear-gradient(to left, $primaryText, $primaryColor);
+  }
+
+  &.active {
+    color: $primaryText;
+    color: -webkit-linear-gradient(to left, $primaryText, $primaryColor);
+    color: -o-linear-gradient(to left, $primaryText, $primaryColor);
+    color: -moz-linear-gradient(to left, $primaryText, $primaryColor);
+    color: linear-gradient(to left, $primaryText, $primaryColor);
+  }
 }

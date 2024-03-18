@@ -7,6 +7,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { TaskBoardComponent } from './pages/task-board/task-board.component';
 import { ProjectComponent } from './pages/project/project.component';
 import { UsersComponent } from './pages/users/users.component';
+import { ProfileSetupComponent } from './pages/profile-setup/profile-setup.component';
 
 const routes: Route[] = [
   {
@@ -17,6 +18,11 @@ const routes: Route[] = [
   {
     path: 'home',
     component: DashboardComponent,
+    pathMatch: 'full',
+  },
+  {
+    path: 'profile-setup',
+    component: ProfileSetupComponent,
     pathMatch: 'full',
   },
   {

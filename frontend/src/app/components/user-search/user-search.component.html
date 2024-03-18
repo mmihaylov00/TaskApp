@@ -12,8 +12,10 @@
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
-<mat-label>Selected Users</mat-label>
-<div class="user-list">
+<mat-label class="label">Selected Users</mat-label>
+<div
+  class="user-list"
+  [style]="{ 'min-height': height + '%', 'max-height': height + '%' }">
   <mat-selection-list>
     <mat-list-option
       (click)="removeItem(user)"

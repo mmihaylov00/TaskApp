@@ -1,0 +1,112 @@
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
+import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
+import { select, Store } from '@ngrx/store';
+import { ProfileData } from '../../states/profile.reducer';
+import { UserService } from '../../services/user.service';
+import { ProfileSetupDto } from 'taskapp-common/dist/src/dto/auth.dto';
+
+@Component({
+  selector: 'app-profile-setup',
+  templateUrl: './profile-setup.component.html',
+  styleUrls: ['./profile-setup.component.scss'],
+})
+export class ProfileSetupComponent {
+  form: FormGroup;
+  error: string;
+  passwordVisible = false;
+  confirmPasswordVisible = false;
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly store: Store,
+    private readonly router: Router,
+    private readonly userService: UserService,
+  ) {
+    this.store
+      .pipe(select((value: any) => value.profileData))
+      .subscribe(async (profile: ProfileData) => {
+        this.form = this.fb.group({
+          firstName: [profile.firstName || '', Validators.required],
+          lastName: [profile.lastName || '', Validators.required],
+          email: [profile.email || '', [Validators.required, Validators.email]],
+          password: ['', Validators.required],
+          confirmPassword: ['', Validators.required],
+        });
+
+        if (profile.status && profile.status !== UserStatus.INVITED) {
+          await this.router.navigate(['/']);
+          return;
+        }
+      });
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
+  }
+
+  validate(val: any) {
+    if (!val.firstName.length) {
+      this.error = 'First name is missing!';
+      return;
+    }
+    if (!val.lastName.length) {
+      this.error = 'Last name is missing!';
+      return;
+    }
+    if (!val.email.length) {
+      this.error = 'E-Mail is missing!';
+      return;
+    }
+    if (!val.password.length) {
+      this.error = 'Password is missing!';
+      return;
+    }
+    if (val.password.length < 8) {
+      this.error = 'Passwords must be 8 characters long!';
+      return;
+    }
+    if (
+      val.password.toLowerCase() === val.password ||
+      val.password.toUpperCase() === val.password ||
+      val.password.search(/[0-9]/) < 0
+    ) {
+      this.error =
+        'Passwords must contain at least 1 lowercase letter, 1 uppercase letter and 1 digit';
+      return;
+    }
+    if (!val.confirmPassword.length) {
+      this.error = 'Confirm password is missing!';
+      return;
+    }
+    if (val.password !== val.confirmPassword) {
+      this.error = 'Passwords does not match!';
+      return;
+    }
+  }
+
+  async confirm() {
+    const val = this.form.value;
+    this.error = undefined;
+    this.validate(val);
+
+    if (this.form.valid) {
+      this.userService.setupProfile(val).subscribe(async () => {
+        await this.router.navigate(['/']);
+        location.reload();
+      });
+    } else {
+      setTimeout(() => {
+        this.error = 'Invalid E-Mail!';
+      }, 1);
+    }
+  }
+
+  protected readonly environment = environment;
+}

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
 import {
@@ -6,6 +6,7 @@ import {
   LoginResponseDto,
 } from 'taskapp-common/src/dto/auth.dto';
 import { TaskAppError } from '../error/task-app.error';
+import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -17,12 +18,12 @@ export class AuthController {
   @Post()
   async login(@Body() data: LoginRequestDto): Promise<LoginResponseDto> {
     const user = await this.userService.loginUser(data.email, data.password);
-    if (!user || user.deletedAt || user.disabled) {
+    if (!user || user.deletedAt || user.status == UserStatus.DISABLED) {
       throw new TaskAppError('bad_credentials', HttpStatus.BAD_REQUEST);
     }
 
     return {
-      ...user.toDto(),
+      status: user.status,
       token: this.authService.login(user),
     };
   }

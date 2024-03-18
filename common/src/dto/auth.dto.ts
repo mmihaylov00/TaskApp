@@ -5,8 +5,9 @@ export interface LoginRequestDto {
   email: string;
   password: string;
 }
-export interface LoginResponseDto extends UserDetailsDto {
+export interface LoginResponseDto {
   token: string;
+  status: UserStatus;
 }
 
 export interface UserDetailsDto {
@@ -17,4 +18,10 @@ export interface UserDetailsDto {
   status: UserStatus;
   role: Role;
   token?: string;
+}
+export interface ProfileSetupDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }

@@ -20,10 +20,9 @@ const seed = async () => {
   try {
     await User.create({
       email: 'admin@task.app',
-      firstName: 'Admin',
-      lastName: 'User',
+      firstName: 'Super',
+      lastName: 'Admin',
       password,
-      invitationLink: null,
       role: Role.ADMIN,
       status: UserStatus.ACTIVE,
     });

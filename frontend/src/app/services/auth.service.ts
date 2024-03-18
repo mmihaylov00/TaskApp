@@ -5,6 +5,7 @@ import {
   LoginResponseDto,
 } from 'taskapp-common/dist/src/dto/auth.dto';
 import { Router } from '@angular/router';
+import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -19,14 +20,19 @@ export class AuthService {
     return this.http.post<LoginResponseDto>('auth', request);
   }
 
-  setToken(token) {
-    localStorage.setItem('token', token);
+  async setToken(response: LoginResponseDto) {
+    localStorage.setItem('token', response.token);
+    if (response.status === UserStatus.INVITED) {
+      await this.router.navigate(['/profile-setup']);
+    }
     location.reload();
   }
 
-  async logout() {
+  async logout(navigate = true) {
     localStorage.removeItem('token');
-    await this.router.navigate(['/']);
+    if (navigate) {
+      await this.router.navigate(['/']);
+    }
     location.reload();
   }
 }

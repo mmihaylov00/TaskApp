@@ -1,15 +1,11 @@
-<ng-container *ngIf="isLogged">
+<ng-container *ngIf="isLogged && !isInProfile">
   <app-header />
-  <app-side-nav />
-  <app-popup id="profile" name="profile" additionalClasses="item-list">
-    <div *ngFor="let item of DROPDOWN_ITEMS" (click)="item.onClick()">
-      {{ item.title }}
+  <app-side-nav>
+    <div class="page">
+      <router-outlet />
     </div>
-  </app-popup>
-  <div class="page-content">
-    <router-outlet />
-  </div>
+  </app-side-nav>
 </ng-container>
-<ng-container *ngIf="!isLogged">
+<ng-container *ngIf="!isLogged || isInProfile">
   <router-outlet />
 </ng-container>
