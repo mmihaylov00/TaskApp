@@ -6,7 +6,6 @@ import { updateProject } from '../../states/project.reducer';
 import { Store } from '@ngrx/store';
 import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
 import { IconSelectComponent } from '../../components/icon-select/icon-select.component';
-import { create } from 'sortablejs';
 
 @Component({
   templateUrl: './edit-project.modal.html',

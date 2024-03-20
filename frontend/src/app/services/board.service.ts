@@ -4,15 +4,37 @@ import {
   BoardDto,
   CreateBoardDto,
 } from 'taskapp-common/dist/src/dto/board.dto';
+import { SocketService } from './socket.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class BoardService {
-  constructor(private readonly http: HttpClient) {}
+export class BoardService extends SocketService {
+  constructor(private readonly http: HttpClient) {
+    super();
+  }
 
   list() {
     return this.http.get<BoardDto[]>('boards');
+  }
+
+  get(id: string) {
+    return this.http.get<BoardDto>('boards/' + id);
+  }
+
+  listen(id: string, subscribe: { [key: string]: (data: any) => void }) {
+    this.subscribe('board', { boardId: id });
+
+    for (const key of Object.keys(subscribe)) {
+      this.socket.on(key, subscribe[key]);
+    }
+  }
+
+  unsubscribe(...keys: string[]) {
+    for (const key of keys) {
+      this.socket.off(key);
+    }
   }
 
   listByProject(projectId: string) {

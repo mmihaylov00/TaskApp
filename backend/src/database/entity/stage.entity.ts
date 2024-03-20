@@ -30,15 +30,22 @@ export class Stage extends UUIDEntity {
   @HasMany(() => Task)
   declare tasks: Task[];
 
-  @Column({ type: DataType.JSONB, defaultValue: '[]' })
+  @Column({ type: DataType.JSONB, defaultValue: [] })
   declare tasksOrder: string[];
 
   toDto(): StageDto {
+    let taskOrders: any[] = this.tasksOrder;
+    if (this.tasks && taskOrders) {
+      taskOrders = taskOrders.map((id) => {
+        const task = this.tasks.find((t) => t.id === id);
+        return task.toDto();
+      });
+    }
     return {
       id: this.id,
       name: this.name,
       color: this.color,
-      tasks: this.tasks.map((task) => task.toDto()),
+      tasks: taskOrders,
     };
   }
 }

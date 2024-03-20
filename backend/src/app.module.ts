@@ -8,7 +8,7 @@ import { StageModule } from './stage/stage.module';
 import { TaskModule } from './task/task.module';
 import { ProfileModule } from './profile/profile.module';
 import { DatabaseModule } from './database/database.module';
-import { databaseProviders } from './database/database.provider';
+import { WSModule } from './socket/socket.module';
 
 @Module({
   imports: [
@@ -22,6 +22,7 @@ import { databaseProviders } from './database/database.provider';
     ProjectModule,
     BoardModule,
     StageModule,
+    WSModule,
     TaskModule,
   ],
   providers: [],

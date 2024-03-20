@@ -10,25 +10,33 @@ import { TaskAppError } from '../error/task-app.error';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
 import { Project } from '../database/entity/project.entity';
 import { User } from '../database/entity/user.entity';
+import { Stage } from '../database/entity/stage.entity';
+import { Task } from '../database/entity/task.entity';
+import { Socket } from 'socket.io';
 
 @Injectable()
 export class BoardService {
+  static boards: { [boardId: string]: Set<Socket> } = {};
+
   constructor(private readonly projectService: ProjectService) {}
 
   async list(user: JwtUser, projectId?: string) {
     const projectWhere = projectId ? { id: projectId } : undefined;
     const projectInclude = { model: Project, where: projectWhere };
-    const userInclude = { model: User, where: { id: user.id } };
-    const include =
-      user.role !== Role.ADMIN
-        ? [projectInclude, userInclude]
-        : [projectInclude];
+    const stageInclude = { model: Stage };
+    const include: any[] = [projectInclude, stageInclude];
 
-    return Board.findAll({
+    if (user.role !== Role.ADMIN) {
+      include.push({ model: User, where: { id: user.id } });
+    }
+
+    const boards = await Board.findAll({
       where: { archived: false },
       include,
       order: ['name'],
     });
+
+    return boards.map((board) => board.toDto());
   }
 
   async create(user: JwtUser, data: CreateBoardDto) {
@@ -36,6 +44,17 @@ export class BoardService {
 
     try {
       const board = await Board.create({ ...data, project });
+
+      const stages = await Stage.bulkCreate(
+        data.stages.map((stage) => {
+          return { name: stage.name, color: stage.color, boardId: board.id };
+        }),
+      );
+
+      board.stagesOrder = stages.map((stage) => stage.id);
+
+      await board.save();
+
       return board.toDto();
     } catch (_) {
       throw new TaskAppError('board_creation_failed', HttpStatus.BAD_REQUEST);
@@ -46,6 +65,32 @@ export class BoardService {
     const board = await this.getBoard(id, user);
     board.color = data.color;
     board.name = data.name;
+
+    let newStages = [];
+
+    for (let stage of data.stages) {
+      if (!stage.id) {
+        const dbStage = await Stage.create({
+          name: stage.name,
+          color: stage.color,
+          boardId: board.id,
+        });
+        stage.id = dbStage.id;
+        newStages.push(stage);
+      } else {
+        const dbStage = board.stages.find((s) => s.id === stage.id);
+        if (dbStage.color !== stage.color || dbStage.name !== stage.name) {
+          dbStage.color = stage.color;
+          dbStage.name = stage.name;
+          await dbStage.save();
+        }
+        newStages.push(dbStage);
+      }
+    }
+
+    board.stagesOrder = newStages.map((stage) => stage.id);
+
+    //todo when the stage is deleted, move the tasks to another stage and mark it as deleted
 
     try {
       await board.save();
@@ -66,13 +111,41 @@ export class BoardService {
     }
   }
 
-  async getBoard(id: string, user?: JwtUser) {
+  async getBoard(id: string, user?: JwtUser, includeTasks = false) {
     const board = await Board.findOne({
       where: { id },
-      include: { model: Project, include: [User] },
+      include: [
+        { model: Project, include: [User] },
+        {
+          model: Stage,
+          include: includeTasks
+            ? [
+                {
+                  model: Task,
+                  include: [
+                    {
+                      model: User,
+                      as: 'assignedTo',
+                      attributes: ['id', 'firstName', 'lastName'],
+                    },
+                  ],
+                  attributes: ['id', 'name', 'priority', 'stageId', 'deadline'],
+                },
+              ]
+            : [],
+        },
+      ],
     });
     await this.projectService.checkAccess(board?.project, user);
 
     return board;
+  }
+
+  sendMessage(boardId: string, event: string, data: any) {
+    const board = BoardService.boards[boardId];
+    if (!board) return;
+    for (const client of board) {
+      client.emit(event, data);
+    }
   }
 }

@@ -1,9 +1,4 @@
-@import '../../assets/styles/variables';
-
-.page-content {
-  top: 7vh;
-  height: 93vh;
-}
+@import 'variables';
 
 mat-sidenav-container {
   width: 240px;
@@ -22,6 +17,7 @@ mat-sidenav-container {
 }
 
 .main-ul {
+  width: 200px;
   padding-bottom: 60px;
 }
 

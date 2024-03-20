@@ -12,6 +12,10 @@
   width: 20%;
 }
 
+.w-24 {
+  width: 24%;
+}
+
 .w-25 {
   width: 25%;
 }
@@ -94,6 +98,14 @@
 
 .d-flex {
   display: flex;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-col {
+  flex-direction: column;
 }
 
 .flex-direction-row {

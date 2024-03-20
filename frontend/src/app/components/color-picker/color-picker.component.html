@@ -1,0 +1,10 @@
+<ngx-colors
+  [palette]="colors"
+  [(ngModel)]="selectedColor"
+  [style.color]="selectedColor"
+  (change)="change($event)"
+  colorsAnimation="popup"
+  hideTextInput="true"
+  format="hex"
+  hideColorPicker="true"
+  ngx-colors-trigger />

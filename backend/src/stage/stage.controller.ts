@@ -34,34 +34,4 @@ export class StageController {
   ): Promise<StageDto[]> {
     return this.stageService.list(user, boardId);
   }
-
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  @Roles(Role.ADMIN, Role.PROJECT_MANAGER)
-  create(
-    @Authenticated() user: JwtUser,
-    @Body() data: ManageStageDto,
-  ): Promise<void> {
-    return this.stageService.create(user, data);
-  }
-
-  @Put('/:id')
-  @Roles(Role.ADMIN, Role.PROJECT_MANAGER)
-  update(
-    @Authenticated() user: JwtUser,
-    @Param('id') id: string,
-    @Body() data: ManageStageDto,
-  ): Promise<void> {
-    return this.stageService.update(user, id, data);
-  }
-
-  @Delete('/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Roles(Role.ADMIN, Role.PROJECT_MANAGER)
-  delete(
-    @Authenticated() user: JwtUser,
-    @Param('id') id: string,
-  ): Promise<void> {
-    return this.stageService.delete(user, id);
-  }
 }

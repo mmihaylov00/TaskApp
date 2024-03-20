@@ -11,13 +11,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
-import { User } from '../database/entity/user.entity';
-import { Role } from 'taskapp-common/dist/src/enums/role.enum';
-import { Roles } from '../auth/decorator/role.decorator';
-import { CreateProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
 import { TaskService } from './task.service';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
 import { JwtGuard } from '../auth/guard/jwt.guard';
+import {
+  CreateTaskDto,
+  MoveTaskDto,
+} from 'taskapp-common/dist/src/dto/task.dto';
 
 @Controller('tasks')
 @UseGuards(JwtGuard)
@@ -25,18 +25,34 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Authenticated() user: JwtUser,
-    @Body() data: CreateProjectDto,
-  ): Promise<void> {
-    //todo
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async create(@Authenticated() user: JwtUser, @Body() data: CreateTaskDto) {
+    await this.taskService.create(user, data);
   }
 
-  @Put()
-  @Roles(Role.ADMIN)
-  async update(@Authenticated() user: JwtUser): Promise<void> {
-    //todo
+  @Get('/:id')
+  async get(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    return this.taskService.get(id, user);
+  }
+
+  @Put('/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async update(
+    @Authenticated() user: JwtUser,
+    @Body() data: CreateTaskDto,
+    @Param('id') id: string,
+  ) {
+    await this.taskService.update(id, user, data);
+  }
+
+  @Put('/:id/stage')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async moveStage(
+    @Authenticated() user: JwtUser,
+    @Body() data: MoveTaskDto,
+    @Param('id') id: string,
+  ) {
+    await this.taskService.move(id, user, data);
   }
 
   @Delete('/:id')

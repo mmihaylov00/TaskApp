@@ -12,7 +12,7 @@ export class ConfirmModal {
     private readonly dialogRef: MatDialogRef<ConfirmModal>,
     @Inject(MAT_DIALOG_DATA) readonly data: { title: string; action: string },
   ) {
-    this.dialogRef.updateSize(undefined, '20%');
+    this.dialogRef.updateSize(undefined, '180px');
   }
 
   confirm() {

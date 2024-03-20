@@ -1,5 +1,10 @@
 @import 'variables';
 
+.page-content {
+  top: 7vh;
+  height: 93vh;
+}
+
 .page {
   display: grid;
   overflow: auto;
@@ -21,4 +26,9 @@ app-header {
   position: fixed;
   width: 100vw;
   height: 7vh;
+}
+
+app-side-task {
+  display: block;
+  width: 40vw;
 }

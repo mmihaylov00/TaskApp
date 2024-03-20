@@ -8,7 +8,7 @@
     [matAutocomplete]="auto" />
   <mat-autocomplete #auto="matAutocomplete">
     <mat-option *ngFor="let user of users" [value]="user.id">
-      {{ displayUserFunction(user) }}
+      {{ fullUsername(user) }}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>
@@ -21,7 +21,7 @@
       (click)="removeItem(user)"
       *ngFor="let user of selectedUsers">
       <div class="d-flex flex-justify-between">
-        <div>{{ displayUserFunction(user) }}</div>
+        <div>{{ fullUsername(user) }}</div>
         <mat-icon fontIcon="cancel" color="warn" />
       </div>
     </mat-list-option>

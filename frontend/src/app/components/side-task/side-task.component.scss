@@ -1,0 +1,20 @@
+@import 'variables';
+
+mat-card-header {
+  padding-top: 2px;
+}
+
+.bottom-buttons {
+  padding-right: 24px;
+}
+
+::ng-deep {
+  .NgxEditor {
+    height: 370px;
+    overflow-y: scroll;
+  }
+
+  .NgxEditor__Content {
+    min-height: 370px;
+  }
+}

@@ -12,7 +12,6 @@ import { Project } from '../database/entity/project.entity';
 import { Board } from '../database/entity/board.entity';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { UserProject } from '../database/entity/user-project.entity';
-import { Op } from 'sequelize';
 
 @Injectable()
 export class ProjectService {

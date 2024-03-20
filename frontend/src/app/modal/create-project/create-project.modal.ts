@@ -6,6 +6,7 @@ import { addProject } from '../../states/project.reducer';
 import { Store } from '@ngrx/store';
 import { UserSearchComponent } from '../../components/user-search/user-search.component';
 import { IconSelectComponent } from '../../components/icon-select/icon-select.component';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './create-project.modal.html',
@@ -17,6 +18,7 @@ export class CreateProjectModal {
 
   constructor(
     private readonly store: Store,
+    private readonly router: Router,
     private readonly dialogRef: MatDialogRef<CreateProjectModal>,
     private readonly projectService: ProjectService,
   ) {
@@ -39,10 +41,11 @@ export class CreateProjectModal {
         icon: this.icon.iconControl.value,
         userIds: this.search.selectedUsers.map((user) => user.id),
       })
-      .subscribe((project) => {
+      .subscribe(async (project) => {
         this.store.dispatch(
           addProject({ project: { ...project, compact: false } }),
         );
+        await this.router.navigate(['project', project.id]);
         this.dialogRef.close();
       });
   }

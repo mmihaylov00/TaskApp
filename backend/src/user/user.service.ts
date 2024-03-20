@@ -13,11 +13,10 @@ import {
   SearchUserDto,
 } from 'taskapp-common/dist/src/dto/user.dto';
 import { TaskAppError } from '../error/task-app.error';
-import { Op } from '@sequelize/core';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { UserProject } from '../database/entity/user-project.entity';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
-import sequelize from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 
 @Injectable()
 export class UserService {
@@ -51,7 +50,7 @@ export class UserService {
     await dbUser.save();
   }
 
-  async loginUser(email: string, pass: string): Promise<User> {
+  async loginUser(email: string, pass: string): Promise<User | null> {
     const user = await this.findByEmail(email);
     if (!user) return null;
     return (await bcrypt.compare(pass, user.password)) ? user : null;

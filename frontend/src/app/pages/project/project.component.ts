@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ColumnDto } from '../../components/table/dtos/column.dto';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BoardService } from '../../services/board.service';
 import { BoardDto } from 'taskapp-common/dist/src/dto/board.dto';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,8 +15,6 @@ import { removeBoard } from '../../states/project.reducer';
 import { Store } from '@ngrx/store';
 import { ROLE_COLORS } from 'taskapp-common/dist/src/enums/role.enum';
 import { USER_STATUS_COLORS } from 'taskapp-common/dist/src/enums/user-status.enum';
-import { text } from 'stream/consumers';
-import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-project',
@@ -30,6 +28,7 @@ export class ProjectComponent implements OnInit {
     private readonly projectService: ProjectService,
     private readonly boardService: BoardService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly store: Store,
     private readonly dialog: MatDialog,
   ) {
@@ -58,6 +57,7 @@ export class ProjectComponent implements OnInit {
     { key: 'favourite', header: '', type: 'slot', width: 5 },
     { key: 'name', header: 'Title', type: 'text' },
     { key: 'color', header: 'Color', type: 'color' },
+    { key: 'stages', header: 'Stages', type: 'length' },
     { key: 'row-action', header: '', type: 'slot', width: 50 },
   ];
   boardData: BoardDto[] = undefined;
@@ -234,9 +234,15 @@ export class ProjectComponent implements OnInit {
         data: { projectId: this.projectId },
       })
       .afterClosed()
-      .subscribe((board) => {
+      .subscribe(async (board) => {
         if (!board) return;
         this.addBoard(board);
+        await this.router.navigate([
+          'project',
+          this.projectId,
+          'board',
+          board.id,
+        ]);
       });
   }
 

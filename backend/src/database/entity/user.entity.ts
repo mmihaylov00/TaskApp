@@ -17,7 +17,6 @@ import {
   USER_STATUSES,
   UserStatus,
 } from 'taskapp-common/dist/src/enums/user-status.enum';
-import { sql } from '@sequelize/core';
 import { DataTypes } from 'sequelize';
 
 @Table({ paranoid: true })

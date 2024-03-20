@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ProjectService } from '../../services/project.service';
@@ -9,8 +9,6 @@ import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { ProfileData } from '../../states/profile.reducer';
 import { CreateProjectModal } from '../../modal/create-project/create-project.modal';
 import { NavData } from '../../states/nav.reducer';
-import { UserSearchComponent } from '../user-search/user-search.component';
-import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-side-nav',
@@ -18,8 +16,6 @@ import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
   styleUrls: ['./side-nav.component.scss'],
 })
 export class SideNavComponent implements OnInit {
-  navOpen = true;
-
   constructor(
     private readonly store: Store,
     private readonly router: Router,
@@ -30,13 +26,6 @@ export class SideNavComponent implements OnInit {
       .pipe(select((value: any) => value.profileData))
       .subscribe((value: ProfileData) => {
         this.role = value.role;
-      });
-
-    this.store
-      .pipe(select((value: any) => value.navData))
-      .subscribe(async (value: NavData) => {
-        if (!value) return;
-        this.navOpen = value.nav;
       });
 
     this.store
@@ -131,7 +120,7 @@ export class SideNavComponent implements OnInit {
   }
 
   truncate(name: string) {
-    if (name.length >= 12) return name.slice(0, 10) + '...';
+    if (name.length >= 13) return name.slice(0, 11) + '...';
     return name;
   }
 

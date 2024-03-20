@@ -59,6 +59,14 @@ import { ProfileSetupComponent } from './pages/profile-setup/profile-setup.compo
 import { IconSelectComponent } from './components/icon-select/icon-select.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
+import { NgxColorsModule } from 'ngx-colors';
+import { ColorPickerComponent } from './components/color-picker/color-picker.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { CustomDateAdapter } from './adapters/custom-date.adapter';
+import { NgxEditorModule } from 'ngx-editor';
+import { SideTaskComponent } from './components/side-task/side-task.component';
+import { boardReducer } from './states/board.reducer';
 
 @NgModule({
   declarations: [
@@ -67,6 +75,7 @@ import { MatMenuModule } from '@angular/material/menu';
     DashboardComponent,
     HeaderComponent,
     SideNavComponent,
+    SideTaskComponent,
     MyTasksComponent,
     ProfileSetupComponent,
     AvatarComponent,
@@ -85,6 +94,7 @@ import { MatMenuModule } from '@angular/material/menu';
     UsersComponent,
     UserSearchComponent,
     IconSelectComponent,
+    ColorPickerComponent,
   ],
   imports: [
     CommonModule,
@@ -108,6 +118,7 @@ import { MatMenuModule } from '@angular/material/menu';
         profileData: profileReducer,
         navData: navReducer,
         projectData: projectReducer,
+        boardData: boardReducer,
       },
       {},
     ),
@@ -123,6 +134,10 @@ import { MatMenuModule } from '@angular/material/menu';
     MatAutocompleteModule,
     MatChipsModule,
     MatMenuModule,
+    NgxColorsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    NgxEditorModule,
   ],
   providers: [
     AuthService,
@@ -132,12 +147,13 @@ import { MatMenuModule } from '@angular/material/menu';
       useClass: AuthInterceptor,
       multi: true,
     },
+    { provide: DateAdapter, useClass: CustomDateAdapter },
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: {
         hasBackdrop: true,
-        height: '400px',
-        width: '600px',
+        height: '50%',
+        width: '50%',
       },
     },
   ],

@@ -30,7 +30,7 @@
         <mat-label>Password</mat-label>
         <input type="text" matInput [formControl]="passwordControl" readonly />
         <span
-          class="btn-copy"
+          class="input-button"
           #copyTooltip="matTooltip"
           [matTooltip]="isCopied ? 'Password copied!' : 'Copy password'"
           (click)="copy(copyTooltip)">

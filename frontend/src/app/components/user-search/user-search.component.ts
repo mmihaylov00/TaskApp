@@ -24,7 +24,7 @@ export class UserSearchComponent {
   users: UserDetailsDto[] = [];
   selectedUsers: UserDetailsDto[] = [];
 
-  displayUserFunction(user: UserDetailsDto): string {
+  fullUsername(user: UserDetailsDto): string {
     if (!user) return '';
     return `${user.firstName} ${user.lastName} (${user.email})`;
   }

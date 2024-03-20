@@ -3,6 +3,7 @@ import { UUIDEntity } from '../uuid.entity';
 import {
   BelongsTo,
   Column,
+  DataType,
   ForeignKey,
   HasMany,
   Table,
@@ -33,11 +34,22 @@ export class Board extends UUIDEntity {
   @HasMany(() => Stage)
   declare stages: Stage[];
 
+  @Column({ type: DataType.JSONB, defaultValue: [] })
+  declare stagesOrder: string[];
+
   toDto(): BoardDto {
+    let stageOrders: any[] = this.stagesOrder;
+    if (this.stages && stageOrders) {
+      stageOrders = stageOrders.map((id) => {
+        const stage = this.stages.find((s) => s.id === id);
+        return stage.toDto();
+      });
+    }
     return {
       id: this.id,
       name: this.name,
       color: this.color,
+      stages: stageOrders,
       projectId: this.projectId,
     };
   }

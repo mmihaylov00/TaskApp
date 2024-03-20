@@ -1,11 +1,11 @@
 import { Stage } from './stage.entity';
 import { User } from './user.entity';
 import { UUIDEntity } from '../uuid.entity';
+import { TaskDto } from 'taskapp-common/dist/src/dto/task.dto';
 import {
   TASK_PRIORITIES,
-  TaskDto,
   TaskPriority,
-} from 'taskapp-common/dist/src/dto/task.dto';
+} from 'taskapp-common/dist/src/enums/task-priority.enum';
 import {
   AllowNull,
   BelongsTo,
@@ -21,28 +21,32 @@ export class Task extends UUIDEntity {
   @Column
   declare name: string;
 
-  @Column(DataType.TEXT)
-  declare description: string;
+  @Column(DataType.JSONB)
+  declare description: any;
 
   @AllowNull
   @Column({ type: DataType.ENUM, values: TASK_PRIORITIES })
   declare priority: TaskPriority;
 
-  @BelongsTo(() => Stage, 'stage_id')
-  declare stage: Stage;
-
   @ForeignKey(() => Stage)
   @Column(DataTypes.UUID)
   declare stageId: string;
 
+  @BelongsTo(() => Stage, 'stageId')
+  declare stage: Stage;
+
   @ForeignKey(() => User)
   @Column(DataTypes.UUID)
-  declare creatorId: string;
+  declare author: string;
 
-  @BelongsTo(() => User, 'creator_id')
+  @BelongsTo(() => User, 'author')
   declare creator: User;
 
-  @BelongsTo(() => User)
+  @ForeignKey(() => User)
+  @Column({ allowNull: true, type: DataType.UUID })
+  declare assignee?: string;
+
+  @BelongsTo(() => User, 'assignee')
   declare assignedTo?: User;
 
   @Column({ allowNull: true })
@@ -54,7 +58,8 @@ export class Task extends UUIDEntity {
       title: this.name,
       description: this.description,
       priority: this.priority,
-      author: this.creator.toDto(),
+      stage: this.stageId,
+      author: this.creator?.toDto(),
       assignee: this.assignedTo?.toDto(),
       deadline: this.deadline,
     };

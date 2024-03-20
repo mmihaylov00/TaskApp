@@ -1,8 +1,59 @@
-<div class='board'>
-  <div *ngFor='let stage of stages' class='stage' id='stage-{{stage.id}}'>
-    <h3>{{stage.name}}</h3>
-    <div class='task' *ngFor='let task of tasks[stage.id]; let i = index'>
-      <span>{{task.name}}</span>
-    </div>
+<div id="task-board" class="board">
+  <div
+    *ngFor="let stage of stages; let stageIndex = index"
+    class="stage"
+    [id]="stage.id"
+    [style]="{ 'background-color': stage.color + '4B' }">
+    <h3>{{ stage.name }}</h3>
+    <mat-card
+      [id]="task.id"
+      (click)="viewTask(task)"
+      class="task"
+      [style]="{ 'background-color': stage.color + '62' }"
+      *ngFor="let task of stage.tasks; let i = index">
+      <mat-card-header>
+        <mat-card-title class="w-100">
+          <mat-chip
+            class="priority"
+            *ngIf="task.priority"
+            color="primary"
+            [style]="{
+              'background-color': TASK_PRIORITY_COLORS[task.priority]
+            }"
+            [highlighted]="true">
+            {{ task.priority }}
+          </mat-chip>
+          {{ task.title }}
+        </mat-card-title>
+      </mat-card-header>
+      <mat-divider class="w-100" />
+      <mat-card-content>
+        <div class="d-flex flex-row">
+          <p
+            class="d-flex flex-row flex-align-items-start flex-justify-start w-50">
+            <mat-icon fontIcon="person" class="icon" />
+            <ng-container *ngIf="task.assignee">
+              {{ task.assignee.firstName }} {{ task.assignee.lastName }}
+            </ng-container>
+            <ng-container *ngIf="!task.assignee">No assignee</ng-container>
+          </p>
+          <div
+            class="d-flex flex-row flex-align-items-start flex-justify-end w-50"
+            *ngIf="task.deadline">
+            <mat-icon fontIcon="event_busy" class="icon" />
+            {{ formatDate(task.deadline) }}
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
+
+<button
+  class="new-task"
+  matTooltip="New task"
+  mat-fab
+  color="primary"
+  (click)="newTask()">
+  <mat-icon fontIcon="add" />
+</button>

@@ -19,6 +19,11 @@
             <ng-container *ngIf="column.type == 'text'">
               {{ element[column.key] }}
             </ng-container>
+            <ng-container *ngIf="column.type == 'length'">
+              <mat-chip disableRipple class="size-chip">
+                <p>{{ element[column.key]?.length || 0 }}</p>
+              </mat-chip>
+            </ng-container>
             <ng-container *ngIf="column.type == 'color'">
               <p [style]="'color:' + element[column.key]">
                 {{ element[column.key] }}

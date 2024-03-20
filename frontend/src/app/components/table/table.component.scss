@@ -1,3 +1,5 @@
+@import 'variables';
+
 .loading {
   position: absolute;
   width: 96%;
@@ -7,8 +9,22 @@
   background-color: rgba(10, 10, 10, 0.05);
 }
 
-.chip {
-  font-variant: all-small-caps;
-  letter-spacing: 2px;
-  padding-bottom: 2px;
+::ng-deep {
+  .mat-mdc-chip-action-label {
+    font-size: 13px;
+    font-synthesis-small-caps: auto;
+    letter-spacing: 1px;
+    padding-top: 2px;
+    font-weight: bold;
+  }
+}
+
+.size-chip {
+  color: $primaryText !important;
+  background-color: $secondaryColor !important;
+
+  p {
+    font-size: 18px;
+    color: $primaryText !important;
+  }
 }

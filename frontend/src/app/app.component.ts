@@ -1,11 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { UserService } from './services/user.service';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { setProfileData } from './states/profile.reducer';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { MatSidenav } from '@angular/material/sidenav';
+import { NavData } from './states/nav.reducer';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,8 @@ import { MatSidenav } from '@angular/material/sidenav';
 })
 export class AppComponent {
   isLogged = !!localStorage.getItem('token');
+  navOpen = true;
+  taskOpen = false;
 
   constructor(
     private readonly router: Router,
@@ -22,6 +25,14 @@ export class AppComponent {
   ) {
     this.isInProfile = window.location.pathname === '/profile-setup';
     if (!this.isLogged) return;
+
+    this.store
+      .pipe(select((value: any) => value.navData))
+      .subscribe(async (value: NavData) => {
+        if (!value) return;
+        this.navOpen = value.nav;
+        this.taskOpen = value.task;
+      });
 
     userService.getProfile().subscribe({
       next: async (value) => {

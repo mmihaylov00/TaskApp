@@ -11,14 +11,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
-import { User } from '../database/entity/user.entity';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { Roles } from '../auth/decorator/role.decorator';
 import { BoardService } from './board.service';
-import {
-  BoardDto,
-  CreateBoardDto,
-} from 'taskapp-common/dist/src/dto/board.dto';
+import { CreateBoardDto } from 'taskapp-common/dist/src/dto/board.dto';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 
@@ -30,6 +26,12 @@ export class BoardController {
   @Get()
   async list(@Authenticated() user: JwtUser) {
     return this.boardService.list(user);
+  }
+
+  @Get('/:id')
+  async get(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    const board = await this.boardService.getBoard(id, user, true);
+    return board.toDto();
   }
 
   @Get('/project/:projectId')

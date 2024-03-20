@@ -1,10 +1,18 @@
 <ng-container *ngIf="isLogged && !isInProfile">
   <app-header />
-  <app-side-nav>
-    <div class="page">
-      <router-outlet />
-    </div>
-  </app-side-nav>
+  <mat-drawer-container [hasBackdrop]="false" class="page-content">
+    <mat-drawer mode="side" [opened]="navOpen">
+      <app-side-nav />
+    </mat-drawer>
+    <mat-drawer mode="side" [opened]="taskOpen" position="end">
+      <app-side-task />
+    </mat-drawer>
+    <mat-drawer-content>
+      <div class="page">
+        <router-outlet />
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
 </ng-container>
 <ng-container *ngIf="!isLogged || isInProfile">
   <router-outlet />
