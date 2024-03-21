@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { select, Store } from '@ngrx/store';
 import { ProfileData } from '../../states/profile.reducer';
-import { setNavOpenState } from '../../states/nav.reducer';
+import { toggleNavOpenState } from '../../states/nav.reducer';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   readonly SITE_NAME = environment.siteName;
   username = '';
 
@@ -40,9 +40,7 @@ export class HeaderComponent implements OnInit {
     },
   ];
 
-  ngOnInit(): void {}
-
   toggleMenu() {
-    this.store.dispatch(setNavOpenState({ isOpen: true }));
+    this.store.dispatch(toggleNavOpenState({}));
   }
 }

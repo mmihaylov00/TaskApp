@@ -30,5 +30,6 @@ app-header {
 
 app-side-task {
   display: block;
+  min-width: min(100vw, 600px);
   width: 40vw;
 }

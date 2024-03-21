@@ -28,6 +28,8 @@ export class SideTaskComponent implements OnInit {
     private readonly taskService: TaskService,
   ) {}
 
+  linkCopied = false;
+
   taskId = '';
   boardId = '';
   projectId = '';
@@ -175,6 +177,13 @@ export class SideTaskComponent implements OnInit {
     } else {
       this.taskService.create(data).subscribe(async () => await this.close());
     }
+  }
+
+  async copyLink(copyTooltip) {
+    this.linkCopied = true;
+    await navigator.clipboard.writeText(window.location.href);
+    setTimeout(() => copyTooltip.show(), 1);
+    setTimeout(() => (this.linkCopied = false), 1000);
   }
 
   fullUsername(user: UserDetailsDto): string {

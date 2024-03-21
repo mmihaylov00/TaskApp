@@ -1,10 +1,14 @@
 <ng-container *ngIf="isLogged && !isInProfile">
   <app-header />
   <mat-drawer-container [hasBackdrop]="false" class="page-content">
-    <mat-drawer mode="side" [opened]="navOpen">
+    <mat-drawer (closed)="closeNav()" mode="side" [opened]="navOpen">
       <app-side-nav />
     </mat-drawer>
-    <mat-drawer mode="side" [opened]="taskOpen" position="end">
+    <mat-drawer
+      (closedStart)="closeTask()"
+      mode="side"
+      [opened]="taskOpen"
+      position="end">
       <app-side-task />
     </mat-drawer>
     <mat-drawer-content>

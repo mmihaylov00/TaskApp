@@ -1,12 +1,14 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserService } from './services/user.service';
 import { select, Store } from '@ngrx/store';
 import { setProfileData } from './states/profile.reducer';
-import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
-import { MatSidenav } from '@angular/material/sidenav';
-import { NavData } from './states/nav.reducer';
+import {
+  NavData,
+  setNavOpenState,
+  setTaskOpenState,
+} from './states/nav.reducer';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,7 @@ export class AppComponent {
   isLogged = !!localStorage.getItem('token');
   navOpen = true;
   taskOpen = false;
+  isInProfile = false;
 
   constructor(
     private readonly router: Router,
@@ -46,5 +49,11 @@ export class AppComponent {
     });
   }
 
-  isInProfile = false;
+  closeNav() {
+    this.store.dispatch(setNavOpenState({ isOpen: false }));
+  }
+  async closeTask() {
+    await this.router.navigate([], { replaceUrl: false, queryParams: {} });
+    this.store.dispatch(setTaskOpenState({ isOpen: false }));
+  }
 }
