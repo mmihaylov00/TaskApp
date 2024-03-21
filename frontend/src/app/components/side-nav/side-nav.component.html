@@ -33,10 +33,11 @@
       [class]="{ compact: project.compact }">
       <li *ngFor="let board of project.boards">
         <a
+          style="display: flex; align-items: center"
           [class]="{
             selected: currentRoute.startsWith(
               '/project/' + project.id + '/board/' + board.id
-            )
+            ),
           }"
           [routerLink]="'/project/' + project.id + '/board/' + board.id">
           <mat-icon
