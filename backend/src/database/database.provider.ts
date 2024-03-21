@@ -40,7 +40,7 @@ export const databaseProviders = [
         username: configuration().db.username,
         password: configuration().db.password,
         database: configuration().db.database_name,
-        logging: false,
+        // logging: false,
       });
       sequelize.addModels([User, Project, UserProject, Board, Stage, Task]);
       await sequelize.sync();

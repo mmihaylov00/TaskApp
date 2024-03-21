@@ -96,7 +96,7 @@ export class UsersComponent implements OnInit {
       .open(ConfirmModal, {
         data: {
           title: `${action} ${user.firstName} ${user.lastName} (${user.email})`,
-          action: `${action.toLowerCase()} this user`,
+          action: `${action.toLowerCase()} this user?`,
         },
       })
       .afterClosed()

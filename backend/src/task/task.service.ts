@@ -5,6 +5,7 @@ import {
   MoveTaskDto,
   TaskDetailsDto,
   TaskMovedDto,
+  TaskRemovedDto,
 } from 'taskapp-common/dist/src/dto/task.dto';
 import { TaskAppError } from '../error/task-app.error';
 import { Board } from '../database/entity/board.entity';
@@ -68,7 +69,7 @@ export class TaskService {
     if (!task) {
       throw new TaskAppError('Task could not be found', HttpStatus.NOT_FOUND);
     }
-    const board = await this.boardService.getBoard(task.stage.boardId, user);
+    await this.boardService.getBoard(task.stage.boardId, user);
 
     return task.toDto();
   }
@@ -91,6 +92,7 @@ export class TaskService {
     task.stageId = data.stage;
     task.assignee = data.assignee?.length ? data.assignee : null;
     task.deadline = data.deadline || null;
+    task.updatedAt = new Date();
 
     await task.save();
     task = await Task.findByPk(id, {
@@ -117,6 +119,7 @@ export class TaskService {
 
     const oldStageId = task.stageId;
     task.stageId = data.stageId;
+    task.updatedAt = new Date();
 
     await task.save();
 
@@ -126,6 +129,59 @@ export class TaskService {
       index: data.index,
       oldStageId,
     });
+  }
+
+  async archive(id: string, user: JwtUser) {
+    let task = await Task.findByPk(id, { include: [Stage] });
+    if (!task) {
+      throw new TaskAppError('invalid_task', HttpStatus.BAD_REQUEST);
+    }
+
+    const boardId = task.stage.boardId;
+
+    await this.boardService.getBoard(boardId, user);
+
+    task.archived = true;
+    task.updatedAt = new Date();
+
+    await task.save();
+
+    await this.removeFromStage(task.stage, task.id);
+
+    this.boardService.sendMessage(boardId, 'task-removed', <TaskRemovedDto>{
+      taskId: task.id,
+      stageId: task.stageId,
+    });
+  }
+
+  async delete(id: string, user: JwtUser) {
+    let task = await Task.findByPk(id, { include: [Stage] });
+    if (!task) {
+      throw new TaskAppError('invalid_task', HttpStatus.BAD_REQUEST);
+    }
+    const boardId = task.stage.boardId;
+    await this.boardService.getBoard(boardId, user);
+
+    task.deleted = true;
+
+    await task.save();
+
+    await this.removeFromStage(task.stage, task.id);
+
+    this.boardService.sendMessage(boardId, 'task-removed', <TaskRemovedDto>{
+      taskId: task.id,
+      stageId: task.stageId,
+    });
+  }
+
+  async removeFromStage(stage: Stage, taskId: string) {
+    const index = stage.tasksOrder.indexOf(taskId);
+    if (index === -1) {
+      return;
+    }
+    stage.tasksOrder.splice(index, 1);
+
+    await stage.save();
   }
 
   private async moveTask(

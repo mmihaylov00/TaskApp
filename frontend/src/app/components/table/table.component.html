@@ -25,9 +25,10 @@
               </mat-chip>
             </ng-container>
             <ng-container *ngIf="column.type == 'color'">
-              <p [style]="'color:' + element[column.key]">
-                {{ element[column.key] }}
-              </p>
+              <mat-icon
+                [style]="'color:' + element[column.key]"
+                fontIcon="square"
+                [matTooltip]="element[column.key]" />
             </ng-container>
             <ng-container *ngIf="column.type == 'slot'">
               <ng-content

@@ -87,8 +87,8 @@ export class ProjectComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.projectId = params.get('projectId');
-      this.loadBoards();
       this.loadProject();
+      this.loadBoards();
       this.loadUsers();
     });
   }
@@ -102,10 +102,15 @@ export class ProjectComponent implements OnInit {
   }
 
   loadProject() {
-    this.projectService.get(this.projectId).subscribe((project) => {
-      this.projectData.name = project.name;
-      this.values.icon = project.icon;
-      this.values.color = project.color;
+    this.projectService.get(this.projectId).subscribe({
+      next: (project) => {
+        this.projectData.name = project.name;
+        this.values.icon = project.icon;
+        this.values.color = project.color;
+      },
+      error: async () => {
+        await this.router.navigate(['']);
+      },
     });
   }
 
@@ -198,7 +203,7 @@ export class ProjectComponent implements OnInit {
       .open(ConfirmModal, {
         data: {
           title: `Remove ${user.firstName} ${user.lastName} (${user.email})`,
-          action: 'remove this user from project ' + this.projectData.name,
+          action: `remove this user from project ${this.projectData.name}?`,
         },
       })
       .afterClosed()

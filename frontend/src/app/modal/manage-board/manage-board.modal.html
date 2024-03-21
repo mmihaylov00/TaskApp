@@ -12,8 +12,13 @@
         <mat-label>Color</mat-label>
         <input type="color" matInput [formControl]="colorControl" />
       </mat-form-field>
-      <form (submit)="addStage()" class="w-100">
-        <mat-form-field class="w-100">
+    </div>
+    <mat-label class="label">Stages</mat-label>
+    <mat-selection-list id="stages" class="stage-list">
+      <form
+        (submit)="addStage()"
+        class="d-flex flex-justify-between flex-wrap w-100 add-stage">
+        <mat-form-field subscriptSizing="dynamic" class="w-100">
           <mat-label>Add Stage</mat-label>
           <input type="text" matInput [formControl]="stageControl" />
           <span class="input-button" matTooltip="Add" (click)="addStage()">
@@ -21,9 +26,6 @@
           </span>
         </mat-form-field>
       </form>
-    </div>
-    <mat-label class="label">Stages</mat-label>
-    <mat-selection-list id="stages" class="stage-list">
       <mat-list-option *ngFor="let stage of stages">
         <div class="d-flex flex-justify-between flex-align-items-center stage">
           <div class="d-flex flex-nowrap flex-justify-between w-80">

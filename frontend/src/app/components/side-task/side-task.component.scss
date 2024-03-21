@@ -5,7 +5,7 @@ mat-card-header {
 }
 
 .bottom-buttons {
-  padding-right: 24px;
+  padding: 10px 16px;
 }
 
 ::ng-deep {
@@ -17,4 +17,30 @@ mat-card-header {
   .NgxEditor__Content {
     min-height: 370px;
   }
+}
+
+.info-box {
+  .info {
+    display: flex;
+    align-items: center;
+
+    .info-key {
+      font-size: 12px;
+      margin-right: 4px;
+    }
+
+    .text-black {
+      font-size: 10px;
+    }
+
+    mat-icon {
+      font-size: 11px;
+      width: 11px;
+      height: 11px;
+    }
+  }
+}
+
+.file-upload {
+  margin-top: 10px;
 }

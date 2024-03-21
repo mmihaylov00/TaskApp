@@ -16,7 +16,7 @@ import {
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
-@Table({ paranoid: true })
+@Table({ paranoid: true, timestamps: false })
 export class Task extends UUIDEntity {
   @Column
   declare name: string;
@@ -52,6 +52,18 @@ export class Task extends UUIDEntity {
   @Column({ allowNull: true })
   declare deadline?: Date;
 
+  @Column({ defaultValue: new Date() })
+  declare createdAt: Date;
+
+  @Column
+  declare updatedAt?: Date;
+
+  @Column
+  declare deleted: boolean;
+
+  @Column
+  declare archived: boolean;
+
   toDto(): TaskDto {
     return {
       id: this.id,
@@ -61,6 +73,8 @@ export class Task extends UUIDEntity {
       stage: this.stageId,
       author: this.creator?.toDto(),
       assignee: this.assignedTo?.toDto(),
+      updatedAt: this.updatedAt,
+      createdAt: this.updatedAt,
       deadline: this.deadline,
     };
   }

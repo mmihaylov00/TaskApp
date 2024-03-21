@@ -35,6 +35,11 @@ export class TaskController {
     return this.taskService.get(id, user);
   }
 
+  @Delete('/:id/archive')
+  async archive(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    return this.taskService.archive(id, user);
+  }
+
   @Put('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async update(
@@ -57,7 +62,10 @@ export class TaskController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id') id: string): Promise<void> {
-    //todo
+  async delete(
+    @Authenticated() user: JwtUser,
+    @Param('id') id: string,
+  ): Promise<void> {
+    return this.taskService.delete(id, user);
   }
 }

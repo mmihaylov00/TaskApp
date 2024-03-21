@@ -1,15 +1,15 @@
 <mat-card>
   <mat-card-header class="d-flex flex-justify-between flex-align-items-center">
-    <mat-card-title class="w-30">
+    <mat-card-title>
       {{ taskId === '_' ? 'Create Task' : 'Edit Task' }}
     </mat-card-title>
-    <div class="d-flex flex-justify-end flex-align-items-center w-70">
+    <div class="d-flex flex-justify-end flex-align-items-center w-100">
       <button
         #copyTooltip="matTooltip"
         (click)="copyLink(copyTooltip)"
         [matTooltip]="linkCopied ? 'Link Copied!' : undefined"
         mat-stroked-button
-        *ngIf="taskId !== '_'"
+        *ngIf="task && taskId !== '_'"
         color="primary">
         <mat-icon fontIcon="link  " />
         Copy link
@@ -118,8 +118,49 @@
           dropdownPlacement="top" />
       </div>
     </div>
+    <mat-card class="w-100 file-upload">
+      <mat-card-header
+        class="d-flex flex-justify-between flex-align-items-center">
+        <mat-card-title>
+          <mat-icon fontIcon="attach_file" />
+          Files
+        </mat-card-title>
+        <div class="d-flex flex-justify-end flex-align-items-center w-100">
+          <button mat-stroked-button color="primary">
+            <mat-icon fontIcon="upload" />
+            Upload
+          </button>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div></div>
+      </mat-card-content>
+    </mat-card>
   </mat-card-content>
-  <mat-card-actions align="end" class="bottom-buttons">
+  <mat-card-actions class="d-flex flex-justify-between bottom-buttons">
+    <div class="info-box">
+      <ng-container *ngIf="task && taskId !== '_'">
+        <div class="info">
+          <mat-icon fontIcon="person" />
+          <p class="info-key">Author:</p>
+          <p class="text-black">
+            {{ task.author.firstName }} {{ task.author.lastName }}
+          </p>
+        </div>
+        <div class="info">
+          <mat-icon fontIcon="calendar_today" />
+          <p class="info-key">Created At:</p>
+          <p class="text-black">{{ formatDateTime(task.createdAt) }}</p>
+        </div>
+        <div class="info">
+          <mat-icon fontIcon="edit_calendar" />
+          <p class="info-key">Last Update At:</p>
+          <p class="text-black">
+            {{ formatDateTime(task.updatedAt) || 'Never' }}
+          </p>
+        </div>
+      </ng-container>
+    </div>
     <button mat-flat-button color="primary" (click)="save()">Save</button>
   </mat-card-actions>
 </mat-card>

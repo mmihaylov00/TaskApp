@@ -34,4 +34,12 @@ export class TaskService {
   get(id: string) {
     return this.http.get<TaskDto>('tasks/' + id);
   }
+
+  archive(id: string) {
+    return this.http.delete<void>('tasks/' + id + '/archive');
+  }
+
+  delete(id: string) {
+    return this.http.delete<void>('tasks/' + id);
+  }
 }

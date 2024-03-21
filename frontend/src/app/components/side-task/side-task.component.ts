@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { select, Store } from '@ngrx/store';
 import { TaskService } from '../../services/task.service';
@@ -11,8 +11,9 @@ import { FormControl, Validators } from '@angular/forms';
 import { CreateTaskDto, TaskDto } from 'taskapp-common/dist/src/dto/task.dto';
 import { TaskPriority } from 'taskapp-common/dist/src/enums/task-priority.enum';
 import { StageDto } from 'taskapp-common/dist/src/dto/stage.dto';
-import { ProjectData } from '../../states/project.reducer';
 import { BoardData } from '../../states/board.reducer';
+import { formatDateTime } from '../../utils/date-formatter.util';
+import { ConfirmModal } from '../../modal/confirm/confirm.modal';
 
 @Component({
   selector: 'app-side-task',
@@ -68,15 +69,47 @@ export class SideTaskComponent implements OnInit {
     {
       icon: 'archive',
       title: 'Archive',
-      onClick: () => {},
+      onClick: () => this.archiveTask(),
     },
     {
       icon: 'delete',
       color: 'warn',
       title: 'Delete',
-      onClick: () => {},
+      onClick: () => this.deleteTask(),
     },
   ];
+
+  deleteTask() {
+    this.dialog
+      .open(ConfirmModal, {
+        data: {
+          title: 'Delete Task - ' + this.task.title,
+          action: 'delete this task? This action cannot be reversed!',
+        },
+      })
+      .afterClosed()
+      .subscribe((value) => {
+        if (!value) return;
+
+        this.taskService.delete(this.taskId).subscribe(() => this.close());
+      });
+  }
+
+  archiveTask() {
+    this.dialog
+      .open(ConfirmModal, {
+        data: {
+          title: 'Archive Task - ' + this.task.title,
+          action: 'archive this task?',
+        },
+      })
+      .afterClosed()
+      .subscribe((value) => {
+        if (!value) return;
+
+        this.taskService.archive(this.taskId).subscribe(() => this.close());
+      });
+  }
 
   ngOnInit(): void {
     this.createEditor();
@@ -210,4 +243,5 @@ export class SideTaskComponent implements OnInit {
   }
 
   protected readonly TaskPriority = TaskPriority;
+  protected readonly formatDateTime = formatDateTime;
 }

@@ -2,15 +2,17 @@ import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import Sortable from 'sortablejs';
 import { BoardService } from '../../services/board.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { ProjectService } from '../../services/project.service';
 import { TaskService } from '../../services/task.service';
 import { StageDto } from 'taskapp-common/dist/src/dto/stage.dto';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
-import { TaskDto, TaskMovedDto } from 'taskapp-common/dist/src/dto/task.dto';
+import {
+  TaskDto,
+  TaskMovedDto,
+  TaskRemovedDto,
+} from 'taskapp-common/dist/src/dto/task.dto';
 import { TASK_PRIORITY_COLORS } from 'taskapp-common/dist/src/enums/task-priority.enum';
 import { formatDate } from '../../utils/date-formatter.util';
-import { setProjectState } from '../../states/project.reducer';
 import { Store } from '@ngrx/store';
 import { setBoardData } from '../../states/board.reducer';
 
@@ -32,6 +34,7 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
   boardId: string;
   projectId: string;
 
+  boardName = '';
   stages: StageDto[] = [];
   users: UserDetailsDto[] = [];
 
@@ -76,12 +79,19 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     });
   }
 
+  readonly events = [
+    'task-created',
+    'task-updated',
+    'task-moved',
+    'task-removed',
+  ];
+
   ngOnDestroy() {
-    this.boardService.unsubscribe('task-created', 'task-updated', 'task-moved');
+    this.boardService.unsubscribe(...this.events);
   }
 
   subscribe() {
-    this.boardService.unsubscribe('task-created', 'task-updated', 'task-moved');
+    this.boardService.unsubscribe(...this.events);
 
     this.boardService.listen(this.boardId, {
       'task-created': (data: TaskDto) => {
@@ -117,7 +127,6 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
               (task) => task.id === data.taskId,
             );
             if (index > -1) {
-              console.log(stage.tasks);
               const splicedTasks = stage.tasks.splice(index, 1);
               task = splicedTasks[0];
               break;
@@ -134,45 +143,65 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
           }
         }
       },
+      'task-removed': (data: TaskRemovedDto) => {
+        for (const stage of this.stages) {
+          if (data.stageId == stage.id) {
+            const index = stage.tasks.findIndex(
+              (task) => task.id === data.taskId,
+            );
+            if (index > -1) {
+              stage.tasks.splice(index, 1);
+              return;
+            }
+          }
+        }
+      },
     });
   }
 
   loadBoards() {
-    this.boardService.get(this.boardId).subscribe((board) => {
-      this.stages = board.stages;
-      this.store.dispatch(
-        setBoardData({ stages: JSON.parse(JSON.stringify(this.stages)) }),
-      );
+    this.boardService.get(this.boardId).subscribe({
+      next: async (board) => {
+        this.stages = board.stages;
+        this.boardName = board.name;
 
-      setTimeout(() => {
-        for (let stage of this.stages) {
-          let element = document.getElementById(`${stage.id}`);
-          Sortable.create(element, {
-            group: 'tasks',
-            animation: 250,
-            draggable: '.task',
-            direction: 'vertical',
-            swapThreshold: 0.1,
-            easing: 'cubic-bezier(1, 0, 0, 1)',
-            onEnd: (event) => {
-              const index = event.newDraggableIndex;
-              const stageId = event.to.id;
-              if (
-                event.from.id === stageId &&
-                event.oldDraggableIndex === index
-              ) {
-                return;
-              }
-              const taskId = event.item.id;
-              this.taskService
-                .move(taskId, { stageId, index, boardId: this.boardId })
-                .subscribe(() => {});
-            },
-            ghostClass: 'ghost',
-            dragClass: 'dragged',
-          });
-        }
-      }, 1);
+        this.store.dispatch(
+          setBoardData({ stages: JSON.parse(JSON.stringify(this.stages)) }),
+        );
+
+        setTimeout(() => {
+          for (let stage of this.stages) {
+            let element = document.getElementById(`${stage.id}`);
+            Sortable.create(element, {
+              group: 'tasks',
+              animation: 250,
+              draggable: '.task',
+              direction: 'vertical',
+              swapThreshold: 0.1,
+              easing: 'cubic-bezier(1, 0, 0, 1)',
+              onEnd: (event) => {
+                const index = event.newDraggableIndex;
+                const stageId = event.to.id;
+                if (
+                  event.from.id === stageId &&
+                  event.oldDraggableIndex === index
+                ) {
+                  return;
+                }
+                const taskId = event.item.id;
+                this.taskService
+                  .move(taskId, { stageId, index, boardId: this.boardId })
+                  .subscribe(() => {});
+              },
+              ghostClass: 'ghost',
+              dragClass: 'dragged',
+            });
+          }
+        }, 1);
+      },
+      error: async () => {
+        await this.router.navigate(['']);
+      },
     });
   }
 

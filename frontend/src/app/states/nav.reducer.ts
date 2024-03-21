@@ -6,7 +6,6 @@ export interface NavData {
 }
 
 const isActive = localStorage.getItem('nav');
-console.log(isActive);
 export const initialState: NavData = {
   nav: isActive === null ? true : isActive === 'true',
   task: false,

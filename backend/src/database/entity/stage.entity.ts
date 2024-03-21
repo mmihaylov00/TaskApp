@@ -36,10 +36,13 @@ export class Stage extends UUIDEntity {
   toDto(): StageDto {
     let taskOrders: any[] = this.tasksOrder;
     if (this.tasks && taskOrders) {
-      taskOrders = taskOrders.map((id) => {
-        const task = this.tasks.find((t) => t.id === id);
-        return task.toDto();
-      });
+      taskOrders = taskOrders
+        .map((id) => {
+          const task = this.tasks.find((t) => t.id === id);
+          if (!task) return undefined;
+          return task.toDto();
+        })
+        .filter((task) => task);
     }
     return {
       id: this.id,

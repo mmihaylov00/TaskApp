@@ -13,11 +13,12 @@
       <ng-container matColumnDef="value">
         <td class="w-50" mat-cell *matCellDef="let element">
           <ng-container *ngIf="values[element.key] !== undefined">
-            <div
-              *ngIf="element.key !== 'icon'"
-              [style]="{
-                color: element.key === 'color' ? values['color'] : undefined
-              }">
+            <mat-icon
+              *ngIf="element.key === 'color'"
+              [style]="'color:' + values[element.key]"
+              fontIcon="square"
+              [matTooltip]="values[element.key]" />
+            <div *ngIf="element.key !== 'icon' && element.key !== 'color'">
               {{ values[element.key] }}
             </div>
             <mat-icon

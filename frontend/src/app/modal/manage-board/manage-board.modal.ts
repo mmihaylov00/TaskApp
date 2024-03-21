@@ -7,7 +7,6 @@ import { BoardService } from '../../services/board.service';
 import { addBoard, updateBoard } from '../../states/project.reducer';
 import { BoardDto } from 'taskapp-common/dist/src/dto/board.dto';
 import Sortable from 'sortablejs';
-import { ManageStageDto } from 'taskapp-common/dist/src/dto/stage.dto';
 
 @Component({
   templateUrl: './manage-board.modal.html',
@@ -21,7 +20,7 @@ export class ManageBoardModal {
     private readonly dialogRef: MatDialogRef<InviteUserModal>,
     private readonly boardService: BoardService,
   ) {
-    this.dialogRef.updateSize(undefined, '80%');
+    this.dialogRef.updateSize('50%', '80%');
     this.setupControls();
   }
 
@@ -44,6 +43,7 @@ export class ManageBoardModal {
       Sortable.create(element, {
         group: 'stages',
         animation: 300,
+        draggable: 'mat-list-option',
         swapThreshold: 0.1,
         easing: 'cubic-bezier(1, 0, 0, 1)',
         onEnd: (event) => this.dropStage(event),
@@ -67,7 +67,6 @@ export class ManageBoardModal {
   ];
 
   dropStage(e) {
-    console.log(e);
     const element = this.stages.splice(e.oldIndex, 1);
     this.stages.splice(e.newIndex, 0, ...element);
   }
@@ -86,7 +85,7 @@ export class ManageBoardModal {
     const value = this.stageControl.value;
     if (!value?.length) return;
 
-    this.stages.push({
+    this.stages.splice(0, 0, {
       name: value,
       color: this.colors[Math.floor(Math.random() * this.colors.length)],
     });
@@ -106,7 +105,6 @@ export class ManageBoardModal {
   }
 
   save() {
-    console.log(this.stages);
     if (!this.boardNameControl.valid) {
       this.boardNameControl.markAsTouched();
       return;

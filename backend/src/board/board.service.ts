@@ -13,6 +13,7 @@ import { User } from '../database/entity/user.entity';
 import { Stage } from '../database/entity/stage.entity';
 import { Task } from '../database/entity/task.entity';
 import { Socket } from 'socket.io';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class BoardService {
@@ -31,7 +32,7 @@ export class BoardService {
     }
 
     const boards = await Board.findAll({
-      where: { archived: false },
+      where: { archived: null },
       include,
       order: ['name'],
     });
@@ -112,27 +113,31 @@ export class BoardService {
   }
 
   async getBoard(id: string, user?: JwtUser, includeTasks = false) {
+    const include = includeTasks
+      ? [
+          {
+            model: Task,
+            required: false,
+            where: { deleted: null, archived: null },
+            include: [
+              {
+                model: User,
+                as: 'assignedTo',
+                attributes: ['id', 'firstName', 'lastName'],
+              },
+            ],
+            attributes: ['id', 'name', 'priority', 'stageId', 'deadline'],
+          },
+        ]
+      : [];
     const board = await Board.findOne({
       where: { id },
       include: [
         { model: Project, include: [User] },
         {
           model: Stage,
-          include: includeTasks
-            ? [
-                {
-                  model: Task,
-                  include: [
-                    {
-                      model: User,
-                      as: 'assignedTo',
-                      attributes: ['id', 'firstName', 'lastName'],
-                    },
-                  ],
-                  attributes: ['id', 'name', 'priority', 'stageId', 'deadline'],
-                },
-              ]
-            : [],
+          required: false,
+          include,
         },
       ],
     });

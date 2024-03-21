@@ -7,6 +7,8 @@ export interface TaskDto {
   title: string;
   description: any;
   stage: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   author: UserDetailsDto;
   priority?: TaskPriority;
   assignee?: UserDetailsDto;
@@ -40,4 +42,9 @@ export interface TaskMovedDto {
   oldStageId: string;
   index: number;
   newStageId: string;
+}
+
+export interface TaskRemovedDto {
+  taskId: string;
+  stageId: string;
 }
