@@ -135,7 +135,7 @@ h5,
 h6,
 p,
 a,
-ng-icon,
+mat-icon,
 div {
   font-family: 'Signika', serif;
   color: $primaryText;
@@ -231,4 +231,50 @@ body {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.error-message {
+  color: $danger;
+  border: $danger solid 1px;
+
+  p {
+    color: $danger;
+  }
+}
+
+.success-message {
+  color: $primaryColor;
+  border: $primaryColor solid 1px;
+
+  p {
+    color: $primaryText;
+  }
+}
+
+.error-message,
+.success-message {
+  width: 100%;
+  padding: 4px;
+  margin-bottom: 12px;
+  height: 32px;
+  display: flex;
+  align-content: center;
+
+  p {
+    align-self: center;
+    font-size: 14px;
+    margin-left: 6px;
+  }
+
+  mat-icon {
+    margin-left: 3px;
+    align-self: center;
+  }
+
+  &.visible {
+    -webkit-animation: fadeInFromNone 0.7s ease-out;
+    -moz-animation: fadeInFromNone 0.7s ease-out;
+    -o-animation: fadeInFromNone 0.7s ease-out;
+    animation: fadeInFromNone 0.7s ease-out;
+  }
 }

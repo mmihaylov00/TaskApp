@@ -21,7 +21,7 @@ const routes: Route[] = [
     pathMatch: 'full',
   },
   {
-    path: 'profile-setup',
+    path: 'change-password-setup',
     component: ProfileSetupComponent,
     pathMatch: 'full',
   },

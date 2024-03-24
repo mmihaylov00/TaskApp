@@ -67,6 +67,7 @@ import { CustomDateAdapter } from './adapters/custom-date.adapter';
 import { NgxEditorModule } from 'ngx-editor';
 import { SideTaskComponent } from './components/side-task/side-task.component';
 import { boardReducer } from './states/board.reducer';
+import { ChangePasswordModal } from './modal/change-password/change-password.modal';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { boardReducer } from './states/board.reducer';
     ManageBoardModal,
     EditUserModal,
     EditProjectModal,
+    ChangePasswordModal,
     AddUserModal,
     ConfirmModal,
     ProjectComponent,

@@ -23,7 +23,7 @@ export class AuthService {
   async setToken(response: LoginResponseDto) {
     localStorage.setItem('token', response.token);
     if (response.status === UserStatus.INVITED) {
-      await this.router.navigate(['/profile-setup']);
+      await this.router.navigate(['/change-password-setup']);
     }
     location.reload();
   }

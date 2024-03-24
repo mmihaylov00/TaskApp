@@ -6,6 +6,7 @@ import {
   DataType,
   ForeignKey,
   HasMany,
+  Index,
   Table,
 } from 'sequelize-typescript';
 import { Project } from './project.entity';
@@ -21,6 +22,7 @@ export class Board extends UUIDEntity {
   @Column
   declare color: string;
 
+  @Index
   @Column
   declare archived: boolean;
 

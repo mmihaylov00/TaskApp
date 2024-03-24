@@ -53,7 +53,11 @@ export class AttachmentService {
       );
     }
 
-    unlinkSync(`./attachments/${task.id}/${attachment.id}_${attachment.name}`);
+    try {
+      unlinkSync(
+        `./attachments/${task.id}/${attachment.id}_${attachment.name}`,
+      );
+    } catch (_) {}
     await attachment.destroy();
     await task.save();
   }

@@ -13,6 +13,7 @@ import {
   DataType,
   ForeignKey,
   HasMany,
+  Index,
   Table,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
@@ -76,9 +77,11 @@ export class Task extends UUIDEntity {
   @Column
   declare updatedAt?: Date;
 
+  @Index('closed')
   @Column
   declare deleted: boolean;
 
+  @Index('closed')
   @Column
   declare archived: boolean;
 

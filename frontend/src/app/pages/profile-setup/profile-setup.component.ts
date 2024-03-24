@@ -9,7 +9,7 @@ import { UserService } from '../../services/user.service';
 import { ProfileSetupDto } from 'taskapp-common/dist/src/dto/auth.dto';
 
 @Component({
-  selector: 'app-profile-setup',
+  selector: 'app-change-password-setup',
   templateUrl: './profile-setup.component.html',
   styleUrls: ['./profile-setup.component.scss'],
 })
@@ -96,7 +96,7 @@ export class ProfileSetupComponent {
     this.error = undefined;
     this.validate(val);
 
-    if (this.form.valid) {
+    if (this.form.valid && !this.error) {
       this.userService.setupProfile(val).subscribe(async () => {
         await this.router.navigate(['/']);
         location.reload();

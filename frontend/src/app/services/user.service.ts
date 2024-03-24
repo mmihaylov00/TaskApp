@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   ProfileSetupDto,
+  UpdatePasswordDto,
   UserDetailsDto,
 } from 'taskapp-common/dist/src/dto/auth.dto';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
@@ -16,6 +17,10 @@ export class UserService {
 
   getProfile() {
     return this.http.get<UserDetailsDto>('profile');
+  }
+
+  updatePassword(body: UpdatePasswordDto) {
+    return this.http.put<void>('profile/password', body);
   }
 
   setupProfile(data: ProfileSetupDto) {

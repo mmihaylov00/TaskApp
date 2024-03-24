@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
   Put,
   UnauthorizedException,
@@ -12,6 +14,7 @@ import { Authenticated } from '../auth/decorator/authenticated.decorator';
 import { UserService } from '../user/user.service';
 import {
   ProfileSetupDto,
+  UpdatePasswordDto,
   UserDetailsDto,
 } from 'taskapp-common/dist/src/dto/auth.dto';
 import { AuthService } from '../auth/auth.service';
@@ -37,16 +40,18 @@ export class ProfileController {
     };
   }
 
-  @Put()
-  async update(@Authenticated() user: JwtUser): Promise<void> {
-    //todo
+  @Put('password')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async update(
+    @Authenticated() user: JwtUser,
+    @Body() data: UpdatePasswordDto,
+  ) {
+    await this.userService.changePassword(user, data);
   }
 
   @Post('/setup')
-  async setup(
-    @Authenticated() user: JwtUser,
-    @Body() data: ProfileSetupDto,
-  ): Promise<void> {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async setup(@Authenticated() user: JwtUser, @Body() data: ProfileSetupDto) {
     await this.userService.setupProfile(user, data);
   }
 }

@@ -5,6 +5,7 @@ import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
 import {
   ProfileSetupDto,
+  UpdatePasswordDto,
   UserDetailsDto,
 } from 'taskapp-common/dist/src/dto/auth.dto';
 import { Project } from '../database/entity/project.entity';
@@ -38,14 +39,30 @@ export class UserService {
     if (dbUser.status !== UserStatus.INVITED) {
       throw new TaskAppError('user_profile_completed', HttpStatus.BAD_REQUEST);
     }
-    const salt = await bcrypt.genSalt(10);
-    const password: string = await bcrypt.hash(data.password, salt);
+    const password: string = await bcrypt.hash(
+      data.password,
+      await bcrypt.genSalt(10),
+    );
 
     dbUser.firstName = data.firstName;
     dbUser.lastName = data.lastName;
     dbUser.email = data.email;
     dbUser.password = password;
     dbUser.status = UserStatus.ACTIVE;
+
+    await dbUser.save();
+  }
+
+  async changePassword(user: JwtUser, data: UpdatePasswordDto) {
+    const dbUser = await this.loginUser(user.email, data.oldPassword);
+    if (!dbUser) {
+      throw new TaskAppError('invalid_password', HttpStatus.BAD_REQUEST);
+    }
+
+    dbUser.password = await bcrypt.hash(
+      data.newPassword,
+      await bcrypt.genSalt(10),
+    );
 
     await dbUser.save();
   }

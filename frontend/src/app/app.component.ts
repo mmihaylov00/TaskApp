@@ -26,7 +26,7 @@ export class AppComponent {
     readonly userService: UserService,
     readonly store: Store,
   ) {
-    this.isInProfile = window.location.pathname === '/profile-setup';
+    this.isInProfile = window.location.pathname === '/change-password-setup';
     if (!this.isLogged) return;
 
     this.store
@@ -42,7 +42,7 @@ export class AppComponent {
         localStorage.setItem('token', value.token);
         store.dispatch(setProfileData(value));
         if (value.status === UserStatus.INVITED && !this.isInProfile) {
-          await this.router.navigate(['profile-setup']);
+          await this.router.navigate(['change-password-setup']);
           this.isInProfile = true;
         }
       },

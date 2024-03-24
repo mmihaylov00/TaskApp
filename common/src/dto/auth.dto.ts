@@ -25,3 +25,8 @@ export interface ProfileSetupDto {
   email: string;
   password: string;
 }
+
+export interface UpdatePasswordDto {
+  oldPassword: string;
+  newPassword: string;
+}

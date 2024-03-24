@@ -5,6 +5,9 @@ import { ProfileData } from '../../states/profile.reducer';
 import { toggleNavOpenState } from '../../states/nav.reducer';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { ConfirmModal } from '../../modal/confirm/confirm.modal';
+import { MatDialog } from '@angular/material/dialog';
+import { ChangePasswordModal } from '../../modal/change-password/change-password.modal';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +20,7 @@ export class HeaderComponent {
 
   constructor(
     private readonly store: Store,
-    private readonly router: Router,
+    private readonly dialog: MatDialog,
     private readonly authService: AuthService,
   ) {
     this.store
@@ -29,9 +32,9 @@ export class HeaderComponent {
 
   readonly DROPDOWN_ITEMS = [
     {
-      icon: 'person',
-      title: 'Profile',
-      onClick: () => this.router.navigate(['/profile']),
+      icon: 'password',
+      title: 'Change Password',
+      onClick: () => this.openChangePassword(),
     },
     {
       icon: 'logout',
@@ -39,6 +42,10 @@ export class HeaderComponent {
       onClick: () => this.authService.logout(),
     },
   ];
+
+  openChangePassword() {
+    this.dialog.open(ChangePasswordModal);
+  }
 
   toggleMenu() {
     this.store.dispatch(toggleNavOpenState({}));

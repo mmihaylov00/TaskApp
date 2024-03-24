@@ -6,6 +6,7 @@ import {
   Column,
   DataType,
   HasMany,
+  Index,
   Table,
 } from 'sequelize-typescript';
 import { UserProject } from './user-project.entity';
@@ -20,6 +21,7 @@ import { Attachment } from './attachment.entity';
 
 @Table({ paranoid: true })
 export class User extends UUIDEntity {
+  @Index
   @Column({ unique: true })
   declare email: string;
 

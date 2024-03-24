@@ -166,37 +166,6 @@ form {
   }
 }
 
-.error-message {
-  color: $danger;
-  border: $danger solid 1px;
-  width: 100%;
-  padding: 4px;
-  margin-bottom: 12px;
-  height: 32px;
-  display: flex;
-  align-content: center;
-
-  p {
-    color: $danger;
-    align-self: center;
-    font-size: 14px;
-    margin-left: 6px;
-  }
-
-  ng-icon {
-    margin-left: 3px;
-    color: $danger;
-    align-self: center;
-  }
-
-  &.visible {
-    -webkit-animation: fadeInFromNone 0.7s ease-out;
-    -moz-animation: fadeInFromNone 0.7s ease-out;
-    -o-animation: fadeInFromNone 0.7s ease-out;
-    animation: fadeInFromNone 0.7s ease-out;
-  }
-}
-
 .login-button-container {
   display: -webkit-box;
   display: -webkit-flex;

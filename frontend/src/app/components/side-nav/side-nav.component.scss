@@ -57,7 +57,7 @@ ul {
     a {
       margin-left: 14px;
 
-      ng-icon {
+      mat-icon {
         transition: all 0.5s linear;
         align-self: baseline;
       }
@@ -81,7 +81,7 @@ ul {
       &:hover,
       &.selected {
         p,
-        ng-icon {
+        mat-icon {
           color: $primaryColor;
         }
 
