@@ -17,6 +17,7 @@ export class DashboardComponent implements OnInit {
   createdTasksChartOptions: Partial<ChartOptions> = undefined;
   overallTaskContributionChartOptions: Partial<ChartOptions> = undefined;
   taskPerStagesChartOptions: Partial<ChartOptions> = undefined;
+  taskPerBoardChartOptions: Partial<ChartOptions> = undefined;
 
   ngOnInit(): void {
     this.userService.getStats().subscribe((stats) => {
@@ -24,7 +25,8 @@ export class DashboardComponent implements OnInit {
       this.setupCreatedTasksChart();
       this.setupTasksChart();
       this.setupOverallTaskChart();
-      this.setupTaskPerStageeChart();
+      this.setupTaskPerStageChart();
+      this.setupTaskPerBoarChart();
     });
   }
 
@@ -76,7 +78,7 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  setupTaskPerStageeChart() {
+  setupTaskPerStageChart() {
     const series: number[] = [];
     const labels: string[] = [];
     const colors: string[] = [];
@@ -88,5 +90,32 @@ export class DashboardComponent implements OnInit {
     this.taskPerStagesChartOptions = { series, labels, colors };
   }
 
-  protected readonly undefined = undefined;
+  setupTaskPerBoarChart() {
+    const series = [
+      {
+        name: 'Pending',
+        data: [],
+        color: '#833ab4',
+      },
+      {
+        name: 'Completed',
+        data: [],
+        color: '#a56ea3',
+      },
+    ];
+    const categories = [];
+    for (const taskBoard of this.stats.taskBoards) {
+      categories.push(taskBoard.name);
+      series[0].data.push(taskBoard.pendingTasks);
+      series[1].data.push(taskBoard.completedTasks);
+    }
+
+    this.taskPerBoardChartOptions = {
+      series,
+      xaxis: {
+        type: 'category',
+        categories,
+      },
+    };
+  }
 }

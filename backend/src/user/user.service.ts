@@ -19,6 +19,7 @@ import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { UserProject } from '../database/entity/user-project.entity';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import sequelize, { Op, QueryTypes } from 'sequelize';
+import { Task } from '../database/entity/task.entity';
 
 @Injectable()
 export class UserService {
@@ -179,6 +180,7 @@ export class UserService {
       overallPendingTasks: 0,
       overallCreatedTasks: 0,
       overallUnassignedTasks: 0,
+      taskBoards: [],
       taskStages: [],
     };
     const userTasks = await User.sequelize.query(
@@ -192,9 +194,9 @@ export class UserService {
 
     for (const task of userTasks) {
       if (task['isCompleted']) {
-        stats.completedTasks = +task['count'];
+        stats.completedTasks = +task['count'] || 0;
       } else {
-        stats.pendingTasks = +task['count'];
+        stats.pendingTasks = +task['count'] || 0;
       }
     }
 
@@ -218,9 +220,9 @@ export class UserService {
 
     for (const task of overallTasks) {
       if (task['isCompleted']) {
-        stats.overallCompletedTasks = +task['count'];
+        stats.overallCompletedTasks = +task['count'] || 0;
       } else {
-        stats.overallPendingTasks = +task['count'];
+        stats.overallPendingTasks = +task['count'] || 0;
       }
     }
 
@@ -233,7 +235,7 @@ export class UserService {
     );
 
     for (const task of createdTasks) {
-      stats.createdTasks = +task['count'];
+      stats.createdTasks = +task['count'] || 0;
     }
 
     const unassignedTasks = await User.sequelize.query(
@@ -241,12 +243,12 @@ export class UserService {
         'FROM "Projects" P ' +
         'JOIN "Tasks" T on P.id = T."projectId" ' +
         'WHERE P.id IN (:ids) ' +
-        '  AND T.assignee IS NULL;',
+        'AND T.assignee IS NULL;',
       { type: QueryTypes.SELECT, replacements: { ids } },
     );
 
-    for (const task of createdTasks) {
-      stats.overallUnassignedTasks = +task['count'];
+    for (const task of unassignedTasks) {
+      stats.overallUnassignedTasks = +task['count'] || 0;
     }
 
     stats.overallCreatedTasks =
@@ -255,10 +257,10 @@ export class UserService {
       stats.overallCompletedTasks -
       stats.createdTasks;
 
-    const stages = await Project.sequelize.query(
+    const stages = await User.sequelize.query(
       'SELECT S.name as "name", S.color as "color", COUNT(t.id) ' +
         'FROM "Users" U ' +
-        'JOIN "Tasks" T on U.id = T.author ' +
+        'JOIN "Tasks" T on U.id = T.assignee ' +
         'JOIN "Stages" S on T."stageId" = S.id ' +
         'WHERE U."id" = :id ' +
         'AND T.deleted IS NULL ' +
@@ -269,9 +271,45 @@ export class UserService {
     for (const stage of stages) {
       stats.taskStages.push({
         name: stage['name'],
-        tasks: +stage['count'],
+        tasks: +stage['count'] || 0,
         color: stage['color'],
       });
+    }
+
+    const boards = await User.sequelize.query(
+      'SELECT B.name as "name", ' +
+        'T.completed as "isCompleted", COUNT(t.id) as "count" ' +
+        'FROM "Users" U ' +
+        'JOIN "Tasks" T on U.id = T.assignee ' +
+        'JOIN "Stages" S on T."stageId" = S.id ' +
+        'JOIN "Boards" B on B.id = S."boardId" ' +
+        'WHERE U."id" = :id AND T.deleted IS NULL AND B.archived IS NULL ' +
+        'GROUP BY B.id, B.name, T.completed;',
+      { type: QueryTypes.SELECT, replacements: { id: user.id } },
+    );
+
+    for (const board of boards) {
+      const index = stats.taskBoards.findIndex((b) => b.name == board['name']);
+      const taskBoard =
+        index > -1
+          ? stats.taskBoards[index]
+          : {
+              name: board['name'],
+              pendingTasks: 0,
+              completedTasks: 0,
+            };
+
+      if (board['isCompleted']) {
+        taskBoard.completedTasks += +board['count'] || 0;
+      } else {
+        taskBoard.pendingTasks += +board['count'] || 0;
+      }
+
+      if (index > -1) {
+        stats.taskBoards.splice(index, 1, taskBoard);
+      } else {
+        stats.taskBoards.push(taskBoard);
+      }
     }
 
     return stats;

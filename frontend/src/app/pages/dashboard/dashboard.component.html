@@ -11,18 +11,24 @@
       </div>
       <mat-divider [vertical]="true" />
       <div class="w-48">
-        <app-pie-chart [options]="tasksChartOptions" title="Assigned Tasks" />
+        <app-bar-chart
+          [options]="taskPerBoardChartOptions"
+          title="Assigned Tasks per Board" />
       </div>
     </div>
     <mat-divider />
     <div content class="row d-flex flex-justify-between">
-      <div class="w-48">
+      <div class="w-33">
+        <app-pie-chart [options]="tasksChartOptions" title="Assigned Tasks" />
+      </div>
+      <mat-divider [vertical]="true" />
+      <div class="w-33">
         <app-pie-chart
           [options]="createdTasksChartOptions"
           title="Created Tasks" />
       </div>
       <mat-divider [vertical]="true" />
-      <div class="w-48">
+      <div class="w-33">
         <app-pie-chart
           [options]="taskPerStagesChartOptions"
           title="Assigned Tasks per Stage" />

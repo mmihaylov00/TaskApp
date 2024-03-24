@@ -23,5 +23,10 @@ export interface UserStatsDto {
   overallPendingTasks: number;
   overallCreatedTasks: number;
   overallUnassignedTasks: number;
+  taskBoards: {
+    name: string;
+    pendingTasks: number;
+    completedTasks: number;
+  }[];
   taskStages: { name: string; tasks: number; color: string }[];
 }
