@@ -12,6 +12,7 @@ import {
   MoveTaskDto,
   TaskDto,
 } from 'taskapp-common/dist/src/dto/task.dto';
+import { StageDto } from 'taskapp-common/dist/src/dto/stage.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -35,11 +36,23 @@ export class TaskService {
     return this.http.get<TaskDto>('tasks/' + id);
   }
 
+  getStages(id: string) {
+    return this.http.get<StageDto[]>('tasks/' + id + '/stages');
+  }
+
+  getAssigned() {
+    return this.http.get<TaskDto[]>('tasks/assigned');
+  }
+
   complete(id: string) {
     return this.http.put<void>('tasks/' + id + '/complete', {});
   }
 
   delete(id: string) {
     return this.http.delete<void>('tasks/' + id);
+  }
+
+  find(search: string) {
+    return this.http.post<TaskDto[]>('tasks/search', { search });
   }
 }

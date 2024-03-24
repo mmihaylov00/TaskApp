@@ -55,9 +55,9 @@ export class SideNavComponent implements OnInit {
       link: '/',
     },
     {
-      name: 'My Todos',
+      name: 'My Tasks',
       icon: 'work',
-      link: '/team',
+      link: '/tasks',
     },
     {
       name: 'Administration',

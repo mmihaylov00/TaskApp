@@ -25,8 +25,13 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  async create(@Authenticated() user: JwtUser, @Body() data: CreateTaskDto) {
+  create(@Authenticated() user: JwtUser, @Body() data: CreateTaskDto) {
     return this.taskService.create(user, data);
+  }
+
+  @Get('/assigned')
+  getAssigned(@Authenticated() user: JwtUser) {
+    return this.taskService.getAssigned(user);
   }
 
   @Get('/:id')
@@ -34,8 +39,18 @@ export class TaskController {
     return (await this.taskService.get(id, user)).toDto();
   }
 
+  @Post('/search')
+  search(@Authenticated() user: JwtUser, @Body() body: { search: string }) {
+    return this.taskService.find(body.search, user);
+  }
+
+  @Get('/:id/stages')
+  getStages(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    return this.taskService.getStages(id, user);
+  }
+
   @Put('/:id')
-  async update(
+  update(
     @Authenticated() user: JwtUser,
     @Body() data: CreateTaskDto,
     @Param('id') id: string,
@@ -54,7 +69,7 @@ export class TaskController {
   }
 
   @Put('/:id/complete')
-  async archive(@Authenticated() user: JwtUser, @Param('id') id: string) {
+  archive(@Authenticated() user: JwtUser, @Param('id') id: string) {
     return this.taskService.complete(id, user);
   }
 
@@ -64,6 +79,6 @@ export class TaskController {
     @Authenticated() user: JwtUser,
     @Param('id') id: string,
   ): Promise<void> {
-    return this.taskService.delete(id, user);
+    await this.taskService.delete(id, user);
   }
 }

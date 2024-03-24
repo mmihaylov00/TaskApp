@@ -28,8 +28,8 @@ export interface TaskDetailsDto {
 export interface CreateTaskDto {
   title: string;
   description: string;
-  boardId: string;
   stage: string;
+  boardId?: string;
   priority?: TaskPriority;
   assignee?: string;
   deadline?: Date;

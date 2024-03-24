@@ -28,6 +28,29 @@ header {
 
 .search {
   margin-right: 24px;
+  font-weight: 900;
+  color: $primaryText;
+
+  width: 100%;
+  padding: 12px 24px 12px 32px;
+
+  background-color: transparent;
+  line-height: 18px;
+  border-radius: 50px;
+  border: 1px solid $primaryColor;
+  transition: all 250ms ease-in-out;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+
+  &::placeholder {
+    color: $primaryColor;
+  }
+}
+
+.search-icon {
+  display: flex;
+  position: absolute;
+  margin-left: 6px;
 }
 
 .bell {
@@ -47,4 +70,10 @@ app-avatar {
 h1 {
   margin-left: 14px;
   font-size: 30px;
+}
+
+::ng-deep {
+  .menu-button * {
+    color: $primaryColor;
+  }
 }

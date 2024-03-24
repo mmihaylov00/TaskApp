@@ -1,2 +1,16 @@
-<!--<div>List of assigned team that are not in the complete stage</div>-->
-<app-task-board></app-task-board>
+<mat-card class="w-100">
+  <mat-card-header>
+    <mat-card-title>Tasks</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="w-100">
+    <div *ngIf="!tasks.length">There are no tasks assigned to you</div>
+    <div class="d-flex flex-justify-start flex-wrap" *ngIf="tasks.length">
+      <app-task-card
+        color="#c9daf8"
+        class="task-card"
+        *ngFor="let task of tasks"
+        [task]="task"
+        [thumbnail]="loadedAttachments[task.id]" />
+    </div>
+  </mat-card-content>
+</mat-card>

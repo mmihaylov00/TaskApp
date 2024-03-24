@@ -44,7 +44,7 @@
                 [style]="{'background-color': column.colors?.[element[column.key]] || undefined}"
                 highlighted
                 disableRipple>
-                {{ element[column.key] }}
+                {{ element[column.key]?.replaceAll('_', ' ') }}
               </mat-chip>
             </ng-container>
           </td>

@@ -10,7 +10,6 @@ import {
 import { UserService } from './user.service';
 import { JwtGuard } from '../auth/guard/jwt.guard';
 import { Authenticated } from '../auth/decorator/authenticated.decorator';
-import { User } from '../database/entity/user.entity';
 import { Roles } from '../auth/decorator/role.decorator';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';

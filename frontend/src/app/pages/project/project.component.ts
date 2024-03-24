@@ -404,4 +404,8 @@ export class ProjectComponent implements OnInit {
 
     this.store.dispatch(notifyFavUpdate({}));
   }
+
+  isUndefined(val: any) {
+    return val === undefined;
+  }
 }

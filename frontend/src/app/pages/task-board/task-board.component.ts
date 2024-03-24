@@ -226,13 +226,6 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  async viewTask(task) {
-    await this.router.navigate([], {
-      replaceUrl: false,
-      queryParams: { task: task.id },
-    });
-  }
-
   loadUsers() {
     this.projectService
       .listUsers(this.projectId, { page: 1, pageAmount: 100 })
@@ -249,9 +242,6 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
       replaceUrl: false,
       queryParams: { task: '_' },
     });
-    // this.dialog.open(ManageTaskModal, {
-    //   data: { stages: this.stages, users: this.users, boardId: this.boardId },
-    // });
   }
 
   getAttachment(id: string) {
@@ -262,7 +252,4 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
       this.loadedAttachments[id] = URL.createObjectURL(file);
     });
   }
-
-  protected readonly TASK_PRIORITY_COLORS = TASK_PRIORITY_COLORS;
-  protected readonly simpleDateFormat = simpleDateFormat;
 }

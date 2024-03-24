@@ -13,7 +13,7 @@
 
         <ng-container matColumnDef="value">
           <td class="w-50" mat-cell *matCellDef="let element">
-            <ng-container *ngIf="values[element.key] !== undefined">
+            <ng-container *ngIf="!isUndefined(values[element.key])">
               <mat-icon
                 *ngIf="element.key === 'color'"
                 [style]="'color:' + values[element.key]"
@@ -30,7 +30,7 @@
                 }"
                 [fontIcon]="values[element.key] || 'widgets'" />
             </ng-container>
-            <ng-container *ngIf="values[element.key] === undefined">
+            <ng-container *ngIf="isUndefined(values[element.key])">
               <ngx-skeleton-loader
                 *ngIf="element.key === 'icon'"
                 appearance="circle" />
@@ -55,6 +55,10 @@
         [legend]="boardChartOptions.legend"
         [fill]="boardChartOptions.fill"
         [title]="{ text: 'Tasks per Board', align: 'left' }" />
+      <ngx-skeleton-loader
+        *ngIf="!boardChartOptions"
+        count="6"
+        appearance="line" />
     </div>
     <div class="w-30">
       <apx-chart
@@ -69,7 +73,11 @@
         [fill]="stagesChartOption.fill"
         [dataLabels]="stagesChartOption.dataLabels"
         [plotOptions]="stagesChartOption.plotOptions"
-        [title]="{ text: 'Tasks per Stages', align: 'left' }" />
+        [title]="{ text: 'Tasks per Stage', align: 'left' }" />
+      <ngx-skeleton-loader
+        class="pie-skeleton"
+        *ngIf="!boardChartOptions"
+        appearance="circle" />
     </div>
   </div>
 </app-card>

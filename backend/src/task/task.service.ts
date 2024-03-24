@@ -14,6 +14,9 @@ import { BoardService } from '../board/board.service';
 import { ProjectService } from '../project/project.service';
 import { User } from '../database/entity/user.entity';
 import { Attachment } from '../database/entity/attachment.entity';
+import sequelize, { Op } from 'sequelize';
+import { UserProject } from '../database/entity/user-project.entity';
+import { Project } from '../database/entity/project.entity';
 
 @Injectable()
 export class TaskService {
@@ -23,6 +26,9 @@ export class TaskService {
   ) {}
 
   async create(user: JwtUser, data: CreateTaskDto) {
+    if (!data.boardId) {
+      throw new TaskAppError('invalid_board_id', HttpStatus.BAD_REQUEST);
+    }
     const board = await this.boardService.getBoard(data.boardId, user);
 
     const stage = board.stages.find((s) => s.id === data.stage);
@@ -61,6 +67,40 @@ export class TaskService {
     return task.toDto();
   }
 
+  async find(search: string, user: JwtUser) {
+    // const where = {
+    //   [Op.and]: [
+    //     sequelize.where(sequelize.col('name'), { [Op.substring]: search }),
+    //     // { 'Users.id': user.id },
+    //   ],
+    // };
+
+    const tasks = await Task.findAll({
+      where: {
+        name: { [Op.substring]: search },
+      },
+      limit: 5,
+      include: [
+        { model: Project, include: [{ model: User, where: { id: user.id } }] },
+      ],
+      attributes: ['id', 'name'],
+      order: ['name'],
+    });
+    return tasks.map((t) => t.toDto());
+  }
+
+  async getStages(id: string, user: JwtUser) {
+    const task = await Task.findByPk(id, {
+      include: [Stage],
+    });
+    if (!task) {
+      throw new TaskAppError('Task could not be found', HttpStatus.NOT_FOUND);
+    }
+    const board = await this.boardService.getBoard(task.stage.boardId, user);
+
+    return board.stages.map((stage) => stage.toDto());
+  }
+
   async get(id: string, user: JwtUser) {
     const task = await Task.findByPk(id, {
       include: [
@@ -80,14 +120,15 @@ export class TaskService {
   }
 
   async update(id: string, user: JwtUser, data: CreateTaskDto) {
-    const board = await this.boardService.getBoard(data.boardId, user);
+    let task = await Task.findByPk(id, {
+      include: [Attachment, { model: Stage }],
+    });
 
+    const board = await this.boardService.getBoard(task.stage.boardId, user);
     const stage = board.stages.find((s) => s.id === data.stage);
     if (!stage) {
       throw new TaskAppError('invalid_stage', HttpStatus.BAD_REQUEST);
     }
-
-    let task = await Task.findByPk(id, { include: [Attachment] });
 
     await this.moveTask(task, board, stage);
 
@@ -167,6 +208,19 @@ export class TaskService {
       taskId: task.id,
       stageId: task.stageId,
     });
+  }
+
+  async getAssigned(user: JwtUser) {
+    const dbUser = await User.findByPk(user.id, {
+      include: {
+        model: Task,
+        as: 'assignedTasks',
+        include: [Attachment],
+      },
+      order: [['assignedTasks', 'deadline', 'ASC']],
+    });
+
+    return dbUser.assignedTasks.map((t) => t.toDto());
   }
 
   async delete(id: string, user: JwtUser) {

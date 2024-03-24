@@ -1,0 +1,71 @@
+.task:hover {
+  cursor: pointer;
+}
+
+.task,
+.dragged {
+  width: 96%;
+  height: fit-content;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  box-sizing: border-box;
+  cursor: move;
+  font-size: 14px;
+  margin: 4px 2px;
+}
+
+.task-content {
+  padding: 0;
+}
+
+.thumbnail-header {
+  padding: 0;
+  height: 100px;
+
+  img {
+    height: 93%;
+    object-fit: cover;
+  }
+}
+
+.card-info {
+  padding: 6px 6px 0;
+}
+
+.ghost {
+  opacity: 0.2;
+}
+
+mat-card-header {
+  padding: 4px;
+}
+
+::ng-deep {
+  .mat-mdc-card-header-text {
+    width: 100%;
+  }
+
+  .mat-mdc-chip-action-label {
+    font-size: 13px;
+    font-synthesis-small-caps: auto;
+    letter-spacing: 1px;
+    padding-top: 2px;
+    font-weight: bold;
+  }
+}
+
+mat-card-content {
+  padding: 6px;
+
+  &:last-child {
+    padding-bottom: 6px;
+  }
+}
+
+.priority {
+  float: right;
+}
+
+.icon {
+  font-size: 18px;
+}

@@ -90,12 +90,14 @@ export class SideTaskComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.today.setDate(this.today.getDate() - 1);
     this.createEditor();
     this.enableFileDrop();
 
     setTimeout(() => {
       this.route.queryParamMap.subscribe(async (params) => {
         this.taskId = params.get('task');
+        this.stages = [];
 
         if (this.taskId) {
           this.selectedFiles = [];
@@ -120,7 +122,11 @@ export class SideTaskComponent implements OnInit {
         this.boardId = data.boardId;
         this.projectId = data.projectId;
         this.users = data.users;
-        this.stages = data.stages;
+        if (data.stages) {
+          this.stages = data.stages;
+          this.stageControl.setValue(this.task?.stage || this.stages[0]?.id);
+          this.saveEnabled = false;
+        }
       });
   }
 
@@ -213,6 +219,13 @@ export class SideTaskComponent implements OnInit {
 
   open(task?: TaskDto) {
     this.task = task;
+    if (!this.stages.length) {
+      this.taskService.getStages(this.task.id).subscribe((stages) => {
+        this.stages = stages;
+        this.stageControl.setValue(this.task?.stage || this.stages[0]?.id);
+        this.saveEnabled = false;
+      });
+    }
     if (this.task?.attachments) {
       for (const attachment of this.task?.attachments) {
         this.getAttachment(attachment);

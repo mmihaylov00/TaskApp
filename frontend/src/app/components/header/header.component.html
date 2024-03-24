@@ -6,9 +6,24 @@
     <h1>{{ SITE_NAME }}</h1>
   </div>
   <div class="right">
-    <button mat-icon-button matTooltip="Search" class="search" color="primary">
-      <mat-icon fontIcon="search" />
-    </button>
+    <input
+      #search
+      class="search"
+      type="text"
+      placeholder="Search for tasks..."
+      (input)="loadTasks()"
+      [formControl]="searchControl"
+      [matAutocomplete]="auto" />
+    <mat-icon
+      class="search-icon hover-pointer"
+      (click)="search.focus()"
+      fontIcon="search"
+      color="primary" />
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let task of tasks" [value]="task.id">
+        {{ task.title }}
+      </mat-option>
+    </mat-autocomplete>
     <button
       class="d-flex flex-justify-center bell"
       mat-icon-button
@@ -23,10 +38,11 @@
 <app-avatar [matMenuTriggerFor]="menu" [username]="username"></app-avatar>
 <mat-menu #menu="matMenu">
   <button
+    class="menu-button"
     mat-menu-item
     *ngFor="let item of DROPDOWN_ITEMS"
     (click)="item.onClick()">
-    <mat-icon [fontIcon]="item.icon" />
+    <mat-icon color="primary" [fontIcon]="item.icon" />
     {{ item.title }}
   </button>
 </mat-menu>

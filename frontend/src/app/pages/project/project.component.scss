@@ -1,3 +1,10 @@
 .flex-justify-end {
   column-gap: 4px;
 }
+
+::ng-deep {
+  .pie-skeleton .circle {
+    height: 200px !important;
+    width: 200px !important;
+  }
+}

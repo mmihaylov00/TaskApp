@@ -68,6 +68,7 @@ export class Task extends UUIDEntity {
   @BelongsTo(() => User, 'updatedBy')
   declare updatedByUser?: User;
 
+  @Index
   @Column({ allowNull: true })
   declare deadline?: Date;
 

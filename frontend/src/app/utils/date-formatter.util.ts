@@ -20,6 +20,37 @@ export function simpleDateFormat(date: Date | string) {
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
+export function relativeDateFormat(date: Date | string) {
+  if (!date) return undefined;
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
+  const suffix = getSuffix(date);
+
+  return `${simpleDateFormat(date)} ${suffix ? '(' + suffix + ')' : ''}`;
+}
+
+function getSuffix(date: Date) {
+  const now = new Date();
+  const diffHours = Math.floor(
+    (date.getTime() - now.getTime()) / (1000 * 60 * 60),
+  );
+  if (diffHours <= -24) {
+    return 'LATE';
+  }
+  if (diffHours <= 0) {
+    return 'Today';
+  }
+  if (diffHours <= 24) {
+    return 'Tomorrow';
+  }
+  if (diffHours <= 167) {
+    return 'In ' + Math.ceil(diffHours / 24) + ' days';
+  }
+
+  return undefined;
+}
+
 export function getDaySuffix(date: Date) {
   switch (date.getDate()) {
     case 1:
