@@ -34,16 +34,21 @@ export class ProjectController {
   }
 
   @Post()
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.PROJECT_MANAGER)
   @HttpCode(HttpStatus.CREATED)
   create(@Authenticated() user: JwtUser, @Body() data: CreateProjectDto) {
     return this.projectService.create(user, data);
   }
 
   @Get('/:id')
-  @Roles(Role.ADMIN)
   async get(@Authenticated() user: JwtUser, @Param('id') id: string) {
     return (await this.projectService.getProject(id, user)).toDto();
+  }
+
+  @Get('/:id/stats')
+  @Roles(Role.ADMIN)
+  getStats(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    return this.projectService.getStats(id, user);
   }
 
   @Put('/:id')
@@ -66,12 +71,12 @@ export class ProjectController {
 
   @Get('/user/:id')
   @Roles(Role.ADMIN)
-  async listProjects(@Param('id') id: string) {
+  listProjects(@Param('id') id: string) {
     return this.projectService.listProjects(id);
   }
 
   @Get('/:id/user')
-  async listUsers(
+  listUsers(
     @Authenticated() user: JwtUser,
     @PageParams() pageParams: PageRequestDto,
     @Param('id') id: string,

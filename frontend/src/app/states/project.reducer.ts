@@ -35,6 +35,8 @@ export const removeBoard = createAction(
   props<{ board: BoardDto }>(),
 );
 
+export const notifyFavUpdate = createAction('Notify Fav Update', props<any>());
+
 export const projectReducer = createReducer(
   initialState,
   on(setProjectState, (state, { projects }) => {
@@ -113,5 +115,8 @@ export const projectReducer = createReducer(
 
     localStorage.setItem('projects', JSON.stringify(projects));
     return { projects };
+  }),
+  on(notifyFavUpdate, (state, data) => {
+    return { ...state };
   }),
 );

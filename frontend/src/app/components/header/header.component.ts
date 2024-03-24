@@ -32,7 +32,7 @@ export class HeaderComponent {
 
   readonly DROPDOWN_ITEMS = [
     {
-      icon: 'password',
+      icon: 'edit_note',
       title: 'Change Password',
       onClick: () => this.openChangePassword(),
     },

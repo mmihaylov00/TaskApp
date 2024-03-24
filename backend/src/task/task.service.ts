@@ -145,7 +145,7 @@ export class TaskService {
     });
   }
 
-  async archive(id: string, user: JwtUser) {
+  async complete(id: string, user: JwtUser) {
     let task = await Task.findByPk(id, { include: [Stage] });
     if (!task) {
       throw new TaskAppError('invalid_task', HttpStatus.BAD_REQUEST);
@@ -155,7 +155,7 @@ export class TaskService {
 
     await this.boardService.getBoard(boardId, user);
 
-    task.archived = true;
+    task.completed = true;
     task.updatedAt = new Date();
     task.updatedBy = user.id;
 

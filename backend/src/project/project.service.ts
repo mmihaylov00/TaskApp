@@ -4,6 +4,7 @@ import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import {
   CreateProjectDto,
   ProjectDto,
+  ProjectStatsDto,
 } from 'taskapp-common/dist/src/dto/project.dto';
 import { TaskAppError } from '../error/task-app.error';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
@@ -12,6 +13,9 @@ import { Project } from '../database/entity/project.entity';
 import { Board } from '../database/entity/board.entity';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { UserProject } from '../database/entity/user-project.entity';
+import { Stage } from '../database/entity/stage.entity';
+import { Task } from '../database/entity/task.entity';
+import { QueryTypes } from 'sequelize';
 
 @Injectable()
 export class ProjectService {
@@ -136,8 +140,64 @@ export class ProjectService {
     }
   }
 
+  async getStats(id: string, user: JwtUser) {
+    await this.getProject(id, user);
+    const stats: ProjectStatsDto = {
+      boards: [],
+      stages: [],
+    };
+
+    const stages = await Project.sequelize.query(
+      'SELECT S.name as "name", COUNT(t.id) ' +
+        'FROM "Boards" B ' +
+        'JOIN "Stages" S on B.id = S."boardId" ' +
+        'JOIN "Tasks" T on S.id = T."stageId" ' +
+        'WHERE B."projectId" = :id ' +
+        'AND T.deleted IS NULL ' +
+        'AND T.completed IS NULL ' +
+        'GROUP BY S.name;',
+      { type: QueryTypes.SELECT, replacements: { id } },
+    );
+    for (let stage of stages) {
+      stats.stages.push({ name: stage['name'], tasks: stage['count'] });
+    }
+
+    const boards = await Project.sequelize.query(
+      'SELECT B.id as "id", T.completed as "isCompleted", COUNT(t.id) as "count" ' +
+        'FROM "Boards" B ' +
+        'JOIN "Stages" S on B.id = S."boardId" ' +
+        'JOIN "Tasks" T on S.id = T."stageId" ' +
+        'WHERE B."projectId" = :id AND T.deleted IS NULL ' +
+        'GROUP BY B.id, T.completed;',
+      { type: QueryTypes.SELECT, replacements: { id } },
+    );
+    for (const board of boards) {
+      const index = stats.boards.findIndex((b) => b.id === board['id']);
+
+      const boardItem = { id: board['id'], pendingTasks: 0, completedTasks: 0 };
+      if (index > -1) {
+        boardItem.pendingTasks = stats.boards[index].pendingTasks;
+        boardItem.completedTasks = stats.boards[index].completedTasks;
+      }
+
+      if (board['isCompleted']) {
+        boardItem.completedTasks = board['count'];
+      } else {
+        boardItem.pendingTasks = board['count'];
+      }
+
+      if (index > -1) {
+        stats.boards.splice(index, 1, boardItem);
+      } else {
+        stats.boards.push(boardItem);
+      }
+    }
+
+    return stats;
+  }
+
   async getProject(id: string, user?: JwtUser) {
-    const project = await Project.findOne({ where: { id }, include: User });
+    const project = await Project.findByPk(id, { include: User });
     await this.checkAccess(project, user);
 
     return project;

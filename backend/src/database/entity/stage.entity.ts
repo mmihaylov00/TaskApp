@@ -8,12 +8,14 @@ import {
   DataType,
   ForeignKey,
   HasMany,
+  Index,
   Table,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
 @Table({ paranoid: true })
 export class Stage extends UUIDEntity {
+  @Index
   @Column
   declare name: string;
 

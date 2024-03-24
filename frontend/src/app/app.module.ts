@@ -68,6 +68,7 @@ import { NgxEditorModule } from 'ngx-editor';
 import { SideTaskComponent } from './components/side-task/side-task.component';
 import { boardReducer } from './states/board.reducer';
 import { ChangePasswordModal } from './modal/change-password/change-password.modal';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -140,6 +141,7 @@ import { ChangePasswordModal } from './modal/change-password/change-password.mod
     MatDatepickerModule,
     MatNativeDateModule,
     NgxEditorModule,
+    NgApexchartsModule,
   ],
   providers: [
     AuthService,

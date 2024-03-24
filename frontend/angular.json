@@ -27,9 +27,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "allowedCommonJsDependencies": [
-              "taskapp-common"
-            ],
+            "allowedCommonJsDependencies": ["taskapp-common"],
             "assets": ["src/favicon.ico", "src/assets"],
             "stylePreprocessorOptions": {
               "includePaths": ["src/assets/styles"]
@@ -40,7 +38,7 @@
               "src/assets/styles/styles.scss",
               "src/assets/styles/bootstrap.scss"
             ],
-            "scripts": []
+            "scripts": ["node_modules/apexcharts/dist/apexcharts.min.js"]
           },
           "configurations": {
             "production": {

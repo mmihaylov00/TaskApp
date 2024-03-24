@@ -2,45 +2,75 @@
   <button actions mat-flat-button color="primary" (click)="editProject()">
     Edit
   </button>
-  <div content class="w-25">
-    <table mat-table *ngIf="projectData" [dataSource]="projectData.values">
-      <ng-container matColumnDef="key">
-        <td class="w-50" mat-cell *matCellDef="let element">
-          {{ element.title }}
-        </td>
-      </ng-container>
+  <div content class="d-flex flex-justify-between">
+    <div class="w-30">
+      <table mat-table *ngIf="projectData" [dataSource]="projectData.values">
+        <ng-container matColumnDef="key">
+          <td class="w-50" mat-cell *matCellDef="let element">
+            {{ element.title }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="value">
-        <td class="w-50" mat-cell *matCellDef="let element">
-          <ng-container *ngIf="values[element.key] !== undefined">
-            <mat-icon
-              *ngIf="element.key === 'color'"
-              [style]="'color:' + values[element.key]"
-              fontIcon="square"
-              [matTooltip]="values[element.key]" />
-            <div *ngIf="element.key !== 'icon' && element.key !== 'color'">
-              {{ values[element.key] }}
-            </div>
-            <mat-icon
-              *ngIf="element.key == 'icon'"
-              color="primary"
-              [style]="{
-                color: values['color']
-              }"
-              [fontIcon]="values[element.key] || 'widgets'" />
-          </ng-container>
-          <ng-container *ngIf="values[element.key] === undefined">
-            <ngx-skeleton-loader
-              *ngIf="element.key === 'icon'"
-              appearance="circle" />
-            <ngx-skeleton-loader
-              *ngIf="element.key !== 'icon'"
-              appearance="line" />
-          </ng-container>
-        </td>
-      </ng-container>
-      <tr mat-row *matRowDef="let row; columns: ['key', 'value']"></tr>
-    </table>
+        <ng-container matColumnDef="value">
+          <td class="w-50" mat-cell *matCellDef="let element">
+            <ng-container *ngIf="values[element.key] !== undefined">
+              <mat-icon
+                *ngIf="element.key === 'color'"
+                [style]="'color:' + values[element.key]"
+                fontIcon="square"
+                [matTooltip]="values[element.key]" />
+              <div *ngIf="element.key !== 'icon' && element.key !== 'color'">
+                {{ values[element.key] }}
+              </div>
+              <mat-icon
+                *ngIf="element.key == 'icon'"
+                color="primary"
+                [style]="{
+                  color: values['color']
+                }"
+                [fontIcon]="values[element.key] || 'widgets'" />
+            </ng-container>
+            <ng-container *ngIf="values[element.key] === undefined">
+              <ngx-skeleton-loader
+                *ngIf="element.key === 'icon'"
+                appearance="circle" />
+              <ngx-skeleton-loader
+                *ngIf="element.key !== 'icon'"
+                appearance="line" />
+            </ng-container>
+          </td>
+        </ng-container>
+        <tr mat-row *matRowDef="let row; columns: ['key', 'value']"></tr>
+      </table>
+    </div>
+    <div class="w-30">
+      <apx-chart
+        *ngIf="boardChartOptions"
+        [series]="boardChartOptions.series"
+        [chart]="boardChartOptions.chart"
+        [dataLabels]="boardChartOptions.dataLabels"
+        [plotOptions]="boardChartOptions.plotOptions"
+        [xaxis]="boardChartOptions.xaxis"
+        [yaxis]="boardChartOptions.yaxis"
+        [legend]="boardChartOptions.legend"
+        [fill]="boardChartOptions.fill"
+        [title]="{ text: 'Tasks per Board', align: 'left' }" />
+    </div>
+    <div class="w-30">
+      <apx-chart
+        *ngIf="stagesChartOption"
+        [series]="stagesChartOption.series"
+        [chart]="stagesChartOption.chart"
+        [labels]="stagesChartOption.labels"
+        [tooltip]="stagesChartOption.tooltip"
+        [colors]="stagesChartOption.colors"
+        [states]="stagesChartOption.states"
+        [legend]="stagesChartOption.legend"
+        [fill]="stagesChartOption.fill"
+        [dataLabels]="stagesChartOption.dataLabels"
+        [plotOptions]="stagesChartOption.plotOptions"
+        [title]="{ text: 'Tasks per Stages', align: 'left' }" />
+    </div>
   </div>
 </app-card>
 
@@ -90,6 +120,7 @@
   [columns]="userColumns"
   [loading]="userLoading"
   [data]="userData"
+  (changePage)="changeUserPage($event)"
   [page]="userPage">
   <button actions mat-flat-button color="primary" (click)="inviteUser()">
     Invite

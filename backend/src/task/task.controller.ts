@@ -34,11 +34,6 @@ export class TaskController {
     return (await this.taskService.get(id, user)).toDto();
   }
 
-  @Delete('/:id/archive')
-  async archive(@Authenticated() user: JwtUser, @Param('id') id: string) {
-    return this.taskService.archive(id, user);
-  }
-
   @Put('/:id')
   async update(
     @Authenticated() user: JwtUser,
@@ -56,6 +51,11 @@ export class TaskController {
     @Param('id') id: string,
   ) {
     await this.taskService.move(id, user, data);
+  }
+
+  @Put('/:id/complete')
+  async archive(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    return this.taskService.complete(id, user);
   }
 
   @Delete('/:id')

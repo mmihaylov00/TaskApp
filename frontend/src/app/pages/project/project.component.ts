@@ -11,10 +11,39 @@ import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { EditProjectModal } from '../../modal/edit-project/edit-project.modal';
 import { ConfirmModal } from '../../modal/confirm/confirm.modal';
 import { AddUserModal } from '../../modal/add-user/add-user.modal';
-import { removeBoard } from '../../states/project.reducer';
+import { notifyFavUpdate, removeBoard } from '../../states/project.reducer';
 import { Store } from '@ngrx/store';
 import { ROLE_COLORS } from 'taskapp-common/dist/src/enums/role.enum';
 import { USER_STATUS_COLORS } from 'taskapp-common/dist/src/enums/user-status.enum';
+import { ProjectStatsDto } from 'taskapp-common/dist/src/dto/project.dto';
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexNonAxisChartSeries,
+  ApexDataLabels,
+  ApexPlotOptions,
+  ApexXAxis,
+  ApexLegend,
+  ApexFill,
+  ApexYAxis,
+  ApexTooltip,
+  ApexStates,
+} from 'ng-apexcharts';
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries | ApexNonAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  tooltip: ApexTooltip;
+  states: ApexStates;
+  plotOptions: ApexPlotOptions;
+  labels: string[];
+  colors: string[];
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  legend: ApexLegend;
+  fill: ApexFill;
+};
 
 @Component({
   selector: 'app-project',
@@ -82,7 +111,11 @@ export class ProjectComponent implements OnInit {
   ];
   userData: Page<UserDetailsDto> = undefined;
   userPage: PageRequestDto = { page: 1, pageAmount: 20 };
+  stats: ProjectStatsDto;
   userLoading = false;
+
+  boardChartOptions: Partial<ChartOptions> = undefined;
+  stagesChartOption: Partial<ChartOptions> = undefined;
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
@@ -98,6 +131,7 @@ export class ProjectComponent implements OnInit {
     this.boardService.listByProject(this.projectId).subscribe((boards) => {
       this.boardData = boards;
       this.values.boards = this.boardData.length;
+      this.loadStats();
     });
   }
 
@@ -112,6 +146,113 @@ export class ProjectComponent implements OnInit {
         await this.router.navigate(['']);
       },
     });
+  }
+
+  loadStats() {
+    this.projectService.getStats(this.projectId).subscribe((stats) => {
+      this.stats = stats;
+      this.configureBoardStats();
+      this.configureStageStats();
+    });
+  }
+
+  configureStageStats() {
+    const series: number[] = [];
+    const labels: string[] = [];
+    const colors: string[] = [];
+    for (const stage of this.stats.stages) {
+      for (const board of this.boardData) {
+        const stageDto = board.stages.find((s) => s.name === stage.name);
+        if (stageDto) {
+          series.push(+stage.tasks);
+          labels.push(stage.name);
+          colors.push(stageDto.color);
+          break;
+        }
+      }
+    }
+    this.stagesChartOption = {
+      series,
+      labels,
+      colors,
+      chart: {
+        type: 'donut',
+        height: 240,
+      },
+      legend: {
+        position: 'bottom',
+      },
+      states: {
+        hover: {
+          filter: {
+            type: 'darken',
+            value: 0.9,
+          },
+        },
+      },
+      tooltip: {
+        fillSeriesColor: false,
+        theme: 'light',
+        onDatasetHover: {
+          highlightDataSeries: true,
+        },
+      },
+      dataLabels: {
+        formatter: function (val, opts) {
+          return opts.w.config.series[opts.seriesIndex];
+        },
+      },
+      plotOptions: {
+        pie: {},
+      },
+    };
+  }
+
+  configureBoardStats() {
+    const series = [
+      { name: 'PENDING', data: [], color: '#833ab4' },
+      { name: 'COMPLETED', data: [], color: '#a56ea3' },
+    ];
+    const categories: string[] = [];
+    for (const board of this.stats.boards) {
+      const boardDto = this.boardData.find((b) => b.id === board.id);
+      if (!boardDto) {
+        continue;
+      }
+      categories.push(boardDto.name);
+      series[0].data.push(board.pendingTasks);
+      series[1].data.push(board.completedTasks);
+    }
+
+    this.boardChartOptions = {
+      series,
+      chart: {
+        type: 'bar',
+        height: 200,
+        stacked: true,
+        toolbar: {
+          show: false,
+        },
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+        },
+      },
+      xaxis: {
+        type: 'category',
+        categories,
+      },
+      yaxis: {
+        show: false,
+      },
+      legend: {
+        position: 'bottom',
+      },
+      fill: {
+        opacity: 1,
+      },
+    };
   }
 
   changeUserPage(page: number) {
@@ -180,6 +321,7 @@ export class ProjectComponent implements OnInit {
         this.boardService.delete(board.id).subscribe(() => {
           this.removeBoard(board);
           this.boardData = [...this.boardData];
+          this.loadStats();
           this.store.dispatch(removeBoard({ board }));
         });
       });
@@ -259,5 +401,7 @@ export class ProjectComponent implements OnInit {
       this.favourites.splice(index, 1);
     }
     localStorage.setItem('favourites', JSON.stringify(this.favourites));
+
+    this.store.dispatch(notifyFavUpdate({}));
   }
 }

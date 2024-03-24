@@ -83,7 +83,7 @@ export class Task extends UUIDEntity {
 
   @Index('closed')
   @Column
-  declare archived: boolean;
+  declare completed: boolean;
 
   @HasMany(() => Attachment, 'taskId')
   declare attachments: Attachment[];

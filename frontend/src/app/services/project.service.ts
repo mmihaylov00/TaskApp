@@ -4,6 +4,7 @@ import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import {
   CreateProjectDto,
   ProjectDto,
+  ProjectStatsDto,
 } from 'taskapp-common/dist/src/dto/project.dto';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 
@@ -15,6 +16,10 @@ export class ProjectService {
 
   get(id: string) {
     return this.http.get<ProjectDto>('projects/' + id);
+  }
+
+  getStats(id: string) {
+    return this.http.get<ProjectStatsDto>('projects/' + id + '/stats');
   }
 
   list(pageSize: number = 20) {

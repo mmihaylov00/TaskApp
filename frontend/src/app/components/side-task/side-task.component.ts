@@ -77,9 +77,9 @@ export class SideTaskComponent implements OnInit {
 
   readonly MENU_ITEMS = [
     {
-      icon: 'archive',
-      title: 'Archive',
-      onClick: () => this.archiveTask(),
+      icon: 'check_circle',
+      title: 'Complete',
+      onClick: () => this.completeTask(),
     },
     {
       icon: 'delete',
@@ -182,12 +182,12 @@ export class SideTaskComponent implements OnInit {
       });
   }
 
-  archiveTask() {
+  completeTask() {
     this.dialog
       .open(ConfirmModal, {
         data: {
-          title: 'Archive Task - ' + this.task.title,
-          action: 'archive this task?',
+          title: 'Complete Task - ' + this.task.title,
+          action: 'complete this task?',
         },
       })
       .afterClosed()
@@ -195,7 +195,7 @@ export class SideTaskComponent implements OnInit {
         if (!value) return;
 
         this.taskService
-          .archive(this.taskId)
+          .complete(this.taskId)
           .subscribe(() => this.confirmClose());
       });
   }

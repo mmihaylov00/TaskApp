@@ -30,6 +30,9 @@ export class SideNavComponent implements OnInit {
     this.store
       .pipe(select((value: any) => value.projectData))
       .subscribe((value: ProjectData) => {
+        this.favourites = JSON.parse(
+          localStorage.getItem('favourites') || '[]',
+        );
         this.projects = value.projects.map((project) => {
           return {
             compact: false,
@@ -39,6 +42,7 @@ export class SideNavComponent implements OnInit {
       });
   }
 
+  favourites: string[] = [];
   role = Role.DEVELOPER;
 
   readonly pages = [
@@ -51,7 +55,7 @@ export class SideNavComponent implements OnInit {
       link: '/',
     },
     {
-      name: 'My Tasks',
+      name: 'My Todos',
       icon: 'work',
       link: '/team',
     },
@@ -64,10 +68,6 @@ export class SideNavComponent implements OnInit {
       icon: 'person',
       link: '/users',
       roles: [Role.ADMIN],
-    },
-    {
-      name: 'Projects',
-      roles: [Role.PROJECT_MANAGER, Role.ADMIN],
     },
   ];
 

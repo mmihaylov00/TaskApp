@@ -11,6 +11,35 @@
       </a>
     </ng-container>
   </li>
+  <li *ngIf="favourites.length">
+    <h3>Favourites</h3>
+  </li>
+  <ng-container *ngFor="let project of projects">
+    <ng-container *ngFor="let board of project.boards">
+      <li *ngIf="favourites.includes(board.id)">
+        <a
+          [class]="{
+            selected: currentRoute.startsWith(
+              '/project/' + project.id + '/board/' + board.id
+            ),
+            'd-flex': true,
+            'flex-align-items-baseline': true
+          }"
+          [routerLink]="'/project/' + project.id + '/board/' + board.id">
+          <mat-icon
+            fontIcon="circle"
+            class="circle"
+            [style]="'color: ' + board.color" />
+          <p class="board-name text-truncated">
+            {{ project.name }} > {{ board.name }}
+          </p>
+        </a>
+      </li>
+    </ng-container>
+  </ng-container>
+  <li>
+    <h3>Projects</h3>
+  </li>
   <li *ngFor="let project of projects">
     <mat-icon
       [class]="{ active: project.compact, 'compact-toggle': true }"
@@ -38,7 +67,7 @@
               '/project/' + project.id + '/board/' + board.id
             ),
             'd-flex': true,
-            'flex-align-items-center': true
+            'flex-align-items-baseline': true
           }"
           [routerLink]="'/project/' + project.id + '/board/' + board.id">
           <mat-icon

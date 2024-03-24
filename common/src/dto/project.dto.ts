@@ -15,3 +15,15 @@ export interface CreateProjectDto {
   icon: string;
   userIds: string[];
 }
+
+export interface ProjectStatsDto {
+  stages: {
+    name: string;
+    tasks: number;
+  }[];
+  boards: {
+    id: string;
+    pendingTasks: number;
+    completedTasks: number;
+  }[];
+}

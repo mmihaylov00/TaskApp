@@ -118,7 +118,7 @@ export class BoardService {
           {
             model: Task,
             required: false,
-            where: { deleted: null, archived: null },
+            where: { deleted: null, completed: null },
             include: [
               Attachment,
               {
