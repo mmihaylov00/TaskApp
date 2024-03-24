@@ -55,8 +55,6 @@ ul {
     }
 
     a {
-      display: inline-flex;
-      align-items: flex-end;
       margin-left: 14px;
 
       ng-icon {
@@ -92,8 +90,12 @@ ul {
         }
       }
 
-      .board {
-        font-size: 16px;
+      .project-name {
+        max-width: 65%;
+      }
+
+      .board-name {
+        max-width: 88%;
       }
     }
   }

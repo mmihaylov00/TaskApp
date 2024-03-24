@@ -4,6 +4,7 @@ import { Board } from './board.entity';
 import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
 import { BelongsToMany, Column, HasMany, Table } from 'sequelize-typescript';
 import { UserProject } from './user-project.entity';
+import { Task } from './task.entity';
 
 @Table({ paranoid: true })
 export class Project extends UUIDEntity {
@@ -21,6 +22,9 @@ export class Project extends UUIDEntity {
 
   @HasMany(() => Board)
   declare boards: Board[];
+
+  @HasMany(() => Task)
+  declare tasks: Task[];
 
   toDto(): ProjectDto {
     return {

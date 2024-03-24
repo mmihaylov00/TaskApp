@@ -25,14 +25,13 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  @HttpCode(HttpStatus.NO_CONTENT)
   async create(@Authenticated() user: JwtUser, @Body() data: CreateTaskDto) {
-    await this.taskService.create(user, data);
+    return this.taskService.create(user, data);
   }
 
   @Get('/:id')
   async get(@Authenticated() user: JwtUser, @Param('id') id: string) {
-    return this.taskService.get(id, user);
+    return (await this.taskService.get(id, user)).toDto();
   }
 
   @Delete('/:id/archive')
@@ -41,13 +40,12 @@ export class TaskController {
   }
 
   @Put('/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async update(
     @Authenticated() user: JwtUser,
     @Body() data: CreateTaskDto,
     @Param('id') id: string,
   ) {
-    await this.taskService.update(id, user, data);
+    return this.taskService.update(id, user, data);
   }
 
   @Put('/:id/stage')

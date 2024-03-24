@@ -3,7 +3,6 @@ import { JwtUser } from '../auth/decorator/jwt-user.dto';
 import {
   CreateTaskDto,
   MoveTaskDto,
-  TaskDetailsDto,
   TaskMovedDto,
   TaskRemovedDto,
 } from 'taskapp-common/dist/src/dto/task.dto';
@@ -14,6 +13,7 @@ import { Task } from '../database/entity/task.entity';
 import { BoardService } from '../board/board.service';
 import { ProjectService } from '../project/project.service';
 import { User } from '../database/entity/user.entity';
+import { Attachment } from '../database/entity/attachment.entity';
 
 @Injectable()
 export class TaskService {
@@ -44,6 +44,7 @@ export class TaskService {
       author: user.id,
       assignee: data.assignee?.length ? data.assignee : undefined,
       deadline: data.deadline,
+      projectId: board.projectId,
     });
 
     stage.tasksOrder.splice(0, 0, task.id);
@@ -56,14 +57,18 @@ export class TaskService {
     task.assignedTo = assignee;
 
     this.boardService.sendMessage(board.id, 'task-created', task.toDto());
+
+    return task.toDto();
   }
 
   async get(id: string, user: JwtUser) {
     const task = await Task.findByPk(id, {
       include: [
         Stage,
-        { model: User, as: 'creator' },
+        Attachment,
         { model: User, as: 'assignedTo' },
+        { model: User, as: 'creator' },
+        { model: User, as: 'updatedByUser' },
       ],
     });
     if (!task) {
@@ -71,7 +76,7 @@ export class TaskService {
     }
     await this.boardService.getBoard(task.stage.boardId, user);
 
-    return task.toDto();
+    return task;
   }
 
   async update(id: string, user: JwtUser, data: CreateTaskDto) {
@@ -82,7 +87,7 @@ export class TaskService {
       throw new TaskAppError('invalid_stage', HttpStatus.BAD_REQUEST);
     }
 
-    let task = await Task.findByPk(id);
+    let task = await Task.findByPk(id, { include: [Attachment] });
 
     await this.moveTask(task, board, stage);
 
@@ -93,13 +98,21 @@ export class TaskService {
     task.assignee = data.assignee?.length ? data.assignee : null;
     task.deadline = data.deadline || null;
     task.updatedAt = new Date();
+    task.updatedBy = user.id;
 
     await task.save();
     task = await Task.findByPk(id, {
-      include: [{ model: User, as: 'assignedTo' }],
+      include: [
+        Attachment,
+        { model: User, as: 'assignedTo' },
+        { model: User, as: 'creator' },
+        { model: User, as: 'updatedByUser' },
+      ],
     });
 
     this.boardService.sendMessage(board.id, 'task-updated', task.toDto());
+
+    return task.toDto();
   }
 
   async move(id: string, user: JwtUser, data: MoveTaskDto) {
@@ -120,6 +133,7 @@ export class TaskService {
     const oldStageId = task.stageId;
     task.stageId = data.stageId;
     task.updatedAt = new Date();
+    task.updatedBy = user.id;
 
     await task.save();
 
@@ -143,6 +157,7 @@ export class TaskService {
 
     task.archived = true;
     task.updatedAt = new Date();
+    task.updatedBy = user.id;
 
     await task.save();
 

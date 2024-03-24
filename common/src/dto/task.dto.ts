@@ -1,6 +1,7 @@
 import { UserDetailsDto } from './auth.dto';
 import { TaskPriority } from '../enums/task-priority.enum';
 import { StageDto } from './stage.dto';
+import { AttachmentDataDto } from './attachment.dto';
 
 export interface TaskDto {
   id: string;
@@ -12,7 +13,10 @@ export interface TaskDto {
   author: UserDetailsDto;
   priority?: TaskPriority;
   assignee?: UserDetailsDto;
+  updatedBy?: UserDetailsDto;
   deadline?: Date;
+  attachments?: AttachmentDataDto[];
+  thumbnail?: string;
 }
 
 export interface TaskDetailsDto {

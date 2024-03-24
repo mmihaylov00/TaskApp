@@ -114,8 +114,8 @@ export class ProjectService {
     );
   }
 
-  async addUser(manager: JwtUser, id: string, userId: string) {
-    await this.getProject(id, manager);
+  async addUser(user: JwtUser, id: string, userId: string) {
+    await this.getProject(id, user);
 
     try {
       await UserProject.create({ projectId: id, userId });
@@ -136,23 +136,19 @@ export class ProjectService {
     }
   }
 
-  async getProject(id: string, manager?: JwtUser) {
+  async getProject(id: string, user?: JwtUser) {
     const project = await Project.findOne({ where: { id }, include: User });
-    await this.checkAccess(project, manager);
+    await this.checkAccess(project, user);
 
     return project;
   }
 
-  async checkAccess(project?: Project, manager?: JwtUser) {
+  async checkAccess(project?: Project, user?: JwtUser) {
     if (!project) {
       throw new TaskAppError('project_not_found', HttpStatus.NOT_FOUND);
     }
 
-    if (
-      manager &&
-      manager.role != Role.ADMIN &&
-      !manager.isPartOfProject(project)
-    ) {
+    if (user && user.role != Role.ADMIN && !user.isPartOfProject(project)) {
       throw new TaskAppError('no_access', HttpStatus.FORBIDDEN);
     }
   }

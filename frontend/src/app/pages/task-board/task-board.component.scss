@@ -45,6 +45,24 @@
   margin: 4px 2px;
 }
 
+.task-content {
+  padding: 0;
+}
+
+.thumbnail-header {
+  padding: 0;
+  height: 100px;
+
+  img {
+    height: 93%;
+    object-fit: cover;
+  }
+}
+
+.card-info {
+  padding: 6px 6px 0;
+}
+
 .ghost {
   opacity: 0.2;
 }

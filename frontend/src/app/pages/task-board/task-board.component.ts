@@ -12,9 +12,11 @@ import {
   TaskRemovedDto,
 } from 'taskapp-common/dist/src/dto/task.dto';
 import { TASK_PRIORITY_COLORS } from 'taskapp-common/dist/src/enums/task-priority.enum';
-import { formatDate } from '../../utils/date-formatter.util';
+import { simpleDateFormat } from '../../utils/date-formatter.util';
 import { Store } from '@ngrx/store';
 import { setBoardData } from '../../states/board.reducer';
+import { AttachmentService } from '../../services/attachment.service';
+import { ThumbnailUpdatedDto } from 'taskapp-common/dist/src/dto/attachment.dto';
 
 @Component({
   selector: 'app-task-board',
@@ -26,6 +28,7 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     private readonly projectService: ProjectService,
     private readonly boardService: BoardService,
     private readonly taskService: TaskService,
+    private readonly attachmentService: AttachmentService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly store: Store,
@@ -37,6 +40,8 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
   boardName = '';
   stages: StageDto[] = [];
   users: UserDetailsDto[] = [];
+
+  loadedAttachments: any = {};
 
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
@@ -80,6 +85,7 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
   }
 
   readonly events = [
+    'thumbnail-updated',
     'task-created',
     'task-updated',
     'task-moved',
@@ -95,6 +101,7 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
 
     this.boardService.listen(this.boardId, {
       'task-created': (data: TaskDto) => {
+        this.getAttachment(data.thumbnail);
         for (const stage of this.stages) {
           if (stage.id === data.stage) {
             stage.tasks.splice(0, 0, data);
@@ -103,6 +110,7 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
         }
       },
       'task-updated': (data: TaskDto) => {
+        this.getAttachment(data.thumbnail);
         for (const stage of this.stages) {
           for (let i = 0; i < stage.tasks.length; i++) {
             if (stage.tasks[i].id == data.id) {
@@ -156,6 +164,17 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
           }
         }
       },
+      'thumbnail-updated': (data: ThumbnailUpdatedDto) => {
+        for (const stage of this.stages) {
+          for (const task of stage.tasks) {
+            if (task.id === data.taskId) {
+              task.thumbnail = data.thumbnail;
+              this.getAttachment(data.thumbnail);
+              return;
+            }
+          }
+        }
+      },
     });
   }
 
@@ -170,9 +189,11 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
         );
 
         setTimeout(() => {
-          for (let stage of this.stages) {
-            let element = document.getElementById(`${stage.id}`);
-            Sortable.create(element, {
+          for (const stage of this.stages) {
+            for (const task of stage.tasks) {
+              this.getAttachment(task.thumbnail);
+            }
+            Sortable.create(document.getElementById(`${stage.id}`), {
               group: 'tasks',
               animation: 250,
               draggable: '.task',
@@ -233,6 +254,15 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     // });
   }
 
+  getAttachment(id: string) {
+    if (!id) {
+      return;
+    }
+    this.attachmentService.get(id).subscribe((file) => {
+      this.loadedAttachments[id] = URL.createObjectURL(file);
+    });
+  }
+
   protected readonly TASK_PRIORITY_COLORS = TASK_PRIORITY_COLORS;
-  protected readonly formatDate = formatDate;
+  protected readonly simpleDateFormat = simpleDateFormat;
 }

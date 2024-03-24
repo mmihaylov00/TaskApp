@@ -100,7 +100,7 @@ export class ManageBoardModal {
     if (this.data.board) {
       this.boardNameControl.setValue(this.data.board.name);
       this.colorControl.setValue(this.data.board.color);
-      this.stages = this.data.board.stages;
+      this.stages = JSON.parse(JSON.stringify(this.data.board.stages));
     }
   }
 

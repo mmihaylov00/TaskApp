@@ -180,6 +180,7 @@ body {
 .mat-mdc-dialog-surface {
   border: $primaryColor solid 2px;
 }
+
 .input-button {
   font-size: 15px;
   color: #999999;
@@ -223,4 +224,11 @@ body {
   flex-direction: column;
   align-content: space-between;
   height: 98%;
+}
+
+.text-truncated {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

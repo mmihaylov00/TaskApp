@@ -13,7 +13,7 @@ import { User } from '../database/entity/user.entity';
 import { Stage } from '../database/entity/stage.entity';
 import { Task } from '../database/entity/task.entity';
 import { Socket } from 'socket.io';
-import { Op } from 'sequelize';
+import { Attachment } from '../database/entity/attachment.entity';
 
 @Injectable()
 export class BoardService {
@@ -120,13 +120,21 @@ export class BoardService {
             required: false,
             where: { deleted: null, archived: null },
             include: [
+              Attachment,
               {
                 model: User,
                 as: 'assignedTo',
                 attributes: ['id', 'firstName', 'lastName'],
               },
             ],
-            attributes: ['id', 'name', 'priority', 'stageId', 'deadline'],
+            attributes: [
+              'id',
+              'name',
+              'priority',
+              'stageId',
+              'deadline',
+              'thumbnail',
+            ],
           },
         ]
       : [];

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { NativeDateAdapter } from '@angular/material/core';
-import { formatDate } from '../utils/date-formatter.util';
+import { simpleDateFormat } from '../utils/date-formatter.util';
 
 @Injectable()
 export class CustomDateAdapter extends NativeDateAdapter {
@@ -9,6 +9,6 @@ export class CustomDateAdapter extends NativeDateAdapter {
   }
 
   override format(date: Date, displayFormat: Object): string {
-    return formatDate(date);
+    return simpleDateFormat(date);
   }
 }

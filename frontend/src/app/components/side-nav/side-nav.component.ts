@@ -8,7 +8,6 @@ import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { ProfileData } from '../../states/profile.reducer';
 import { CreateProjectModal } from '../../modal/create-project/create-project.modal';
-import { NavData } from '../../states/nav.reducer';
 
 @Component({
   selector: 'app-side-nav',
@@ -117,11 +116,6 @@ export class SideNavComponent implements OnInit {
       });
       this.store.dispatch(setProjectState({ projects }));
     });
-  }
-
-  truncate(name: string) {
-    if (name.length >= 13) return name.slice(0, 11) + '...';
-    return name;
   }
 
   protected readonly Role = Role;

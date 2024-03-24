@@ -2,11 +2,9 @@ import { Role, ROLES } from 'taskapp-common/dist/src/enums/role.enum';
 import { Task } from './task.entity';
 import { UUIDEntity } from '../uuid.entity';
 import {
-  BelongsTo,
   BelongsToMany,
   Column,
   DataType,
-  ForeignKey,
   HasMany,
   Table,
 } from 'sequelize-typescript';
@@ -18,6 +16,7 @@ import {
   UserStatus,
 } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { DataTypes } from 'sequelize';
+import { Attachment } from './attachment.entity';
 
 @Table({ paranoid: true })
 export class User extends UUIDEntity {
@@ -51,6 +50,12 @@ export class User extends UUIDEntity {
 
   @HasMany(() => Task, 'assignee')
   declare assignedTasks: Task[];
+
+  @HasMany(() => Task, 'updatedBy')
+  declare lastUpdatedTasks: Task[];
+
+  @HasMany(() => Task, 'uploader')
+  declare uploadedAttachments: Attachment[];
 
   @Column({ allowNull: true, type: DataTypes.UUID })
   declare invitedBy?: string;

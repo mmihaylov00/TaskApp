@@ -7,7 +7,7 @@
         [class]="{ selected: page.link === currentRoute }"
         [routerLink]="page.link">
         <mat-icon *ngIf="page.icon" [fontIcon]="page.icon" class="icon" />
-        <p>{{ page.name }}</p>
+        <p class="text-truncated">{{ page.name }}</p>
       </a>
     </ng-container>
   </li>
@@ -23,8 +23,8 @@
         class="icon"
         [fontIcon]="project.icon || 'widgets'"
         [style]="'color: ' + project.color" />
-      <p>
-        {{ truncate(project.name) }}
+      <p class="project-name text-truncated">
+        {{ project.name }}
       </p>
     </a>
     <ul
@@ -33,19 +33,20 @@
       [class]="{ compact: project.compact }">
       <li *ngFor="let board of project.boards">
         <a
-          style="display: flex; align-items: center"
           [class]="{
             selected: currentRoute.startsWith(
               '/project/' + project.id + '/board/' + board.id
             ),
+            'd-flex': true,
+            'flex-align-items-center': true
           }"
           [routerLink]="'/project/' + project.id + '/board/' + board.id">
           <mat-icon
             fontIcon="circle"
             class="circle"
             [style]="'color: ' + board.color" />
-          <p class="board">
-            {{ truncate(board.name) }}
+          <p class="board-name text-truncated">
+            {{ board.name }}
           </p>
         </a>
       </li>
@@ -57,7 +58,7 @@
       [class]="{ selected: '/project' === currentRoute }"
       (click)="createNewProject()">
       <mat-icon fontIcon="add_box" class="icon" />
-      <p>New Project</p>
+      <p class="text-truncated">New Project</p>
     </a>
   </li>
 </ul>

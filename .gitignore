@@ -47,6 +47,7 @@ backend/dist
 frontend/dist
 common/dist
 backend/node_modules
+backend/attachments
 frontend/node_modules
 common/node_modules
 frontend/.angular

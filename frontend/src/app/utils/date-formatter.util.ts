@@ -3,10 +3,85 @@ export function formatDate(date: Date | string) {
   if (typeof date === 'string') {
     date = new Date(date);
   }
+  const day = (date.getDate() + '').padStart(2, '0');
+
+  return `${getDayOfWeek(date)}, ${getMonth(date)} ${day}${getDaySuffix(
+    date,
+  )} ${date.getFullYear()}`;
+}
+
+export function simpleDateFormat(date: Date | string) {
+  if (!date) return undefined;
+  if (typeof date === 'string') {
+    date = new Date(date);
+  }
   const month = (date.getMonth() + 1 + '').padStart(2, '0');
   const day = (date.getDate() + '').padStart(2, '0');
   return `${date.getFullYear()}-${month}-${day}`;
 }
+
+export function getDaySuffix(date: Date) {
+  switch (date.getDate()) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+  }
+  return 'th';
+}
+
+export function getDayOfWeek(date: Date): string {
+  switch (date.getDay()) {
+    case 0:
+      return 'Monday';
+    case 1:
+      return 'Tuesday';
+    case 2:
+      return 'Wednesday';
+    case 3:
+      return 'Thursday';
+    case 4:
+      return 'Friday';
+    case 5:
+      return 'Saturday';
+    case 6:
+      return 'Sunday';
+  }
+  return '';
+}
+
+export function getMonth(date: Date): string {
+  switch (date.getMonth()) {
+    case 0:
+      return 'January';
+    case 1:
+      return 'February';
+    case 2:
+      return 'March';
+    case 3:
+      return 'April';
+    case 4:
+      return 'May';
+    case 5:
+      return 'June';
+    case 6:
+      return 'July';
+    case 7:
+      return 'August';
+    case 8:
+      return 'September';
+    case 9:
+      return 'October';
+    case 10:
+      return 'November';
+    case 11:
+      return 'December';
+  }
+  return '';
+}
+
 export function formatDateTime(date: Date | string) {
   if (!date) return undefined;
   if (typeof date === 'string') {

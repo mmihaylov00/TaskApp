@@ -12,9 +12,13 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Table,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
+import { Attachment } from './attachment.entity';
+import { Project } from './project.entity';
+import { ThumbnailUpdatedDto } from 'taskapp-common/dist/src/dto/attachment.dto';
 
 @Table({ paranoid: true, timestamps: false })
 export class Task extends UUIDEntity {
@@ -35,6 +39,13 @@ export class Task extends UUIDEntity {
   @BelongsTo(() => Stage, 'stageId')
   declare stage: Stage;
 
+  @BelongsTo(() => Project, { foreignKey: 'projectId', constraints: false })
+  declare project: Project;
+
+  @ForeignKey(() => Project)
+  @Column(DataTypes.UUID)
+  declare projectId: string;
+
   @ForeignKey(() => User)
   @Column(DataTypes.UUID)
   declare author: string;
@@ -48,6 +59,13 @@ export class Task extends UUIDEntity {
 
   @BelongsTo(() => User, 'assignee')
   declare assignedTo?: User;
+
+  @ForeignKey(() => User)
+  @Column({ allowNull: true, type: DataType.UUID })
+  declare updatedBy?: string;
+
+  @BelongsTo(() => User, 'updatedBy')
+  declare updatedByUser?: User;
 
   @Column({ allowNull: true })
   declare deadline?: Date;
@@ -64,6 +82,12 @@ export class Task extends UUIDEntity {
   @Column
   declare archived: boolean;
 
+  @HasMany(() => Attachment, 'taskId')
+  declare attachments: Attachment[];
+
+  @Column({ allowNull: true })
+  declare thumbnail?: string;
+
   toDto(): TaskDto {
     return {
       id: this.id,
@@ -73,9 +97,19 @@ export class Task extends UUIDEntity {
       stage: this.stageId,
       author: this.creator?.toDto(),
       assignee: this.assignedTo?.toDto(),
+      updatedBy: this.updatedByUser?.toDto(),
       updatedAt: this.updatedAt,
-      createdAt: this.updatedAt,
+      createdAt: this.createdAt,
       deadline: this.deadline,
+      thumbnail: this.thumbnail,
+      attachments: this.attachments?.map((a) => a.toDto()),
+    };
+  }
+
+  toThumbnailDto(): ThumbnailUpdatedDto {
+    return {
+      taskId: this.id,
+      thumbnail: this.thumbnail,
     };
   }
 }

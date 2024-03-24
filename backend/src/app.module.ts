@@ -9,6 +9,7 @@ import { TaskModule } from './task/task.module';
 import { ProfileModule } from './profile/profile.module';
 import { DatabaseModule } from './database/database.module';
 import { WSModule } from './socket/socket.module';
+import { AttachmentModule } from './attachment/attachment.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { WSModule } from './socket/socket.module';
     StageModule,
     WSModule,
     TaskModule,
+    AttachmentModule,
   ],
   providers: [],
 })

@@ -10,6 +10,7 @@ import { Task } from './entity/task.entity';
 import * as bcrypt from 'bcrypt';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
+import { Attachment } from './entity/attachment.entity';
 
 dotenv.config();
 
@@ -40,9 +41,17 @@ export const databaseProviders = [
         username: configuration().db.username,
         password: configuration().db.password,
         database: configuration().db.database_name,
-        // logging: false,
+        logging: false,
       });
-      sequelize.addModels([User, Project, UserProject, Board, Stage, Task]);
+      sequelize.addModels([
+        User,
+        Project,
+        UserProject,
+        Board,
+        Stage,
+        Task,
+        Attachment,
+      ]);
       await sequelize.sync();
       await seed();
       return sequelize;
