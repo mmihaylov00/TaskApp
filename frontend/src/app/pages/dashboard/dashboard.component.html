@@ -1,8 +1,32 @@
-<div>
-  <div>
-    Your projects + stats - Users count, total tasks, completed tasks, creation
-    date, stage
-  </div>
-  <div>Personal stats - assigned tasks, completed tasks</div>
-  <div>Weekly stats - time spent on tasks, etc?</div>
-</div>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Task statistics</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div content class="row d-flex flex-justify-between">
+      <div class="w-48">
+        <app-bar-chart
+          [options]="overallTaskContributionChartOptions"
+          title="Task Contribution" />
+      </div>
+      <mat-divider [vertical]="true" />
+      <div class="w-48">
+        <app-pie-chart [options]="tasksChartOptions" title="Assigned Tasks" />
+      </div>
+    </div>
+    <mat-divider />
+    <div content class="row d-flex flex-justify-between">
+      <div class="w-48">
+        <app-pie-chart
+          [options]="createdTasksChartOptions"
+          title="Created Tasks" />
+      </div>
+      <mat-divider [vertical]="true" />
+      <div class="w-48">
+        <app-pie-chart
+          [options]="taskPerStagesChartOptions"
+          title="Assigned Tasks per Stage" />
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

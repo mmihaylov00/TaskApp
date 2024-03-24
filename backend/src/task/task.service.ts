@@ -68,16 +68,11 @@ export class TaskService {
   }
 
   async find(search: string, user: JwtUser) {
-    // const where = {
-    //   [Op.and]: [
-    //     sequelize.where(sequelize.col('name'), { [Op.substring]: search }),
-    //     // { 'Users.id': user.id },
-    //   ],
-    // };
-
     const tasks = await Task.findAll({
       where: {
         name: { [Op.substring]: search },
+        deleted: null,
+        completed: null,
       },
       limit: 5,
       include: [
@@ -216,6 +211,7 @@ export class TaskService {
         model: Task,
         as: 'assignedTasks',
         include: [Attachment],
+        where: { deleted: null, completed: null },
       },
       order: [['assignedTasks', 'deadline', 'ASC']],
     });

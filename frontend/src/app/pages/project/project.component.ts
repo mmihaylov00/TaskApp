@@ -16,34 +16,7 @@ import { Store } from '@ngrx/store';
 import { ROLE_COLORS } from 'taskapp-common/dist/src/enums/role.enum';
 import { USER_STATUS_COLORS } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { ProjectStatsDto } from 'taskapp-common/dist/src/dto/project.dto';
-import {
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexNonAxisChartSeries,
-  ApexDataLabels,
-  ApexPlotOptions,
-  ApexXAxis,
-  ApexLegend,
-  ApexFill,
-  ApexYAxis,
-  ApexTooltip,
-  ApexStates,
-} from 'ng-apexcharts';
-
-export type ChartOptions = {
-  series: ApexAxisChartSeries | ApexNonAxisChartSeries;
-  chart: ApexChart;
-  dataLabels: ApexDataLabels;
-  tooltip: ApexTooltip;
-  states: ApexStates;
-  plotOptions: ApexPlotOptions;
-  labels: string[];
-  colors: string[];
-  xaxis: ApexXAxis;
-  yaxis: ApexYAxis;
-  legend: ApexLegend;
-  fill: ApexFill;
-};
+import { ChartOptions } from '../../components/chart/chart.component';
 
 @Component({
   selector: 'app-project',
@@ -171,47 +144,13 @@ export class ProjectComponent implements OnInit {
         }
       }
     }
-    this.stagesChartOption = {
-      series,
-      labels,
-      colors,
-      chart: {
-        type: 'donut',
-        height: 240,
-      },
-      legend: {
-        position: 'bottom',
-      },
-      states: {
-        hover: {
-          filter: {
-            type: 'darken',
-            value: 0.9,
-          },
-        },
-      },
-      tooltip: {
-        fillSeriesColor: false,
-        theme: 'light',
-        onDatasetHover: {
-          highlightDataSeries: true,
-        },
-      },
-      dataLabels: {
-        formatter: function (val, opts) {
-          return opts.w.config.series[opts.seriesIndex];
-        },
-      },
-      plotOptions: {
-        pie: {},
-      },
-    };
+    this.stagesChartOption = { series, labels, colors };
   }
 
   configureBoardStats() {
     const series = [
-      { name: 'PENDING', data: [], color: '#833ab4' },
-      { name: 'COMPLETED', data: [], color: '#a56ea3' },
+      { name: 'Pending', data: [], color: '#833ab4' },
+      { name: 'Completed', data: [], color: '#a56ea3' },
     ];
     const categories: string[] = [];
     for (const board of this.stats.boards) {
@@ -226,31 +165,9 @@ export class ProjectComponent implements OnInit {
 
     this.boardChartOptions = {
       series,
-      chart: {
-        type: 'bar',
-        height: 200,
-        stacked: true,
-        toolbar: {
-          show: false,
-        },
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-        },
-      },
       xaxis: {
         type: 'category',
         categories,
-      },
-      yaxis: {
-        show: false,
-      },
-      legend: {
-        position: 'bottom',
-      },
-      fill: {
-        opacity: 1,
       },
     };
   }

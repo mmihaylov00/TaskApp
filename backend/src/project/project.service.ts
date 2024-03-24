@@ -159,7 +159,7 @@ export class ProjectService {
       { type: QueryTypes.SELECT, replacements: { id } },
     );
     for (let stage of stages) {
-      stats.stages.push({ name: stage['name'], tasks: stage['count'] });
+      stats.stages.push({ name: stage['name'], tasks: +stage['count'] });
     }
 
     const boards = await Project.sequelize.query(
@@ -176,14 +176,14 @@ export class ProjectService {
 
       const boardItem = { id: board['id'], pendingTasks: 0, completedTasks: 0 };
       if (index > -1) {
-        boardItem.pendingTasks = stats.boards[index].pendingTasks;
-        boardItem.completedTasks = stats.boards[index].completedTasks;
+        boardItem.pendingTasks = +stats.boards[index].pendingTasks;
+        boardItem.completedTasks = +stats.boards[index].completedTasks;
       }
 
       if (board['isCompleted']) {
-        boardItem.completedTasks = board['count'];
+        boardItem.completedTasks = +board['count'];
       } else {
-        boardItem.pendingTasks = board['count'];
+        boardItem.pendingTasks = +board['count'];
       }
 
       if (index > -1) {

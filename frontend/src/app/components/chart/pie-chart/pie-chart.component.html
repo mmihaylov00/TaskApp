@@ -1,0 +1,5 @@
+<app-chart *ngIf="options" [options]="finalOptions" [title]="title" />
+<ngx-skeleton-loader
+  class="pie-skeleton"
+  *ngIf="!options"
+  appearance="circle" />

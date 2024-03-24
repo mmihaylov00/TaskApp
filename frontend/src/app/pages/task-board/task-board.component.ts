@@ -11,8 +11,6 @@ import {
   TaskMovedDto,
   TaskRemovedDto,
 } from 'taskapp-common/dist/src/dto/task.dto';
-import { TASK_PRIORITY_COLORS } from 'taskapp-common/dist/src/enums/task-priority.enum';
-import { simpleDateFormat } from '../../utils/date-formatter.util';
 import { Store } from '@ngrx/store';
 import { setBoardData } from '../../states/board.reducer';
 import { AttachmentService } from '../../services/attachment.service';

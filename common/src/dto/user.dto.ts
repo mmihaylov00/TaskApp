@@ -14,3 +14,14 @@ export interface SearchUserDto {
   name: string;
   userIds: string[];
 }
+
+export interface UserStatsDto {
+  completedTasks: number;
+  pendingTasks: number;
+  createdTasks: number;
+  overallCompletedTasks: number;
+  overallPendingTasks: number;
+  overallCreatedTasks: number;
+  overallUnassignedTasks: number;
+  taskStages: { name: string; tasks: number; color: string }[];
+}

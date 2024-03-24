@@ -46,6 +46,7 @@ export class SideTaskComponent implements OnInit {
   task: TaskDto;
 
   stages: StageDto[] = [];
+  boardStages: StageDto[] = [];
 
   users: UserDetailsDto[] = [];
   filteredUsers: Observable<UserDetailsDto[]>;
@@ -97,7 +98,7 @@ export class SideTaskComponent implements OnInit {
     setTimeout(() => {
       this.route.queryParamMap.subscribe(async (params) => {
         this.taskId = params.get('task');
-        this.stages = [];
+        this.stages = this.boardStages;
 
         if (this.taskId) {
           this.selectedFiles = [];
@@ -124,6 +125,7 @@ export class SideTaskComponent implements OnInit {
         this.users = data.users;
         if (data.stages) {
           this.stages = data.stages;
+          this.boardStages = data.stages;
           this.stageControl.setValue(this.task?.stage || this.stages[0]?.id);
           this.saveEnabled = false;
         }
@@ -219,8 +221,8 @@ export class SideTaskComponent implements OnInit {
 
   open(task?: TaskDto) {
     this.task = task;
-    if (!this.stages.length) {
-      this.taskService.getStages(this.task.id).subscribe((stages) => {
+    if (!this.stages.length && this.task) {
+      this.taskService.getStages(this.taskId).subscribe((stages) => {
         this.stages = stages;
         this.stageControl.setValue(this.task?.stage || this.stages[0]?.id);
         this.saveEnabled = false;

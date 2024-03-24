@@ -43,41 +43,13 @@
         <tr mat-row *matRowDef="let row; columns: ['key', 'value']"></tr>
       </table>
     </div>
+    <mat-divider [vertical]="true" />
     <div class="w-30">
-      <apx-chart
-        *ngIf="boardChartOptions"
-        [series]="boardChartOptions.series"
-        [chart]="boardChartOptions.chart"
-        [dataLabels]="boardChartOptions.dataLabels"
-        [plotOptions]="boardChartOptions.plotOptions"
-        [xaxis]="boardChartOptions.xaxis"
-        [yaxis]="boardChartOptions.yaxis"
-        [legend]="boardChartOptions.legend"
-        [fill]="boardChartOptions.fill"
-        [title]="{ text: 'Tasks per Board', align: 'left' }" />
-      <ngx-skeleton-loader
-        *ngIf="!boardChartOptions"
-        count="6"
-        appearance="line" />
+      <app-bar-chart [options]="boardChartOptions" title="Tasks per Board" />
     </div>
+    <mat-divider [vertical]="true" />
     <div class="w-30">
-      <apx-chart
-        *ngIf="stagesChartOption"
-        [series]="stagesChartOption.series"
-        [chart]="stagesChartOption.chart"
-        [labels]="stagesChartOption.labels"
-        [tooltip]="stagesChartOption.tooltip"
-        [colors]="stagesChartOption.colors"
-        [states]="stagesChartOption.states"
-        [legend]="stagesChartOption.legend"
-        [fill]="stagesChartOption.fill"
-        [dataLabels]="stagesChartOption.dataLabels"
-        [plotOptions]="stagesChartOption.plotOptions"
-        [title]="{ text: 'Tasks per Stage', align: 'left' }" />
-      <ngx-skeleton-loader
-        class="pie-skeleton"
-        *ngIf="!boardChartOptions"
-        appearance="circle" />
+      <app-pie-chart [options]="stagesChartOption" title="Tasks per Stage" />
     </div>
   </div>
 </app-card>

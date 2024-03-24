@@ -70,6 +70,9 @@ import { boardReducer } from './states/board.reducer';
 import { ChangePasswordModal } from './modal/change-password/change-password.modal';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { TaskCardComponent } from './components/task-card/task-card.component';
+import { ChartComponent } from './components/chart/chart.component';
+import { PieChartComponent } from './components/chart/pie-chart/pie-chart.component';
+import { BarChartComponent } from './components/chart/bar-chart/bar-chart.component';
 
 @NgModule({
   declarations: [
@@ -100,6 +103,9 @@ import { TaskCardComponent } from './components/task-card/task-card.component';
     IconSelectComponent,
     ColorPickerComponent,
     TaskCardComponent,
+    ChartComponent,
+    PieChartComponent,
+    BarChartComponent,
   ],
   imports: [
     CommonModule,

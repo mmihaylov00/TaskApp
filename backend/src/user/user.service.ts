@@ -12,12 +12,13 @@ import { Project } from '../database/entity/project.entity';
 import {
   CreateUserDto,
   SearchUserDto,
+  UserStatsDto,
 } from 'taskapp-common/dist/src/dto/user.dto';
 import { TaskAppError } from '../error/task-app.error';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { UserProject } from '../database/entity/user-project.entity';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
-import sequelize, { Op } from 'sequelize';
+import sequelize, { Op, QueryTypes } from 'sequelize';
 
 @Injectable()
 export class UserService {
@@ -167,6 +168,113 @@ export class UserService {
     } catch (_) {
       throw new TaskAppError('user_exists', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async stats(user: JwtUser) {
+    const stats: UserStatsDto = {
+      completedTasks: 0,
+      pendingTasks: 0,
+      createdTasks: 0,
+      overallCompletedTasks: 0,
+      overallPendingTasks: 0,
+      overallCreatedTasks: 0,
+      overallUnassignedTasks: 0,
+      taskStages: [],
+    };
+    const userTasks = await User.sequelize.query(
+      'SELECT T.completed as "isCompleted", COUNT(T.id) AS "count" ' +
+        'FROM "Users" U ' +
+        'JOIN "Tasks" T on U.id = T.assignee ' +
+        'WHERE U.id = :id AND T.deleted IS NULL ' +
+        'GROUP BY T.completed;',
+      { type: QueryTypes.SELECT, replacements: { id: user.id } },
+    );
+
+    for (const task of userTasks) {
+      if (task['isCompleted']) {
+        stats.completedTasks = +task['count'];
+      } else {
+        stats.pendingTasks = +task['count'];
+      }
+    }
+
+    const dbUser = await User.findByPk(user.id, { include: [Project] });
+    const ids = dbUser.projects.map((p) => p.id);
+
+    const overallTasks = await User.sequelize.query(
+      'SELECT T.completed as "isCompleted", COUNT(T.id) AS "count"' +
+        'FROM "Projects" P ' +
+        'JOIN "Tasks" T on P.id = T."projectId" ' +
+        'WHERE P.id IN (:ids) AND T.assignee != :userId AND T.deleted IS NULL ' +
+        'GROUP BY T.completed;',
+      {
+        type: QueryTypes.SELECT,
+        replacements: {
+          ids,
+          userId: user.id,
+        },
+      },
+    );
+
+    for (const task of overallTasks) {
+      if (task['isCompleted']) {
+        stats.overallCompletedTasks = +task['count'];
+      } else {
+        stats.overallPendingTasks = +task['count'];
+      }
+    }
+
+    const createdTasks = await User.sequelize.query(
+      'SELECT COUNT(T.id) AS "count" ' +
+        'FROM "Users" U ' +
+        'JOIN "Tasks" T on U.id = T.author ' +
+        'WHERE U.id = :id AND T.deleted IS NULL;',
+      { type: QueryTypes.SELECT, replacements: { id: user.id } },
+    );
+
+    for (const task of createdTasks) {
+      stats.createdTasks = +task['count'];
+    }
+
+    const unassignedTasks = await User.sequelize.query(
+      'SELECT COUNT(T.id) AS "count" ' +
+        'FROM "Projects" P ' +
+        'JOIN "Tasks" T on P.id = T."projectId" ' +
+        'WHERE P.id IN (:ids) ' +
+        '  AND T.assignee IS NULL;',
+      { type: QueryTypes.SELECT, replacements: { ids } },
+    );
+
+    for (const task of createdTasks) {
+      stats.overallUnassignedTasks = +task['count'];
+    }
+
+    stats.overallCreatedTasks =
+      stats.overallPendingTasks +
+      stats.overallUnassignedTasks +
+      stats.overallCompletedTasks -
+      stats.createdTasks;
+
+    const stages = await Project.sequelize.query(
+      'SELECT S.name as "name", S.color as "color", COUNT(t.id) ' +
+        'FROM "Users" U ' +
+        'JOIN "Tasks" T on U.id = T.author ' +
+        'JOIN "Stages" S on T."stageId" = S.id ' +
+        'WHERE U."id" = :id ' +
+        'AND T.deleted IS NULL ' +
+        'AND T.completed IS NULL ' +
+        'GROUP BY S.name, S.color;',
+      { type: QueryTypes.SELECT, replacements: { id: user.id } },
+    );
+    for (const stage of stages) {
+      stats.taskStages.push({
+        name: stage['name'],
+        tasks: +stage['count'],
+        color: stage['color'],
+      });
+    }
+
+    return stats;
   }
 
   async find(user: JwtUser, data: SearchUserDto) {

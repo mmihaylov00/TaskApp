@@ -29,15 +29,18 @@ export class UserController {
 
   @Get()
   @Roles(Role.ADMIN)
-  async list(
-    @PageParams() pageParams: PageRequestDto,
-  ): Promise<Page<UserDetailsDto>> {
+  list(@PageParams() pageParams: PageRequestDto) {
     return this.userService.list(pageParams);
+  }
+
+  @Get('stats')
+  stats(@Authenticated() user: JwtUser) {
+    return this.userService.stats(user);
   }
 
   @Post()
   @Roles(Role.ADMIN, Role.PROJECT_MANAGER)
-  async invite(@Authenticated() user: JwtUser, @Body() data: CreateUserDto) {
+  invite(@Authenticated() user: JwtUser, @Body() data: CreateUserDto) {
     return this.userService.invite(user, data);
   }
 
@@ -53,7 +56,7 @@ export class UserController {
 
   @Post('/search')
   @Roles(Role.ADMIN, Role.PROJECT_MANAGER)
-  async find(@Authenticated() user: JwtUser, @Body() data: SearchUserDto) {
+  find(@Authenticated() user: JwtUser, @Body() data: SearchUserDto) {
     return this.userService.find(user, data);
   }
 

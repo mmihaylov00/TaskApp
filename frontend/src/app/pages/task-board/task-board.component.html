@@ -6,6 +6,8 @@
     [style]="{ 'background-color': stage.color + '4B' }">
     <h3>{{ stage.name }}</h3>
     <app-task-card
+      [id]="task.id"
+      class="task"
       [task]="task"
       [color]="stage.color"
       [thumbnail]="loadedAttachments[task.thumbnail]"
