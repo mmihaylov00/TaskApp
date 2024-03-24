@@ -18,17 +18,17 @@
     </div>
     <mat-divider />
     <div content class="row d-flex flex-justify-between">
-      <div class="w-33">
+      <div class="w-33 d-flex flex-justify-center">
         <app-pie-chart [options]="tasksChartOptions" title="Assigned Tasks" />
       </div>
       <mat-divider [vertical]="true" />
-      <div class="w-33">
+      <div class="w-33 d-flex flex-justify-center">
         <app-pie-chart
           [options]="createdTasksChartOptions"
           title="Created Tasks" />
       </div>
       <mat-divider [vertical]="true" />
-      <div class="w-33">
+      <div class="w-33 d-flex flex-justify-center">
         <app-pie-chart
           [options]="taskPerStagesChartOptions"
           title="Assigned Tasks per Stage" />
