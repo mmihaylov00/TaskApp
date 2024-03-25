@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { select, Store } from '@ngrx/store';
-import { ProfileData } from '../../states/profile.reducer';
+import { ProfileData, setProfileData } from '../../states/profile.reducer';
 import { UserService } from '../../services/user.service';
-import { ProfileSetupDto } from 'taskapp-common/dist/src/dto/auth.dto';
+import { setBoardData } from '../../states/board.reducer';
 
 @Component({
   selector: 'app-change-password-setup',
@@ -19,28 +19,33 @@ export class ProfileSetupComponent {
   passwordVisible = false;
   confirmPasswordVisible = false;
 
+  id: string;
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly store: Store,
+    private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly userService: UserService,
   ) {
-    this.store
-      .pipe(select((value: any) => value.profileData))
-      .subscribe(async (profile: ProfileData) => {
-        this.form = this.fb.group({
-          firstName: [profile.firstName || '', Validators.required],
-          lastName: [profile.lastName || '', Validators.required],
-          email: [profile.email || '', [Validators.required, Validators.email]],
-          password: ['', Validators.required],
-          confirmPassword: ['', Validators.required],
-        });
-
-        if (profile.status && profile.status !== UserStatus.INVITED) {
-          await this.router.navigate(['/']);
-          return;
-        }
+    this.route.paramMap.subscribe(async (params: ParamMap) => {
+      this.id = params.get('id');
+      if (!this.id) {
+        await this.router.navigate(['']);
+      }
+      this.userService.getInvitationData(this.id).subscribe({
+        next: (user) => {
+          this.form = this.fb.group({
+            firstName: [user.firstName || '', Validators.required],
+            lastName: [user.lastName || '', Validators.required],
+            email: [user.email || '', [Validators.required, Validators.email]],
+            password: ['', Validators.required],
+            confirmPassword: ['', Validators.required],
+          });
+        },
+        error: async () => await this.router.navigate(['']),
       });
+    });
   }
 
   togglePasswordVisibility() {
@@ -97,10 +102,14 @@ export class ProfileSetupComponent {
     this.validate(val);
 
     if (this.form.valid && !this.error) {
-      this.userService.setupProfile(val).subscribe(async () => {
-        await this.router.navigate(['/']);
-        location.reload();
-      });
+      this.userService
+        .setupProfile({ ...val, invitationLink: this.id })
+        .subscribe(async (user) => {
+          localStorage.setItem('token', user.token);
+          this.store.dispatch(setProfileData(user));
+          await this.router.navigate(['']);
+          location.reload();
+        });
     } else {
       setTimeout(() => {
         this.error = 'Invalid E-Mail!';

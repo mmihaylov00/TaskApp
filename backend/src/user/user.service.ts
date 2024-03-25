@@ -19,11 +19,15 @@ import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { UserProject } from '../database/entity/user-project.entity';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import sequelize, { Op, QueryTypes } from 'sequelize';
-import { Task } from '../database/entity/task.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
-  constructor() {}
+  constructor(
+    private readonly eventEmitter: EventEmitter2,
+    private readonly authService: AuthService,
+  ) {}
 
   findByEmail(email: string): Promise<User> {
     return User.findOne({ where: { email } });
@@ -36,9 +40,22 @@ export class UserService {
     });
   }
 
-  async setupProfile(user: JwtUser, data: ProfileSetupDto) {
-    const dbUser = await User.findByPk(user.id);
-    if (dbUser.status !== UserStatus.INVITED) {
+  async getInvitationUser(invitationLink: string) {
+    const user = await User.findOne({
+      where: { invitationLink },
+      attributes: ['firstName', 'lastName', 'email'],
+    });
+    if (!user) {
+      throw new TaskAppError('user_not_found', HttpStatus.NOT_FOUND);
+    }
+    return user.toDto();
+  }
+
+  async setupProfile(data: ProfileSetupDto): Promise<UserDetailsDto> {
+    const user = await User.findOne({
+      where: { invitationLink: data.invitationLink },
+    });
+    if (user.status !== UserStatus.INVITED) {
       throw new TaskAppError('user_profile_completed', HttpStatus.BAD_REQUEST);
     }
     const password: string = await bcrypt.hash(
@@ -46,13 +63,16 @@ export class UserService {
       await bcrypt.genSalt(10),
     );
 
-    dbUser.firstName = data.firstName;
-    dbUser.lastName = data.lastName;
-    dbUser.email = data.email;
-    dbUser.password = password;
-    dbUser.status = UserStatus.ACTIVE;
+    user.firstName = data.firstName;
+    user.lastName = data.lastName;
+    user.email = data.email;
+    user.password = password;
+    user.status = UserStatus.ACTIVE;
+    user.invitationLink = null;
 
-    await dbUser.save();
+    await user.save();
+
+    return { ...user.toDto(), token: this.authService.login(user) };
   }
 
   async changePassword(user: JwtUser, data: UpdatePasswordDto) {
@@ -86,6 +106,8 @@ export class UserService {
   }
 
   async invite(user: JwtUser, data: CreateUserDto): Promise<UserDetailsDto> {
+    const dbUser = await User.findByPk(user.id);
+
     try {
       const include = {
         model: User,
@@ -99,12 +121,8 @@ export class UserService {
         where: { id: data.projectIds },
       });
 
-      const salt = await bcrypt.genSalt(10);
-      const password: string = await bcrypt.hash(data.password, salt);
-
       const createdUser = await User.create({
         ...data,
-        password,
         invitedBy: user.id,
       });
 
@@ -114,7 +132,15 @@ export class UserService {
       );
       await UserProject.bulkCreate(userProjects);
 
-      return createdUser.toDto();
+      const userDetails = createdUser.toDto();
+
+      this.eventEmitter.emit('user.invitation', {
+        user: userDetails,
+        invitationLink: createdUser.invitationLink,
+        invitedBy: dbUser.toDto(),
+      });
+
+      return userDetails;
     } catch (_) {
       throw new TaskAppError('user_exists', HttpStatus.BAD_REQUEST);
     }
@@ -203,26 +229,28 @@ export class UserService {
     const dbUser = await User.findByPk(user.id, { include: [Project] });
     const ids = dbUser.projects.map((p) => p.id);
 
-    const overallTasks = await User.sequelize.query(
-      'SELECT T.completed as "isCompleted", COUNT(T.id) AS "count"' +
-        'FROM "Projects" P ' +
-        'JOIN "Tasks" T on P.id = T."projectId" ' +
-        'WHERE P.id IN (:ids) AND T.assignee != :userId AND T.deleted IS NULL ' +
-        'GROUP BY T.completed;',
-      {
-        type: QueryTypes.SELECT,
-        replacements: {
-          ids,
-          userId: user.id,
+    if (ids.length) {
+      const overallTasks = await User.sequelize.query(
+        'SELECT T.completed as "isCompleted", COUNT(T.id) AS "count"' +
+          'FROM "Projects" P ' +
+          'JOIN "Tasks" T on P.id = T."projectId" ' +
+          'WHERE P.id IN (:ids) AND T.assignee != :userId AND T.deleted IS NULL ' +
+          'GROUP BY T.completed;',
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            ids,
+            userId: user.id,
+          },
         },
-      },
-    );
+      );
 
-    for (const task of overallTasks) {
-      if (task['isCompleted']) {
-        stats.overallCompletedTasks = +task['count'] || 0;
-      } else {
-        stats.overallPendingTasks = +task['count'] || 0;
+      for (const task of overallTasks) {
+        if (task['isCompleted']) {
+          stats.overallCompletedTasks = +task['count'] || 0;
+        } else {
+          stats.overallPendingTasks = +task['count'] || 0;
+        }
       }
     }
 
@@ -238,23 +266,27 @@ export class UserService {
       stats.createdTasks = +task['count'] || 0;
     }
 
-    const unassignedTasks = await User.sequelize.query(
-      'SELECT COUNT(T.id) AS "count" ' +
-        'FROM "Projects" P ' +
-        'JOIN "Tasks" T on P.id = T."projectId" ' +
-        'WHERE P.id IN (:ids) ' +
-        'AND T.assignee IS NULL;',
-      { type: QueryTypes.SELECT, replacements: { ids } },
-    );
+    if (ids.length) {
+      const unassignedTasks = await User.sequelize.query(
+        'SELECT COUNT(T.id) AS "count" ' +
+          'FROM "Projects" P ' +
+          'JOIN "Tasks" T on P.id = T."projectId" ' +
+          'WHERE P.id IN (:ids) ' +
+          'AND T.assignee IS NULL;',
+        { type: QueryTypes.SELECT, replacements: { ids } },
+      );
 
-    for (const task of unassignedTasks) {
-      stats.overallUnassignedTasks = +task['count'] || 0;
+      for (const task of unassignedTasks) {
+        stats.overallUnassignedTasks = +task['count'] || 0;
+      }
     }
 
     stats.overallCreatedTasks =
-      stats.overallPendingTasks +
       stats.overallUnassignedTasks +
-      stats.overallCompletedTasks -
+      stats.overallPendingTasks +
+      stats.overallCompletedTasks +
+      stats.pendingTasks +
+      stats.completedTasks -
       stats.createdTasks;
 
     const stages = await User.sequelize.query(

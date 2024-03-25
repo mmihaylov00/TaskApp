@@ -21,11 +21,6 @@ const routes: Route[] = [
     pathMatch: 'full',
   },
   {
-    path: 'change-password-setup',
-    component: ProfileSetupComponent,
-    pathMatch: 'full',
-  },
-  {
     path: 'tasks',
     component: MyTasksComponent,
     pathMatch: 'full',
@@ -56,6 +51,11 @@ const routes: Route[] = [
   imports: [
     RouterModule.forRoot([
       ...(!!localStorage.getItem('token') ? routes : []),
+      {
+        path: 'invitation/:id',
+        component: ProfileSetupComponent,
+        pathMatch: 'full',
+      },
       {
         path: '**',
         component: !!localStorage.getItem('token')

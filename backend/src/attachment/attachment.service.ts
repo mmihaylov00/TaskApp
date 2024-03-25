@@ -64,7 +64,9 @@ export class AttachmentService {
 
   private async getAttachment(id: string, user: JwtUser) {
     const attachment = await Attachment.findByPk(id, {
-      include: [{ model: Task, include: [Project, Stage] }],
+      include: [
+        { model: Task, include: [{ model: Project, include: [User] }, Stage] },
+      ],
     });
     if (!attachment) {
       throw new TaskAppError('attachment_not_found', HttpStatus.NOT_FOUND);
@@ -73,11 +75,15 @@ export class AttachmentService {
     if (
       user &&
       user.role != Role.ADMIN &&
-      !user.isPartOfProject(attachment.task.project)
+      !this.isPartOfProject(user, attachment.task.project)
     ) {
       throw new TaskAppError('no_access', HttpStatus.FORBIDDEN);
     }
     return attachment;
+  }
+
+  public isPartOfProject(user: JwtUser, project: Project) {
+    return project.users?.some((u) => (u.id = user.id));
   }
 
   static readonly UPLOAD_OPTIONS = {

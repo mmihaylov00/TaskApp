@@ -61,7 +61,7 @@ export class SideNavComponent implements OnInit {
     },
     {
       name: 'Administration',
-      roles: [Role.PROJECT_MANAGER, Role.ADMIN],
+      roles: [Role.ADMIN],
     },
     {
       name: 'Users',

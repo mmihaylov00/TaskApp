@@ -17,21 +17,18 @@ export class AuthService {
   ) {}
 
   login(request: LoginRequestDto) {
-    return this.http.post<LoginResponseDto>('auth', request);
+    return this.http.post<LoginResponseDto>('profile', request);
   }
 
   async setToken(response: LoginResponseDto) {
     localStorage.setItem('token', response.token);
-    if (response.status === UserStatus.INVITED) {
-      await this.router.navigate(['/change-password-setup']);
-    }
     location.reload();
   }
 
   async logout(navigate = true) {
     localStorage.removeItem('token');
     if (navigate) {
-      await this.router.navigate(['/']);
+      await this.router.navigate(['']);
     }
     location.reload();
   }

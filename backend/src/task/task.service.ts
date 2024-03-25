@@ -14,8 +14,7 @@ import { BoardService } from '../board/board.service';
 import { ProjectService } from '../project/project.service';
 import { User } from '../database/entity/user.entity';
 import { Attachment } from '../database/entity/attachment.entity';
-import sequelize, { Op } from 'sequelize';
-import { UserProject } from '../database/entity/user-project.entity';
+import { Op } from 'sequelize';
 import { Project } from '../database/entity/project.entity';
 
 @Injectable()
@@ -216,7 +215,7 @@ export class TaskService {
       order: [['assignedTasks', 'deadline', 'ASC']],
     });
 
-    return dbUser.assignedTasks.map((t) => t.toDto());
+    return dbUser?.assignedTasks?.map((t) => t.toDto()) || [];
   }
 
   async delete(id: string, user: JwtUser) {

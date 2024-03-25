@@ -51,3 +51,4 @@ backend/attachments
 frontend/node_modules
 common/node_modules
 frontend/.angular
+backend/tsconfig.build.tsbuildinfo

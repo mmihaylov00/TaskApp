@@ -20,6 +20,7 @@ export interface UserDetailsDto {
   token?: string;
 }
 export interface ProfileSetupDto {
+  invitationLink: string;
   firstName: string;
   lastName: string;
   email: string;

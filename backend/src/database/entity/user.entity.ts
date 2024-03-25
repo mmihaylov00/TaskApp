@@ -38,6 +38,13 @@ export class User extends UUIDEntity {
   declare role: Role;
 
   @Column({
+    allowNull: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+  })
+  declare invitationLink?: string;
+
+  @Column({
     type: DataType.ENUM,
     values: USER_STATUSES,
     defaultValue: UserStatus.INVITED,

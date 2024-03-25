@@ -10,6 +10,8 @@ import { ProfileModule } from './profile/profile.module';
 import { DatabaseModule } from './database/database.module';
 import { WSModule } from './socket/socket.module';
 import { AttachmentModule } from './attachment/attachment.module';
+import { MailModule } from './mail/mail.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -17,6 +19,7 @@ import { AttachmentModule } from './attachment/attachment.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    EventEmitterModule.forRoot(),
     AuthModule,
     UserModule,
     ProfileModule,
@@ -26,6 +29,7 @@ import { AttachmentModule } from './attachment/attachment.module';
     WSModule,
     TaskModule,
     AttachmentModule,
+    MailModule,
   ],
   providers: [],
 })

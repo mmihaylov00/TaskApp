@@ -28,7 +28,10 @@ export class BoardService {
     const include: any[] = [projectInclude, stageInclude];
 
     if (user.role !== Role.ADMIN) {
-      include.push({ model: User, where: { id: user.id } });
+      include.push({
+        model: Project,
+        include: { model: User, where: { id: user.id } },
+      });
     }
 
     const boards = await Board.findAll({

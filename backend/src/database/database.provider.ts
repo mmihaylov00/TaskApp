@@ -26,6 +26,7 @@ const seed = async () => {
       password,
       role: Role.ADMIN,
       status: UserStatus.ACTIVE,
+      invitationLink: null,
     });
   } catch (_) {}
 };

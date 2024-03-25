@@ -4,8 +4,8 @@
     "module": "commonjs",
     "outDir": "./dist",
     "types": [],
-    "baseUrl": "./",
-    "rootDir": "."
+    "baseUrl": "./src",
+    "rootDir": "./src"
   },
   "exclude": ["node_modules", "dist", "**/*spec.ts"]
 }

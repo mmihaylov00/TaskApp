@@ -13,8 +13,6 @@ import { Project } from '../database/entity/project.entity';
 import { Board } from '../database/entity/board.entity';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { UserProject } from '../database/entity/user-project.entity';
-import { Stage } from '../database/entity/stage.entity';
-import { Task } from '../database/entity/task.entity';
 import { QueryTypes } from 'sequelize';
 
 @Injectable()
@@ -208,8 +206,16 @@ export class ProjectService {
       throw new TaskAppError('project_not_found', HttpStatus.NOT_FOUND);
     }
 
-    if (user && user.role != Role.ADMIN && !user.isPartOfProject(project)) {
+    if (
+      user &&
+      user.role != Role.ADMIN &&
+      !this.isPartOfProject(user, project)
+    ) {
       throw new TaskAppError('no_access', HttpStatus.FORBIDDEN);
     }
+  }
+
+  public isPartOfProject(user: JwtUser, project: Project) {
+    return project.users?.some((u) => (u.id = user.id));
   }
 }

@@ -12,7 +12,6 @@ import {
 import { Project } from './project.entity';
 import { BoardDto } from 'taskapp-common/dist/src/dto/board.dto';
 import { DataTypes } from 'sequelize';
-import { type } from 'os';
 
 @Table({ paranoid: true })
 export class Board extends UUIDEntity {

@@ -26,8 +26,8 @@ export class AppComponent {
     readonly userService: UserService,
     readonly store: Store,
   ) {
-    this.isInProfile = window.location.pathname === '/change-password-setup';
-    if (!this.isLogged) return;
+    this.isInProfile = window.location.pathname.includes('/invitation/');
+    if (!this.isLogged || this.isInProfile) return;
 
     this.store
       .pipe(select((value: any) => value.navData))
@@ -41,10 +41,6 @@ export class AppComponent {
       next: async (value) => {
         localStorage.setItem('token', value.token);
         store.dispatch(setProfileData(value));
-        if (value.status === UserStatus.INVITED && !this.isInProfile) {
-          await this.router.navigate(['change-password-setup']);
-          this.isInProfile = true;
-        }
       },
     });
   }

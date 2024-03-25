@@ -13,9 +13,8 @@ import { Authenticated } from '../auth/decorator/authenticated.decorator';
 import { Roles } from '../auth/decorator/role.decorator';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
-import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
+import { PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { PageParams } from '../decorator/page.decorator';
-import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import {
   CreateUserDto,
   SearchUserDto,

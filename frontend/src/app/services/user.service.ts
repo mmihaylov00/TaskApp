@@ -56,4 +56,8 @@ export class UserService {
       userIds: users.map((user) => user.id),
     });
   }
+
+  getInvitationData(id: string) {
+    return this.http.get<UserDetailsDto>('profile/invitation/' + id);
+  }
 }

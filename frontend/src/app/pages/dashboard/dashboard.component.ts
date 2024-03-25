@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit {
   setupTasksChart() {
     const series = [
       this.stats.pendingTasks,
-      this.stats.overallCompletedTasks,
+      this.stats.overallPendingTasks,
       this.stats.overallUnassignedTasks,
     ];
     const labels = ['Assigned to you', 'Assigned to others', 'Unassigned'];
@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit {
         color: '#a56ea3',
       },
     ];
-    const categories = ['By you', 'By others', 'Unassigned'];
+    const categories = ['Assigned to you', 'Assigned to others', 'Unassigned'];
 
     this.overallTaskContributionChartOptions = {
       series,
@@ -113,6 +113,9 @@ export class DashboardComponent implements OnInit {
     this.taskPerBoardChartOptions = {
       series,
       xaxis: {
+        labels: {
+          show: !!categories.length,
+        },
         type: 'category',
         categories,
       },
