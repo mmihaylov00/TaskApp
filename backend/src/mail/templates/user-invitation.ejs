@@ -38,11 +38,11 @@
                             <tr>
                                 <td class="content-cell">
                                     <div class="f-fallback">
-                                        <h1>Hi<%= locals.name; %>!</h1>
+                                        <h1>Hello<%= locals.name; %>!</h1>
                                         <p>
-                                            You have been invited by <%= locals.invitedBy; %> to join his team at
-                                            TaskApp!
-                                            Follow the link below to finish your account:
+                                            You have been invited by <strong><%= locals.invitedBy; %></strong> to join his team at
+                                            <strong>TaskApp</strong>!
+                                            Click on the button below to finish your account:
                                         </p>
                                         <a align="center" class='button' href="<%= locals.invitationLink; %>"
                                            target="_blank">Join us</a>

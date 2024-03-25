@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { Attachment } from './entity/attachment.entity';
+import { Notification } from './entity/notification.entity';
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ export const databaseProviders = [
         Stage,
         Task,
         Attachment,
+        Notification,
       ]);
       await sequelize.sync();
       await seed();

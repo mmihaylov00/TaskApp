@@ -1,11 +1,6 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProjectService } from '../../services/project.service';
-import { Store } from '@ngrx/store';
-import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
-import { UserService } from '../../services/user.service';
-import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
 import { UserSearchComponent } from '../../components/user-search/user-search.component';
 import { firstValueFrom } from 'rxjs';
 

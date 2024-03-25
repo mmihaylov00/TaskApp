@@ -1,13 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  ProfileSetupDto,
-  UserDetailsDto,
-} from 'taskapp-common/dist/src/dto/auth.dto';
-import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
-import { CreateUserDto } from 'taskapp-common/dist/src/dto/user.dto';
-import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
-import {
   CreateTaskDto,
   MoveTaskDto,
   TaskDto,

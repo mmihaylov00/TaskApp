@@ -8,9 +8,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { ChangePasswordModal } from '../../modal/change-password/change-password.modal';
 import { FormControl } from '@angular/forms';
 import { TaskDto } from 'taskapp-common/dist/src/dto/task.dto';
-import { map, startWith } from 'rxjs';
 import { TaskService } from '../../services/task.service';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
+import { NotificationDto } from 'taskapp-common/dist/src/dto/notification.dto';
 
 @Component({
   selector: 'app-header',
@@ -22,12 +23,15 @@ export class HeaderComponent {
   username = '';
   searchControl = new FormControl('', []);
   tasks: TaskDto[] = [];
+  notificationCount?: number = undefined;
+  unreadNotifications: NotificationDto[] = undefined;
 
   constructor(
     private readonly store: Store,
     private readonly dialog: MatDialog,
     private readonly router: Router,
     private readonly taskService: TaskService,
+    private readonly notificationService: NotificationService,
     private readonly authService: AuthService,
   ) {
     this.store
@@ -36,6 +40,7 @@ export class HeaderComponent {
         this.username = value.firstName;
       });
     this.loadTasks();
+    this.loadNotificationCount();
     this.searchControl.valueChanges.subscribe(
       async (id) => await this.chooseTask(id),
     );
@@ -45,6 +50,21 @@ export class HeaderComponent {
     this.taskService
       .find(this.searchControl.value)
       .subscribe((tasks) => (this.tasks = tasks));
+  }
+
+  loadNotificationCount() {
+    this.notificationService
+      .getCount()
+      .subscribe(
+        ({ count }) => (this.notificationCount = count > 0 ? count : undefined),
+      );
+  }
+
+  loadNotifications() {
+    this.notificationService.getUnread().subscribe((notifications) => {
+      this.unreadNotifications = notifications;
+      this.notificationCount = undefined;
+    });
   }
 
   async chooseTask(id: string) {
@@ -79,5 +99,13 @@ export class HeaderComponent {
 
   toggleMenu() {
     this.store.dispatch(toggleNavOpenState({}));
+  }
+
+  hasNotifications() {
+    return this.unreadNotifications !== undefined;
+  }
+
+  async clickNotification(link: string) {
+    await this.router.navigate(link.split('/'));
   }
 }

@@ -21,7 +21,7 @@ import configuration from '../config/configuration';
         from: '"From Name" <client@task.app>',
       },
       template: {
-        dir: join(__dirname, 'templates'),
+        dir: join(__dirname, '..', '..', 'mail', 'templates'),
         adapter: new EjsAdapter(),
         options: {
           strict: true,

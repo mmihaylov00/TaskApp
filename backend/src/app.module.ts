@@ -12,6 +12,7 @@ import { WSModule } from './socket/socket.module';
 import { AttachmentModule } from './attachment/attachment.module';
 import { MailModule } from './mail/mail.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     WSModule,
     TaskModule,
     AttachmentModule,
+    NotificationModule,
     MailModule,
   ],
   providers: [],

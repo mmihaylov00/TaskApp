@@ -48,6 +48,4 @@ export class BarChartComponent {
       ...this.options,
     };
   }
-
-  protected readonly undefined = undefined;
 }

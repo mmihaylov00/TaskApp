@@ -73,6 +73,7 @@ import { TaskCardComponent } from './components/task-card/task-card.component';
 import { ChartComponent } from './components/chart/chart.component';
 import { PieChartComponent } from './components/chart/pie-chart/pie-chart.component';
 import { BarChartComponent } from './components/chart/bar-chart/bar-chart.component';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
   declarations: [
@@ -150,6 +151,7 @@ import { BarChartComponent } from './components/chart/bar-chart/bar-chart.compon
     MatNativeDateModule,
     NgxEditorModule,
     NgApexchartsModule,
+    MatBadgeModule,
   ],
   providers: [
     AuthService,

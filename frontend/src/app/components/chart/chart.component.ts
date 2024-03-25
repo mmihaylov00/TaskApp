@@ -3,15 +3,15 @@ import { Component, Input } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
-  ApexNonAxisChartSeries,
   ApexDataLabels,
-  ApexPlotOptions,
-  ApexXAxis,
-  ApexLegend,
   ApexFill,
-  ApexYAxis,
-  ApexTooltip,
+  ApexLegend,
+  ApexNonAxisChartSeries,
+  ApexPlotOptions,
   ApexStates,
+  ApexTooltip,
+  ApexXAxis,
+  ApexYAxis,
 } from 'ng-apexcharts';
 
 export type ChartOptions = {

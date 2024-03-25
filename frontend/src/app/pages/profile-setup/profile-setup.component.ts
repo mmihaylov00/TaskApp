@@ -2,11 +2,9 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
-import { select, Store } from '@ngrx/store';
-import { ProfileData, setProfileData } from '../../states/profile.reducer';
+import { Store } from '@ngrx/store';
+import { setProfileData } from '../../states/profile.reducer';
 import { UserService } from '../../services/user.service';
-import { setBoardData } from '../../states/board.reducer';
 
 @Component({
   selector: 'app-change-password-setup',

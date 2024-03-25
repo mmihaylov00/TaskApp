@@ -1,8 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {
-  relativeDateFormat,
-  simpleDateFormat,
-} from '../../utils/date-formatter.util';
+import { relativeDateFormat } from '../../utils/date-formatter.util';
 import { TASK_PRIORITY_COLORS } from 'taskapp-common/dist/src/enums/task-priority.enum';
 import { Router } from '@angular/router';
 import { TaskDto } from 'taskapp-common/dist/src/dto/task.dto';

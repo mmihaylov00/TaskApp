@@ -11,6 +11,7 @@ import {
 } from 'sequelize-typescript';
 import { UserProject } from './user-project.entity';
 import { Project } from './project.entity';
+import { Notification } from './notification.entity';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import {
   USER_STATUSES,
@@ -65,6 +66,9 @@ export class User extends UUIDEntity {
 
   @HasMany(() => Task, 'uploader')
   declare uploadedAttachments: Attachment[];
+
+  @HasMany(() => Notification, 'userId')
+  declare notifications: Notification[];
 
   @Column({ allowNull: true, type: DataTypes.UUID })
   declare invitedBy?: string;

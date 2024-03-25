@@ -5,7 +5,6 @@ import {
   CreateBoardDto,
 } from 'taskapp-common/dist/src/dto/board.dto';
 import { SocketService } from './socket.service';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

@@ -26,17 +26,23 @@
     </mat-autocomplete>
     <button
       class="d-flex flex-justify-center bell"
+      (click)="loadNotifications()"
+      [matMenuTriggerFor]="notifications"
       mat-icon-button
       matTooltip="Notifications"
       color="primary">
       <!--      is there are notifications: notifications_active-->
-      <mat-icon fontIcon="notifications" />
+      <mat-icon
+        fontIcon="notifications"
+        [matBadge]="notificationCount"
+        matBadgeColor="warn"
+        matBadgeSize="small" />
     </button>
   </div>
 </header>
 
-<app-avatar [matMenuTriggerFor]="menu" [username]="username"></app-avatar>
-<mat-menu #menu="matMenu">
+<app-avatar [matMenuTriggerFor]="profile" [username]="username" />
+<mat-menu #profile="matMenu">
   <button
     class="menu-button"
     mat-menu-item
@@ -45,4 +51,34 @@
     <mat-icon color="primary" [fontIcon]="item.icon" />
     {{ item.title }}
   </button>
+</mat-menu>
+<mat-menu
+  #notifications="matMenu"
+  class="notifications-menu"
+  xPosition="before"
+  yPosition="below">
+  <p
+    class="no-notification text-center"
+    *ngIf="unreadNotifications?.length === 0">
+    No new notifications...
+  </p>
+  <div class="d-flex flex-justify-center">
+    <mat-spinner
+      class="notification-loader"
+      diameter="40"
+      *ngIf="!unreadNotifications" />
+  </div>
+  <ng-container *ngIf="unreadNotifications?.length">
+    <button
+      class="menu-button"
+      mat-menu-item
+      *ngFor="let notification of unreadNotifications"
+      (click)="clickNotification(notification.link)">
+      <mat-icon
+        class="notification-icon"
+        color="primary"
+        fontIcon="notification_important" />
+      {{ notification.message }}
+    </button>
+  </ng-container>
 </mat-menu>

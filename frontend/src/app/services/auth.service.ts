@@ -5,7 +5,6 @@ import {
   LoginResponseDto,
 } from 'taskapp-common/dist/src/dto/auth.dto';
 import { Router } from '@angular/router';
-import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 
 @Injectable({
   providedIn: 'root',

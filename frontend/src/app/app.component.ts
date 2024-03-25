@@ -3,7 +3,6 @@ import { UserService } from './services/user.service';
 import { select, Store } from '@ngrx/store';
 import { setProfileData } from './states/profile.reducer';
 import { Router } from '@angular/router';
-import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import {
   NavData,
   setNavOpenState,

@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 
 @Component({
   selector: 'app-login',
