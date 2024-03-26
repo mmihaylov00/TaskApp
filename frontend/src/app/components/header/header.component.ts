@@ -101,10 +101,6 @@ export class HeaderComponent {
     this.store.dispatch(toggleNavOpenState({}));
   }
 
-  hasNotifications() {
-    return this.unreadNotifications !== undefined;
-  }
-
   async clickNotification(link: string) {
     await this.router.navigate(link.split('/'));
   }

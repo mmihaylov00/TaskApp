@@ -14,10 +14,13 @@ import { Board } from '../database/entity/board.entity';
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { UserProject } from '../database/entity/user-project.entity';
 import { QueryTypes } from 'sequelize';
+import configuration from '../config/configuration';
+import { Notification } from '../database/entity/notification.entity';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ProjectService {
-  constructor() {}
+  constructor(private readonly eventEmitter: EventEmitter2) {}
 
   async list(user: JwtUser, page: PageRequestDto) {
     //todo don't select archived boards
@@ -65,10 +68,49 @@ export class ProjectService {
       );
       await UserProject.bulkCreate(userProjects);
 
+      if (data.userIds.length) {
+        this.eventEmitter.emit('project.created', {
+          creator: dbUser,
+          project,
+          userIds: data.userIds,
+        });
+      }
+
       return { ...data, id: project.id, boards: [] };
     } catch (e) {
       throw new TaskAppError('project_not_created', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @OnEvent('project.create')
+  async projectCreatedNotification(data: {
+    creator: User;
+    project: Project;
+    userIds: string[];
+  }) {
+    const users = await User.findAll({ where: { id: data.userIds } });
+    for (const user of users) {
+      await this.sendInvitedNotification(data.creator, data.project, user);
+    }
+  }
+
+  async sendInvitedNotification(
+    creator: User,
+    project: Project,
+    receiver: User,
+  ) {
+    const message = `You have been added to ${project.name} by ${creator.firstName} ${creator.lastName}`;
+    const link = `${configuration().frontend_url}/project/${project.id}`;
+
+    this.eventEmitter.emit('user.notification', {
+      receiver: receiver.email,
+      title: 'Added to new project',
+      message: message,
+      button: 'View project',
+      link,
+    });
+
+    await Notification.create({ message, link, userId: receiver.id });
   }
 
   async update(id: string, data: CreateProjectDto) {
@@ -117,10 +159,14 @@ export class ProjectService {
   }
 
   async addUser(user: JwtUser, id: string, userId: string) {
-    await this.getProject(id, user);
+    const project = await this.getProject(id, user);
 
     try {
       await UserProject.create({ projectId: id, userId });
+
+      const creator = await User.findByPk(user.id);
+      const invited = await User.findByPk(userId);
+      await this.sendInvitedNotification(creator, project, invited);
     } catch (_) {
       throw new TaskAppError('user_already_added', HttpStatus.CONFLICT);
     }

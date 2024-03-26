@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<%- include("./shared/head.ejs") %>
+<body>
+<table
+        class="email-wrapper"
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        role="presentation"
+>
+    <tr>
+        <td align="center">
+            <table
+                    class="email-content"
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    role="presentation"
+            >
+                <tr>
+                    <td
+                            class="email-body"
+                            width="570"
+                            cellpadding="0"
+                            cellspacing="0"
+                    >
+                        <table
+                                class="email-body_inner"
+                                align="center"
+                                width="570"
+                                cellpadding="0"
+                                cellspacing="0"
+                                role="presentation"
+                        >
+                            <!-- Body content -->
+                            <tr>
+                                <td class="content-cell">
+                                    <div class="f-fallback">
+                                        <h1><%= locals.title; %>!</h1>
+                                        <p>
+                                            <%= locals.message; %>
+                                            <% if (locals.link) { %>
+                                            Click on the button below for more information!
+                                            <% } %>
+                                        </p>
+                                        <% if (locals.link) { %>
+                                        <a align="center" class='button' href="<%= locals.link; %>"
+                                           target="_blank"><%= locals.button; %></a>
+                                        <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

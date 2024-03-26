@@ -11,7 +11,7 @@ export class MailService {
   @OnEvent('user.invitation')
   async sendInvitation(data: {
     user: UserDetailsDto;
-    invitationLink;
+    invitationLink: string;
     invitedBy: UserDetailsDto;
   }) {
     const invitationLink = `${configuration().frontend_url}/invitation/${
@@ -29,6 +29,27 @@ export class MailService {
         name,
         invitedBy: `${data.invitedBy.firstName} ${data.invitedBy.lastName}`,
         invitationLink,
+      },
+    });
+  }
+
+  @OnEvent('user.notification')
+  async sendNotification(data: {
+    receiver: string;
+    title: string;
+    message: string;
+    button?: string;
+    link?: string;
+  }) {
+    await this.mailerService.sendMail({
+      to: data.receiver,
+      subject: 'TaskApp: ' + data.title,
+      template: './user-notification',
+      context: {
+        title: data.title,
+        message: data.message,
+        button: data.button,
+        link: data.link,
       },
     });
   }

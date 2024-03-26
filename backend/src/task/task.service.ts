@@ -16,12 +16,16 @@ import { User } from '../database/entity/user.entity';
 import { Attachment } from '../database/entity/attachment.entity';
 import { Op } from 'sequelize';
 import { Project } from '../database/entity/project.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import configuration from '../config/configuration';
+import { Notification } from '../database/entity/notification.entity';
 
 @Injectable()
 export class TaskService {
   constructor(
     private readonly projectService: ProjectService,
     private readonly boardService: BoardService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async create(user: JwtUser, data: CreateTaskDto) {
@@ -35,7 +39,7 @@ export class TaskService {
       throw new TaskAppError('invalid_stage', HttpStatus.BAD_REQUEST);
     }
 
-    let assignee;
+    let assignee: User;
     if (data.assignee) {
       assignee = await User.findByPk(data.assignee);
       await this.projectService.checkAccess(board?.project, assignee);
@@ -60,6 +64,10 @@ export class TaskService {
     );
 
     task.assignedTo = assignee;
+
+    if (assignee && assignee.id != user.id) {
+      await this.assignNotification(user, task, board);
+    }
 
     this.boardService.sendMessage(board.id, 'task-created', task.toDto());
 
@@ -126,6 +134,11 @@ export class TaskService {
 
     await this.moveTask(task, board, stage);
 
+    const sendNotification =
+      task.assignee != data.assignee &&
+      data.assignee &&
+      data.assignee != user.id;
+
     task.name = data.title;
     task.description = data.description;
     task.priority = data.priority || null;
@@ -145,9 +158,31 @@ export class TaskService {
       ],
     });
 
+    if (sendNotification) {
+      await this.assignNotification(user, task, board);
+    }
+
     this.boardService.sendMessage(board.id, 'task-updated', task.toDto());
 
     return task.toDto();
+  }
+
+  async assignNotification(user: JwtUser, task: Task, board: Board) {
+    const dbUser = await User.findByPk(user.id);
+    const message = `You have been assigned to ${task.name} by ${dbUser.firstName} ${dbUser.lastName}`;
+    const link = `${configuration().frontend_url}/project/${
+      task.projectId
+    }/board/${board.id}?task=${task.id}`;
+
+    this.eventEmitter.emit('user.notification', {
+      receiver: task.assignedTo.email,
+      title: 'You have been assigned to a new task',
+      message: message,
+      button: 'View task',
+      link,
+    });
+
+    await Notification.create({ message, link, userId: task.assignedTo.id });
   }
 
   async move(id: string, user: JwtUser, data: MoveTaskDto) {
@@ -181,7 +216,13 @@ export class TaskService {
   }
 
   async complete(id: string, user: JwtUser) {
-    let task = await Task.findByPk(id, { include: [Stage] });
+    const task = await Task.findByPk(id, {
+      include: [
+        Stage,
+        { model: User, as: 'assignedTo' },
+        { model: User, as: 'creator' },
+      ],
+    });
     if (!task) {
       throw new TaskAppError('invalid_task', HttpStatus.BAD_REQUEST);
     }
@@ -198,10 +239,40 @@ export class TaskService {
 
     await this.removeFromStage(task.stage, task.id);
 
+    if (task.assignee && task.assignee != user.id) {
+      await this.sendCompleteNotification(user, task, boardId, task.assignedTo);
+    }
+    if (task.creator && task.creator.id != user.id) {
+      await this.sendCompleteNotification(user, task, boardId, task.creator);
+    }
+
     this.boardService.sendMessage(boardId, 'task-removed', <TaskRemovedDto>{
       taskId: task.id,
       stageId: task.stageId,
     });
+  }
+
+  async sendCompleteNotification(
+    user: JwtUser,
+    task: Task,
+    boardId: string,
+    receiver: User,
+  ) {
+    const dbUser = await User.findByPk(user.id);
+    const message = `Task ${task.name} has been completed by ${dbUser.firstName} ${dbUser.lastName}`;
+    const link = `${configuration().frontend_url}/project/${
+      task.projectId
+    }/board/${boardId}?task=${task.id}`;
+
+    this.eventEmitter.emit('user.notification', {
+      receiver: receiver.email,
+      title: 'Task has been completed',
+      message: message,
+      button: 'View task',
+      link,
+    });
+
+    await Notification.create({ message, link, userId: receiver.id });
   }
 
   async getAssigned(user: JwtUser) {
