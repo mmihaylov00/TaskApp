@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @use '@angular/material/theming' as mat-theme;
+@import '../../../node_modules/angular-notifier/styles';
 @import 'variables';
 @import url('https://fonts.googleapis.com/css?family=Signika');
 @import '../fonts/Helvetica/helvetica.font-face';

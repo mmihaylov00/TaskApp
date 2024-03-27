@@ -69,16 +69,40 @@
       *ngIf="!unreadNotifications" />
   </div>
   <ng-container *ngIf="unreadNotifications?.length">
-    <button
-      class="menu-button"
-      mat-menu-item
-      *ngFor="let notification of unreadNotifications"
-      (click)="clickNotification(notification.link)">
-      <mat-icon
-        class="notification-icon"
-        color="primary"
-        fontIcon="notification_important" />
-      {{ notification.message }}
-    </button>
+    <mat-divider />
+    <ng-container *ngFor="let notification of unreadNotifications">
+      <button
+        class="menu-button notification-button"
+        mat-menu-item
+        (click)="clickNotification(notification.link)">
+        <mat-icon
+          class="notification-icon"
+          color="primary"
+          fontIcon="notification_important" />
+        {{ notification.message }}
+      </button>
+      <mat-divider />
+    </ng-container>
   </ng-container>
 </mat-menu>
+
+<ng-template #notify let-notificationData="notification">
+  <div
+    class="notification w-100 d-flex flex-justify-between"
+    (click)="
+      clickNotification(
+        receivedNotifications[notificationData.message]?.link,
+        notificationData.message
+      )
+    ">
+    <div
+      class="notification-message w-95 text-black d-flex flex-align-items-center">
+      {{ receivedNotifications[notificationData.message]?.message }}
+    </div>
+    <button
+      mat-icon-button
+      (click)="closeNotification($event, notificationData.message)">
+      <mat-icon class="w-5 text-black" fontIcon="close" />
+    </button>
+  </div>
+</ng-template>

@@ -3,10 +3,15 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import configuration from '../config/configuration';
+import { NotificationService } from '../notification/notification.service';
+import { Notification } from '../database/entity/notification.entity';
 
 @Injectable()
 export class MailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   @OnEvent('user.invitation')
   async sendInvitation(data: {
@@ -35,12 +40,18 @@ export class MailService {
 
   @OnEvent('user.notification')
   async sendNotification(data: {
+    receiverId: string;
     receiver: string;
     title: string;
     message: string;
     button?: string;
     link?: string;
   }) {
+    await this.notificationService.sendNotification(
+      data.receiverId,
+      data.message,
+      data.link,
+    );
     await this.mailerService.sendMail({
       to: data.receiver,
       subject: 'TaskApp: ' + data.title,

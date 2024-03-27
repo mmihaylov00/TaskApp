@@ -4,6 +4,8 @@ import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 import { join } from 'path';
 import { MailService } from './mail.service';
 import configuration from '../config/configuration';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
@@ -28,7 +30,8 @@ import configuration from '../config/configuration';
         },
       },
     }),
+    NotificationModule,
   ],
-  providers: [MailService],
+  providers: [MailService, NotificationService],
 })
 export class MailModule {}

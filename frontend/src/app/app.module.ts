@@ -74,6 +74,7 @@ import { ChartComponent } from './components/chart/chart.component';
 import { PieChartComponent } from './components/chart/pie-chart/pie-chart.component';
 import { BarChartComponent } from './components/chart/bar-chart/bar-chart.component';
 import { MatBadgeModule } from '@angular/material/badge';
+import { NotifierModule } from 'angular-notifier';
 
 @NgModule({
   declarations: [
@@ -152,6 +153,21 @@ import { MatBadgeModule } from '@angular/material/badge';
     NgxEditorModule,
     NgApexchartsModule,
     MatBadgeModule,
+    NotifierModule.withConfig({
+      behaviour: {
+        autoHide: 5000,
+        onClick: 'hide',
+        stacking: 3,
+      },
+      position: {
+        vertical: {
+          position: 'top',
+        },
+        horizontal: {
+          position: 'right',
+        },
+      },
+    }),
   ],
   providers: [
     AuthService,

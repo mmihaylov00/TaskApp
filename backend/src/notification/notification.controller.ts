@@ -42,4 +42,10 @@ export class NotificationController {
   async delete(@Authenticated() user: JwtUser, @Param('id') id: string) {
     await this.notificationService.delete(id, user);
   }
+
+  @Get('/:id/read')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async markAsRead(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    await this.notificationService.read(id, user);
+  }
 }

@@ -53,4 +53,25 @@ export class NotificationService {
       { where: { id, userId: user.id } },
     );
   }
+
+  async read(id: string, user: JwtUser) {
+    await Notification.update(
+      { read: true },
+      { where: { id, userId: user.id } },
+    );
+  }
+
+  async sendNotification(receiverId: string, message: string, link: string) {
+    const notification = await Notification.create({
+      message: message,
+      link: link,
+      userId: receiverId,
+    });
+    const user = NotificationService.users[receiverId];
+    if (!user) {
+      return;
+    }
+
+    user.emit('notification-received', { message, link, id: notification.id });
+  }
 }

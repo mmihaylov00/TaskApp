@@ -34,3 +34,9 @@ app-side-task {
   min-width: min(100vw, 600px);
   width: 40vw;
 }
+
+::ng-deep {
+  .notifier__container {
+    z-index: 1000000;
+  }
+}

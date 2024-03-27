@@ -175,14 +175,13 @@ export class TaskService {
     }/board/${board.id}?task=${task.id}`;
 
     this.eventEmitter.emit('user.notification', {
+      receiverId: task.assignedTo.id,
       receiver: task.assignedTo.email,
       title: 'You have been assigned to a new task',
       message: message,
       button: 'View task',
       link,
     });
-
-    await Notification.create({ message, link, userId: task.assignedTo.id });
   }
 
   async move(id: string, user: JwtUser, data: MoveTaskDto) {
@@ -265,14 +264,13 @@ export class TaskService {
     }/board/${boardId}?task=${task.id}`;
 
     this.eventEmitter.emit('user.notification', {
+      receiverId: receiver.id,
       receiver: receiver.email,
       title: 'Task has been completed',
       message: message,
       button: 'View task',
       link,
     });
-
-    await Notification.create({ message, link, userId: receiver.id });
   }
 
   async getAssigned(user: JwtUser) {

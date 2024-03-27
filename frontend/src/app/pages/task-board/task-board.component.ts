@@ -82,20 +82,12 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  readonly events = [
-    'thumbnail-updated',
-    'task-created',
-    'task-updated',
-    'task-moved',
-    'task-removed',
-  ];
-
   ngOnDestroy() {
-    this.boardService.unsubscribe(...this.events);
+    this.boardService.unsubscribe();
   }
 
   subscribe() {
-    this.boardService.unsubscribe(...this.events);
+    this.boardService.unsubscribe();
 
     this.boardService.listen(this.boardId, {
       'task-created': (data: TaskDto) => {

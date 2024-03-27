@@ -103,14 +103,13 @@ export class ProjectService {
     const link = `${configuration().frontend_url}/project/${project.id}`;
 
     this.eventEmitter.emit('user.notification', {
+      receiverId: receiver.id,
       receiver: receiver.email,
       title: 'Added to new project',
       message: message,
       button: 'View project',
       link,
     });
-
-    await Notification.create({ message, link, userId: receiver.id });
   }
 
   async update(id: string, data: CreateProjectDto) {

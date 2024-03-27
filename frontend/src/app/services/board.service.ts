@@ -23,17 +23,7 @@ export class BoardService extends SocketService {
   }
 
   listen(id: string, subscribe: { [key: string]: (data: any) => void }) {
-    this.subscribe('board', { boardId: id });
-
-    for (const key of Object.keys(subscribe)) {
-      this.socket.on(key, subscribe[key]);
-    }
-  }
-
-  unsubscribe(...keys: string[]) {
-    for (const key of keys) {
-      this.socket.off(key);
-    }
+    this.subscribe('board', subscribe, { boardId: id });
   }
 
   listByProject(projectId: string) {
