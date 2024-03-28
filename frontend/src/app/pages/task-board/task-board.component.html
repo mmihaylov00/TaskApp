@@ -1,19 +1,47 @@
-<div id="task-board" class="board">
-  <div
-    *ngFor="let stage of stages"
-    class="stage d-flex flex-col"
-    [id]="stage.id"
-    [style]="{ 'background-color': stage.color + '4B' }">
-    <h3>{{ stage.name }}</h3>
-    <app-task-card
-      [id]="task.id"
-      class="task"
-      [task]="task"
-      [color]="stage.color"
-      [thumbnail]="loadedAttachments[task.thumbnail]"
-      *ngFor="let task of stage.tasks" />
-  </div>
-</div>
+<mat-card class="board-card">
+  <mat-card-header class="board-header">
+    <mat-card-title>{{ boardName }}</mat-card-title>
+    <nav
+      mat-tab-nav-bar
+      mat-stretch-tabs="false"
+      mat-align-tabs="start"
+      [tabPanel]="panel">
+      <a
+        *ngFor="let tab of tabs"
+        mat-tab-link
+        (click)="changeTab(tab.id)"
+        [active]="activeTab == tab.id">
+        {{ tab.title }}
+      </a>
+    </nav>
+  </mat-card-header>
+  <mat-card-content class="content" #panel>
+    <div id="task-board" class="board" *ngIf="activeTab === 'board'">
+      <div
+        *ngFor="let stage of stages"
+        class="stage d-flex flex-col"
+        [id]="stage.id"
+        [style]="{ 'background-color': stage.color + '4B' }">
+        <h3>{{ stage.name }}</h3>
+        <app-task-card
+          [id]="task.id"
+          class="task hover-pointer"
+          matRipple
+          matRippleColor="#0000001C"
+          [task]="task"
+          [color]="stage.color"
+          [thumbnail]="loadedAttachments[task.thumbnail]"
+          *ngFor="let task of stage.tasks" />
+      </div>
+    </div>
+    <div *ngIf="activeTab === 'completed'">
+      <app-task-list
+        title="Completed Tasks"
+        [tasks]="completedTasks"
+        emptyMessage="There are no completed tasks for this board" />
+    </div>
+  </mat-card-content>
+</mat-card>
 
 <button
   class="new-task"

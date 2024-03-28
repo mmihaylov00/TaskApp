@@ -62,7 +62,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { NgxColorsModule } from 'ngx-colors';
 import { ColorPickerComponent } from './components/color-picker/color-picker.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import {
+  DateAdapter,
+  MatNativeDateModule,
+  MatRippleModule,
+} from '@angular/material/core';
 import { CustomDateAdapter } from './adapters/custom-date.adapter';
 import { NgxEditorModule } from 'ngx-editor';
 import { SideTaskComponent } from './components/side-task/side-task.component';
@@ -75,6 +79,8 @@ import { PieChartComponent } from './components/chart/pie-chart/pie-chart.compon
 import { BarChartComponent } from './components/chart/bar-chart/bar-chart.component';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotifierModule } from 'angular-notifier';
+import { MatTabsModule } from '@angular/material/tabs';
+import { TaskListComponent } from './components/task-list/task-list.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +114,7 @@ import { NotifierModule } from 'angular-notifier';
     ChartComponent,
     PieChartComponent,
     BarChartComponent,
+    TaskListComponent,
   ],
   imports: [
     CommonModule,
@@ -168,6 +175,8 @@ import { NotifierModule } from 'angular-notifier';
         },
       },
     }),
+    MatTabsModule,
+    MatRippleModule,
   ],
   providers: [
     AuthService,

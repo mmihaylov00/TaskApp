@@ -22,6 +22,17 @@ export class PieChartComponent {
         type: 'donut',
         height: this.height,
       },
+      plotOptions: {
+        pie: {
+          customScale: 1,
+          donut: {
+            size: '55%',
+          },
+        },
+      },
+      stroke: {
+        width: 1,
+      },
       legend: {
         position: 'bottom',
       },
@@ -40,7 +51,19 @@ export class PieChartComponent {
           highlightDataSeries: true,
         },
       },
+      noData: {
+        text: 'No data available',
+        align: 'center',
+        verticalAlign: 'middle',
+      },
       dataLabels: {
+        // enabled: true,
+        // offsetX: 30,
+        // style: {
+        //   fontSize: '4px',
+        //   fontFamily: 'Helvetica, Arial, sans-serif',
+        //   fontWeight: 'bold',
+        // },
         formatter: function (val, opts) {
           return opts.w.config.series[opts.seriesIndex];
         },

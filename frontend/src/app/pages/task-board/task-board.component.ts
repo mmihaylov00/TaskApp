@@ -38,35 +38,16 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
   boardName = '';
   stages: StageDto[] = [];
   users: UserDetailsDto[] = [];
-
   loadedAttachments: any = {};
+  completedTasks: TaskDto[];
 
-  @HostListener('wheel', ['$event'])
-  onWheel(event: WheelEvent) {
-    let target = event.target as HTMLElement;
-    while (true) {
-      if (!target.parentElement) return;
-      if (target.classList.contains('board')) break;
+  readonly tabs = [
+    { title: 'Board', id: 'board' },
+    { title: 'Completed', id: 'completed' },
+  ];
+  activeTab = this.tabs[0].id;
 
-      if (target.classList.contains('stage')) {
-        if (target.scrollHeight != target.clientHeight) return;
-        break;
-      }
-
-      target = target.parentElement;
-    }
-    event.preventDefault();
-
-    if (!event.shiftKey) {
-      const container =
-        document.querySelector('#task-board').parentElement.parentElement;
-      if (container) {
-        container.scrollLeft += event.deltaY > 0 ? 100 : -100;
-      }
-    }
-  }
-
-  ngOnInit(): void {
+  ngOnInit() {
     this.route.paramMap.subscribe((params: ParamMap) => {
       if (this.boardId && this.boardId === params.get('boardId')) {
         return;
@@ -76,10 +57,19 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         setBoardData({ projectId: this.projectId, boardId: this.boardId }),
       );
-      this.loadBoards();
+      this.loadBoard();
       this.loadUsers();
       this.subscribe();
     });
+  }
+
+  changeTab(tab: string) {
+    this.activeTab = tab;
+    if (this.activeTab === 'completed') {
+      this.taskService.getCompleted(this.boardId).subscribe((tasks) => {
+        this.completedTasks = tasks;
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -97,6 +87,15 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
             stage.tasks.splice(0, 0, data);
             return;
           }
+        }
+      },
+      'task-uncompleted': (data: TaskDto) => {
+        this.getAttachment(data.thumbnail);
+        const index = this.completedTasks?.findIndex(
+          (task) => task.id === data.id,
+        );
+        if (index !== undefined && index !== -1) {
+          this.completedTasks.splice(index, 1);
         }
       },
       'task-updated': (data: TaskDto) => {
@@ -168,7 +167,7 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  loadBoards() {
+  loadBoard() {
     this.boardService.get(this.boardId).subscribe({
       next: async (board) => {
         this.stages = board.stages;
@@ -235,11 +234,35 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
   }
 
   getAttachment(id: string) {
-    if (!id) {
+    if (!id || this.loadedAttachments[id]) {
       return;
     }
     this.attachmentService.get(id).subscribe((file) => {
       this.loadedAttachments[id] = URL.createObjectURL(file);
     });
+  }
+
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent) {
+    let target = event.target as HTMLElement;
+    while (true) {
+      if (!target.parentElement) return;
+      if (target.classList.contains('board')) break;
+
+      if (target.classList.contains('stage')) {
+        if (target.scrollHeight != target.clientHeight) return;
+        break;
+      }
+
+      target = target.parentElement;
+    }
+    event.preventDefault();
+
+    if (!event.shiftKey) {
+      const container = document.querySelector('#task-board').parentElement;
+      if (container) {
+        container.scrollLeft += event.deltaY > 0 ? 100 : -100;
+      }
+    }
   }
 }

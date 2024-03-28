@@ -90,7 +90,7 @@ export class SideNavComponent implements OnInit {
     this.store.dispatch(setProjectState({ projects: this.projects }));
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadProjects();
     this.router.events.subscribe((event) => {
       if (!(event instanceof NavigationEnd)) return;

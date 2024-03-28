@@ -17,6 +17,7 @@ export interface TaskDto {
   deadline?: Date;
   attachments?: AttachmentDataDto[];
   thumbnail?: string;
+  completed?: boolean;
 }
 
 export interface TaskDetailsDto {

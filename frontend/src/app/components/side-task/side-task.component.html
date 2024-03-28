@@ -6,7 +6,7 @@
         mat-flat-button
         color="primary"
         class="save-button"
-        [disabled]="!saveEnabled || !titleControl.valid"
+        [disabled]="!saveEnabled || !titleControl.valid || taskDisabled"
         (click)="save()">
         {{ taskId === '_' ? 'Create' : 'Save' }}
       </button>
@@ -60,6 +60,7 @@
         </mat-select>
         <button
           *ngIf="priorityControl.value"
+          [disabled]="taskDisabled"
           matSuffix
           mat-icon-button
           aria-label="Clear"
@@ -83,6 +84,7 @@
         </mat-autocomplete>
         <button
           *ngIf="assigneeIdControl.value"
+          [disabled]="taskDisabled"
           matSuffix
           mat-icon-button
           aria-label="Clear"
@@ -105,6 +107,7 @@
           [for]="picker" />
         <button
           *ngIf="deadlineControl.value"
+          [disabled]="taskDisabled"
           matSuffix
           mat-icon-button
           aria-label="Clear"
@@ -145,6 +148,7 @@
               class="d-none" />
             <button
               mat-stroked-button
+              [disabled]="taskDisabled"
               color="primary"
               (click)="fileSelector.click()">
               <mat-icon fontIcon="upload" />
@@ -265,14 +269,14 @@
   </mat-card-content>
 </mat-card>
 <div
-  *ngIf="dropVisible"
+  *ngIf="dropVisible && !taskDisabled"
   class="over-drop-zone"
   (drop)="handleDrop($event)"
   (dragenter)="allowDrag($event)"
   (dragover)="allowDrag($event)"
   (dragleave)="hideDropZone()"></div>
 <div
-  *ngIf="dropVisible"
+  *ngIf="dropVisible && !taskDisabled"
   class="drop-zone d-flex flex-justify-center flex-align-items-center">
   <div
     class="drop-zone-center d-flex flex-justify-center flex-align-items-center flex-col">

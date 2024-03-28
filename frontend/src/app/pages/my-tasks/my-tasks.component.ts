@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../../services/task.service';
 import { TaskDto } from 'taskapp-common/dist/src/dto/task.dto';
-import { AttachmentService } from '../../services/attachment.service';
 import { select, Store } from '@ngrx/store';
 import { ProfileData } from '../../states/profile.reducer';
 
@@ -13,15 +12,13 @@ import { ProfileData } from '../../states/profile.reducer';
 export class MyTasksComponent implements OnInit {
   constructor(
     private readonly taskService: TaskService,
-    private readonly attachmentService: AttachmentService,
     private readonly store: Store,
   ) {}
 
-  tasks: TaskDto[] = [];
-  loadedAttachments: any = {};
+  tasks: TaskDto[];
   profile: ProfileData;
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.store
       .pipe(select((value: any) => value.profileData))
       .subscribe((value: ProfileData) => {
@@ -30,15 +27,12 @@ export class MyTasksComponent implements OnInit {
       });
     this.taskService.getAssigned().subscribe((tasks) => {
       this.tasks = tasks;
-      for (const task of this.tasks) {
-        this.getAttachment(task.thumbnail);
-      }
       this.setupAssignee();
     });
   }
 
   setupAssignee() {
-    if (!this.profile || !this.tasks.length) {
+    if (!this.profile || !this.tasks?.length) {
       return;
     }
 
@@ -52,14 +46,5 @@ export class MyTasksComponent implements OnInit {
         status: this.profile.status,
       };
     }
-  }
-
-  getAttachment(id: string) {
-    if (!id) {
-      return;
-    }
-    this.attachmentService.get(id).subscribe((file) => {
-      this.loadedAttachments[id] = URL.createObjectURL(file);
-    });
   }
 }

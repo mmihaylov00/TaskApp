@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit {
   taskPerStagesChartOptions: Partial<ChartOptions> = undefined;
   taskPerBoardChartOptions: Partial<ChartOptions> = undefined;
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.userService.getStats().subscribe((stats) => {
       this.stats = stats;
       this.setupCreatedTasksChart();

@@ -6,9 +6,11 @@ import {
   ApexDataLabels,
   ApexFill,
   ApexLegend,
+  ApexNoData,
   ApexNonAxisChartSeries,
   ApexPlotOptions,
   ApexStates,
+  ApexStroke,
   ApexTooltip,
   ApexXAxis,
   ApexYAxis,
@@ -18,9 +20,11 @@ export type ChartOptions = {
   series: ApexAxisChartSeries | ApexNonAxisChartSeries;
   chart: ApexChart;
   dataLabels: ApexDataLabels;
+  noData: ApexNoData;
   tooltip: ApexTooltip;
   states: ApexStates;
   plotOptions: ApexPlotOptions;
+  stroke: ApexStroke;
   labels: string[];
   colors: string[];
   xaxis: ApexXAxis;

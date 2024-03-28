@@ -46,7 +46,7 @@ export class IconSelectComponent implements OnInit {
 
   latestValue = this.iconControl.value;
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.iconControl.valueChanges.subscribe((value) => {
       if (!value) {
         this.iconControl.setValue(this.latestValue);

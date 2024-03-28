@@ -1,13 +1,37 @@
 @import 'variables';
+::ng-deep {
+  .mat-drawer-content:has(app-task-board) {
+    overflow-y: hidden;
+  }
+
+  .page:has(app-task-board) {
+    padding: 0 !important;
+  }
+
+  .board-header .mat-mdc-card-header-text {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.board-card {
+  background-color: $background;
+}
+
+.board-header {
+  padding-top: 4px;
+}
 
 .content {
-  width: 100%;
+  overflow-x: scroll;
+  padding-bottom: 0;
+  background-color: $background;
 }
 
 .board {
   display: flex;
   gap: 10px;
-  height: calc(93vh - 43px);
+  height: 83vh;
   width: 100%;
 
   .stage {
@@ -29,4 +53,8 @@
 
 app-task-card {
   margin-top: 10px;
+}
+
+.app-task-list {
+  margin-bottom: 10px;
 }

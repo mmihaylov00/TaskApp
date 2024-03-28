@@ -36,6 +36,11 @@ export class BarChartComponent {
           horizontal: false,
         },
       },
+      noData: {
+        text: 'No data available',
+        align: 'center',
+        verticalAlign: 'middle',
+      },
       yaxis: {
         show: false,
       },

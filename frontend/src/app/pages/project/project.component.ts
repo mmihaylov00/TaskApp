@@ -90,7 +90,7 @@ export class ProjectComponent implements OnInit {
   boardChartOptions: Partial<ChartOptions> = undefined;
   stagesChartOption: Partial<ChartOptions> = undefined;
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.projectId = params.get('projectId');
       this.loadProject();

@@ -37,8 +37,16 @@ export class TaskService {
     return this.http.get<TaskDto[]>('tasks/assigned');
   }
 
+  getCompleted(boardId: string) {
+    return this.http.get<TaskDto[]>('tasks/completed/' + boardId);
+  }
+
   complete(id: string) {
     return this.http.put<void>('tasks/' + id + '/complete', {});
+  }
+
+  uncomplete(id: string) {
+    return this.http.put<void>('tasks/' + id + '/uncomplete', {});
   }
 
   delete(id: string) {

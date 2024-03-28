@@ -34,6 +34,14 @@ export class TaskController {
     return this.taskService.getAssigned(user);
   }
 
+  @Get('/completed/:boardId')
+  getCompleted(
+    @Authenticated() user: JwtUser,
+    @Param('boardId') boardId: string,
+  ) {
+    return this.taskService.getCompleted(user, boardId);
+  }
+
   @Get('/:id')
   async get(@Authenticated() user: JwtUser, @Param('id') id: string) {
     return (await this.taskService.get(id, user)).toDto();
@@ -69,8 +77,13 @@ export class TaskController {
   }
 
   @Put('/:id/complete')
-  archive(@Authenticated() user: JwtUser, @Param('id') id: string) {
+  complete(@Authenticated() user: JwtUser, @Param('id') id: string) {
     return this.taskService.complete(id, user);
+  }
+
+  @Put('/:id/uncomplete')
+  uncomplete(@Authenticated() user: JwtUser, @Param('id') id: string) {
+    return this.taskService.uncomplete(id, user);
   }
 
   @Delete('/:id')

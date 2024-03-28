@@ -251,6 +251,32 @@ export class TaskService {
     });
   }
 
+  async uncomplete(id: string, user: JwtUser) {
+    const task = await Task.findByPk(id, {
+      include: [Stage, Attachment, { model: User, as: 'assignedTo' }],
+    });
+    if (!task) {
+      throw new TaskAppError('invalid_task', HttpStatus.BAD_REQUEST);
+    }
+
+    const stage = task.stage;
+    const boardId = stage.boardId;
+
+    await this.boardService.getBoard(boardId, user);
+
+    task.completed = null;
+    task.updatedAt = new Date();
+    task.updatedBy = user.id;
+
+    await task.save();
+
+    stage.tasksOrder.splice(0, 0, task.id);
+    await stage.save();
+
+    this.boardService.sendMessage(boardId, 'task-uncompleted', task.toDto());
+    this.boardService.sendMessage(boardId, 'task-created', task.toDto());
+  }
+
   async sendCompleteNotification(
     user: JwtUser,
     task: Task,
@@ -285,6 +311,32 @@ export class TaskService {
     });
 
     return dbUser?.assignedTasks?.map((t) => t.toDto()) || [];
+  }
+
+  async getCompleted(user: JwtUser, boardId: string) {
+    const board = await Board.findByPk(boardId, {
+      include: [
+        Project,
+        {
+          model: Stage,
+          include: [
+            {
+              model: Task,
+              include: [Attachment, { model: User, as: 'assignedTo' }],
+              where: { deleted: null, completed: true },
+              order: [['updatedAt', 'DESC']],
+            },
+          ],
+        },
+      ],
+    });
+    await this.projectService.checkAccess(board.project, user);
+
+    return (
+      board?.stages?.flatMap((stage) =>
+        stage.tasks.map((task) => task.toDto()),
+      ) || []
+    );
   }
 
   async delete(id: string, user: JwtUser) {

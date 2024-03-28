@@ -107,6 +107,7 @@ export class Task extends UUIDEntity {
       deadline: this.deadline,
       thumbnail: this.thumbnail,
       attachments: this.attachments?.map((a) => a.toDto()),
+      completed: this.completed,
     };
   }
 

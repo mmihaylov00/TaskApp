@@ -40,11 +40,6 @@ const routes: Route[] = [
     component: TaskBoardComponent,
     pathMatch: 'full',
   },
-  {
-    path: 'project/:projectId/board/:boardId/task/:taskId',
-    component: TaskBoardComponent,
-    pathMatch: 'full',
-  },
 ];
 
 @NgModule({

@@ -29,7 +29,6 @@ export class SideTaskComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly dialog: MatDialog,
-    private readonly sanitizer: DomSanitizer,
     private readonly taskService: TaskService,
     private readonly attachmentService: AttachmentService,
   ) {}
@@ -63,6 +62,7 @@ export class SideTaskComponent implements OnInit {
   stageControl = new FormControl('', [Validators.required]);
 
   saveEnabled = false;
+  taskDisabled = false;
 
   toolbar: Toolbar = [
     ['bold', 'italic'],
@@ -90,7 +90,7 @@ export class SideTaskComponent implements OnInit {
     },
   ];
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.today.setDate(this.today.getDate() - 1);
     this.createEditor();
     this.enableFileDrop();
@@ -166,7 +166,7 @@ export class SideTaskComponent implements OnInit {
   }
 
   showDropZone(event: DragEvent) {
-    if (event.dataTransfer.effectAllowed === 'move') {
+    if (event.dataTransfer.types[0] !== 'Files') {
       return;
     }
     this.dropVisible = true;
@@ -186,6 +186,24 @@ export class SideTaskComponent implements OnInit {
 
         this.taskService
           .delete(this.taskId)
+          .subscribe(() => this.confirmClose());
+      });
+  }
+
+  uncompleteTask() {
+    this.dialog
+      .open(ConfirmModal, {
+        data: {
+          title: 'Uncomplete Task - ' + this.task.title,
+          action: 'remove this task from completed?',
+        },
+      })
+      .afterClosed()
+      .subscribe((value) => {
+        if (!value) return;
+
+        this.taskService
+          .uncomplete(this.taskId)
           .subscribe(() => this.confirmClose());
       });
   }
@@ -221,17 +239,31 @@ export class SideTaskComponent implements OnInit {
 
   open(task?: TaskDto) {
     this.task = task;
-    if (!this.stages.length && this.task) {
-      this.taskService.getStages(this.taskId).subscribe((stages) => {
-        this.stages = stages;
-        this.stageControl.setValue(this.task?.stage || this.stages[0]?.id);
-        this.saveEnabled = false;
-      });
-    }
-    if (this.task?.attachments) {
-      for (const attachment of this.task?.attachments) {
-        this.getAttachment(attachment);
+    if (this.task) {
+      if (!this.stages.length) {
+        this.taskService.getStages(this.taskId).subscribe((stages) => {
+          this.stages = stages;
+          this.stageControl.setValue(this.task.stage || this.stages[0]?.id);
+          this.saveEnabled = false;
+        });
       }
+      if (this.task.attachments) {
+        for (const attachment of this.task.attachments) {
+          this.getAttachment(attachment);
+        }
+      }
+      this.setControlsStatus(task.completed === true);
+      this.MENU_ITEMS[0] = task.completed
+        ? {
+            icon: 'cancel',
+            title: 'Uncomplete',
+            onClick: () => this.uncompleteTask(),
+          }
+        : {
+            icon: 'check_circle',
+            title: 'Complete',
+            onClick: () => this.completeTask(),
+          };
     }
     this.store.dispatch(setTaskOpenState({ isOpen: true }));
     this.filteredUsers = this.assigneeControl.valueChanges.pipe(
@@ -268,13 +300,33 @@ export class SideTaskComponent implements OnInit {
 
   setupValues() {
     this.stageControl.setValue(this.task?.stage || this.stages[0]?.id);
-
     this.titleControl.setValue(this.task?.title || '');
     this.descriptionControl.setValue(this.task?.description || undefined);
     this.priorityControl.setValue(this.task?.priority || undefined);
     this.assigneeControl.setValue(this.fullUsername(this.task?.assignee));
     this.assigneeIdControl.setValue(this.task?.assignee?.id || '');
     this.deadlineControl.setValue(this.task?.deadline || undefined);
+  }
+
+  setControlsStatus(disabled: boolean) {
+    this.taskDisabled = disabled;
+    if (disabled) {
+      this.stageControl.disable();
+      this.titleControl.disable();
+      this.descriptionControl.disable();
+      this.priorityControl.disable();
+      this.assigneeControl.disable();
+      this.assigneeIdControl.disable();
+      this.deadlineControl.disable();
+    } else {
+      this.stageControl.enable();
+      this.titleControl.enable();
+      this.descriptionControl.enable();
+      this.priorityControl.enable();
+      this.assigneeControl.enable();
+      this.assigneeIdControl.enable();
+      this.deadlineControl.enable();
+    }
   }
 
   save() {
@@ -383,7 +435,6 @@ export class SideTaskComponent implements OnInit {
   selectedFiles: {
     file: File;
     preview: any;
-    progress: number;
     extension: string;
   }[] = [];
 
@@ -409,7 +460,6 @@ export class SideTaskComponent implements OnInit {
         this.selectedFiles.splice(0, 0, {
           file,
           preview,
-          progress: 0,
           extension,
         });
         this.saveEnabled = true;
