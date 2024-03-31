@@ -77,6 +77,7 @@
       [showFirstLastButtons]="true"
       [length]="data?.totalCount || 1"
       (page)="pageClick($event)"
+      [pageIndex]="data?.currentPage - 1"
       [pageSize]="page.pageAmount"
       aria-label="Select page">
     </mat-paginator>

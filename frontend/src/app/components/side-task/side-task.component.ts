@@ -252,7 +252,6 @@ export class SideTaskComponent implements OnInit {
           this.getAttachment(attachment);
         }
       }
-      this.setControlsStatus(task.completed === true);
       this.MENU_ITEMS[0] = task.completed
         ? {
             icon: 'cancel',
@@ -265,6 +264,7 @@ export class SideTaskComponent implements OnInit {
             onClick: () => this.completeTask(),
           };
     }
+    this.setControlsStatus(task?.completed === true);
     this.store.dispatch(setTaskOpenState({ isOpen: true }));
     this.filteredUsers = this.assigneeControl.valueChanges.pipe(
       startWith(''),

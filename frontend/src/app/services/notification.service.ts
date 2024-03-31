@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Page } from 'taskapp-common/dist/src/dto/list.dto';
+import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { NotificationDto } from 'taskapp-common/dist/src/dto/notification.dto';
 import { SocketService } from './socket.service';
 
@@ -12,16 +12,18 @@ export class NotificationService extends SocketService {
     super();
   }
 
+  list(page: PageRequestDto) {
+    return this.http.get<Page<NotificationDto>>(
+      'notifications?' + Page.urlParams(page),
+    );
+  }
+
   getCount() {
-    return this.http.get<{ count: number }>('notifications');
+    return this.http.get<{ count: number }>('notifications/count');
   }
 
   getUnread() {
     return this.http.get<NotificationDto[]>('notifications/unread');
-  }
-
-  list() {
-    return this.http.get<Page<NotificationDto>>('notifications/list');
   }
 
   delete(id: string) {

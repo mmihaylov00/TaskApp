@@ -50,8 +50,8 @@ export class SideNavComponent implements OnInit {
       name: 'Home',
     },
     {
-      name: 'Dashboard',
-      icon: 'dashboard',
+      name: 'Home',
+      icon: 'home',
       link: '/',
     },
     {

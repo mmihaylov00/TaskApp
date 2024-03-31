@@ -141,7 +141,7 @@ export class HeaderComponent implements OnDestroy {
     }
   }
 
-  closeNotification(event, id: string) {
+  closeNotification(event: MouseEvent, id: string) {
     event.stopPropagation();
     this.notifier.hide(id);
     delete this.receivedNotifications[id];

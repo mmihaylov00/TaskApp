@@ -1,3 +1,33 @@
+@import 'variables';
+
 .row {
   padding-top: 10px;
+}
+
+.notifications-list {
+  margin-top: 12px;
+  min-height: 450px;
+}
+
+.notification {
+  background-color: $background;
+  margin-bottom: 12px;
+}
+
+.notification-date {
+  padding: 6px 0 0 6px;
+}
+
+.close-button {
+  margin: 0;
+}
+
+.notification-header {
+  padding: 4px 4px 0 0;
+}
+
+::ng-deep {
+  .notification .mat-mdc-card-header-text {
+    display: none;
+  }
 }

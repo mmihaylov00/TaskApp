@@ -20,8 +20,11 @@ export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
   @Get()
-  count(@Authenticated() user: JwtUser) {
-    return this.notificationService.count(user);
+  listAll(
+    @Authenticated() user: JwtUser,
+    @PageParams() pageParams: PageRequestDto,
+  ) {
+    return this.notificationService.listAll(user, pageParams);
   }
 
   @Get('unread')
@@ -29,12 +32,9 @@ export class NotificationController {
     return this.notificationService.listUnread(user);
   }
 
-  @Get('all')
-  listAll(
-    @Authenticated() user: JwtUser,
-    @PageParams() pageParams: PageRequestDto,
-  ) {
-    return this.notificationService.listAll(user, pageParams);
+  @Get('count')
+  count(@Authenticated() user: JwtUser) {
+    return this.notificationService.count(user);
   }
 
   @Delete('/:id')

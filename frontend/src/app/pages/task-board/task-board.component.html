@@ -48,6 +48,7 @@
   matTooltip="New task"
   mat-fab
   color="primary"
+  *ngIf="activeTab === 'board'"
   (click)="newTask()">
   <mat-icon fontIcon="add" />
 </button>

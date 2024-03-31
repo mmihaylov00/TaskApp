@@ -2,6 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { UserStatsDto } from 'taskapp-common/dist/src/dto/user.dto';
 import { ChartOptions } from '../../components/chart/chart.component';
+import { NotificationDto } from 'taskapp-common/dist/src/dto/notification.dto';
+import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
+import { NotificationService } from '../../services/notification.service';
+import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
+import { PageEvent } from '@angular/material/paginator';
+import { relativeDateFormat } from '../../utils/date-formatter.util';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,9 +15,15 @@ import { ChartOptions } from '../../components/chart/chart.component';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   stats: UserStatsDto;
+
+  notifications: Page<NotificationDto>;
+  notificationsPage: PageRequestDto = { page: 1, pageAmount: 5 };
 
   tasksChartOptions: Partial<ChartOptions> = undefined;
   createdTasksChartOptions: Partial<ChartOptions> = undefined;
@@ -28,6 +40,7 @@ export class DashboardComponent implements OnInit {
       this.setupTaskPerStageChart();
       this.setupTaskPerBoarChart();
     });
+    this.loadNotifications();
   }
 
   setupCreatedTasksChart() {
@@ -121,4 +134,32 @@ export class DashboardComponent implements OnInit {
       },
     };
   }
+
+  loadNotifications() {
+    this.notificationService
+      .list(this.notificationsPage)
+      .subscribe((notifications) => {
+        this.notifications = notifications;
+      });
+  }
+
+  changeNotificationsPage(page: PageEvent) {
+    this.notificationsPage.page = page.pageIndex + 1;
+    this.notifications = undefined;
+    this.loadNotifications();
+  }
+
+  notificationClick(link: string) {
+    window.location.replace(link);
+  }
+
+  deleteNotification(event: MouseEvent, id: string) {
+    event.stopPropagation();
+    this.notificationService.delete(id).subscribe(() => {
+      this.loadNotifications();
+    });
+  }
+
+  protected readonly UserStatus = UserStatus;
+  protected readonly relativeDateFormat = relativeDateFormat;
 }

@@ -31,24 +31,12 @@ export function relativeDateFormat(date: Date | string) {
 }
 
 function getSuffix(date: Date) {
-  const now = new Date();
   const diffHours = Math.floor(
-    (date.getTime() - now.getTime()) / (1000 * 60 * 60),
+    (date.getTime() - new Date().getTime()) / (1000 * 60 * 60),
   );
-  if (diffHours <= -24) {
-    return 'LATE';
-  }
-  if (diffHours <= 0) {
-    return 'Today';
-  }
-  if (diffHours <= 24) {
-    return 'Tomorrow';
-  }
-  if (diffHours <= 167) {
-    return 'In ' + Math.ceil(diffHours / 24) + ' days';
-  }
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 
-  return undefined;
+  return rtf.format(Math.ceil(diffHours / 24), 'day');
 }
 
 export function getDaySuffix(date: Date) {
