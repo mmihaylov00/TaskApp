@@ -36,53 +36,108 @@
     </div>
   </mat-card-content>
 </mat-card>
-<mat-card class="notifications-list w-50">
-  <mat-card-header>
-    <mat-card-title>Notifications</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <ngx-skeleton-loader
-      *ngIf="!notifications"
-      class="w-100"
-      count="5"
-      appearance="line" />
-    <ng-container *ngIf="notifications">
-      <div *ngIf="notifications.items?.length === 0">No new notifications.</div>
-      <ng-container *ngIf="notifications.items?.length">
-        <mat-card
-          *ngFor="let notification of notifications.items"
-          (click)="notificationClick(notification.link)"
-          [class]="{
-            notification: true,
-            'hover-pointer': !!notification.link
-          }">
-          <mat-card-header
-            class="notification-header d-flex flex-justify-between">
-            <div class="notification-date">
-              {{ relativeDateFormat(notification.createdAt) }}
-            </div>
-            <button
-              mat-icon-button
-              matTooltip="Delete"
-              (click)="deleteNotification($event, notification.id)">
-              <mat-icon class="w-5 text-danger" fontIcon="close" />
-            </button>
-          </mat-card-header>
-          <mat-card-content class="text-black">
-            {{ notification.message }}
-          </mat-card-content>
-        </mat-card>
-        <mat-paginator
-          [hidePageSize]="true"
-          [showFirstLastButtons]="true"
-          [length]="notifications.totalCount || 1"
-          (page)="changeNotificationsPage($event)"
-          [pageIndex]="notifications.currentPage - 1"
-          [pageSize]="notificationsPage.pageAmount"
-          aria-label="Select page">
-        </mat-paginator>
+<div class="d-flex flex-justify-between">
+  <mat-card class="second-row-card w-49">
+    <mat-card-header>
+      <mat-card-title>Notifications</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="card-content">
+      <ngx-skeleton-loader
+        *ngIf="!notifications"
+        class="w-100"
+        count="5"
+        appearance="line" />
+      <ng-container *ngIf="notifications">
+        <div *ngIf="notifications.items?.length === 0">
+          No new notifications...
+        </div>
+        <ng-container *ngIf="notifications.items?.length">
+          <div>
+            <mat-card
+              *ngFor="let notification of notifications.items"
+              (click)="notificationClick(notification.link)"
+              [class]="{
+                'info-card': true,
+                'hover-pointer': !!notification.link
+              }">
+              <mat-card-header
+                class="notification-header d-flex flex-justify-between">
+                <div class="notification-date">
+                  {{ relativeDateFormat(notification.createdAt) }}
+                </div>
+                <button
+                  mat-icon-button
+                  matTooltip="Delete"
+                  (click)="deleteNotification($event, notification.id)">
+                  <mat-icon class="w-5 text-danger" fontIcon="close" />
+                </button>
+              </mat-card-header>
+              <mat-card-content class="text-black">
+                {{ notification.message }}
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <mat-paginator
+            [hidePageSize]="true"
+            [showFirstLastButtons]="true"
+            [length]="notifications.totalCount || 1"
+            (page)="changeNotificationsPage($event)"
+            [pageIndex]="notifications.currentPage - 1"
+            [pageSize]="notificationsPage.pageAmount"
+            aria-label="Select page">
+          </mat-paginator>
+        </ng-container>
       </ng-container>
-    </ng-container>
-  </mat-card-content>
-</mat-card>
-<mat-card></mat-card>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="second-row-card w-49">
+    <mat-card-header>
+      <mat-card-title>Favourite Boards</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="card-content">
+      <ngx-skeleton-loader
+        *ngIf="!favourites"
+        class="w-100"
+        count="5"
+        appearance="line" />
+      <ng-container *ngIf="favourites">
+        <div *ngIf="favourites.length === 0">No favourite boards...</div>
+        <ng-container *ngFor="let project of projects">
+          <ng-container *ngFor="let board of project.boards">
+            <mat-card
+              *ngIf="favourites.includes(board.id)"
+              [routerLink]="'/project/' + project.id + '/board/' + board.id"
+              class="info-card hover-pointer">
+              <mat-card-header
+                class="info-card-header d-flex flex-justify-between flex-align-items-center">
+                <div class="board-title w-80 d-flex flex-align-items-center">
+                  <button
+                    mat-icon-button
+                    matTooltip="Unlike"
+                    color="primary"
+                    (click)="removeFav(board.id)">
+                    <mat-icon class="text-danger" fontIcon="favorite" />
+                  </button>
+                  <mat-icon
+                    class="board-icon"
+                    [fontIcon]="project.icon"
+                    [style]="'color: ' + project.color" />
+                  <strong>{{ project.name }}</strong>
+                  <mat-icon class="chevron-icon" fontIcon="chevron_right" />
+                  <mat-icon
+                    fontIcon="circle"
+                    class="board-icon"
+                    [style]="'color: ' + board.color" />
+                  <strong>{{ board.name }}</strong>
+                </div>
+                <div>
+                  <mat-icon fontIcon="call_made" />
+                </div>
+              </mat-card-header>
+            </mat-card>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>

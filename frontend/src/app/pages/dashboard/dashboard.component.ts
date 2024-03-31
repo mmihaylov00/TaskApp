@@ -8,6 +8,11 @@ import { NotificationService } from '../../services/notification.service';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { PageEvent } from '@angular/material/paginator';
 import { relativeDateFormat } from '../../utils/date-formatter.util';
+import { select, Store } from '@ngrx/store';
+import { ProfileData } from '../../states/profile.reducer';
+import { notifyFavUpdate, ProjectData } from '../../states/project.reducer';
+import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
+import { BoardDto } from 'taskapp-common/dist/src/dto/board.dto';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,6 +23,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private readonly userService: UserService,
     private readonly notificationService: NotificationService,
+    private readonly store: Store,
   ) {}
 
   stats: UserStatsDto;
@@ -31,6 +37,9 @@ export class DashboardComponent implements OnInit {
   taskPerStagesChartOptions: Partial<ChartOptions> = undefined;
   taskPerBoardChartOptions: Partial<ChartOptions> = undefined;
 
+  favourites: string[];
+  projects: ProjectDto[] = [];
+
   ngOnInit() {
     this.userService.getStats().subscribe((stats) => {
       this.stats = stats;
@@ -41,6 +50,15 @@ export class DashboardComponent implements OnInit {
       this.setupTaskPerBoarChart();
     });
     this.loadNotifications();
+
+    this.store
+      .pipe(select((value: any) => value.projectData))
+      .subscribe((value: ProjectData) => {
+        this.favourites = JSON.parse(
+          localStorage.getItem('favourites') || '[]',
+        );
+        this.projects = value.projects;
+      });
   }
 
   setupCreatedTasksChart() {
@@ -158,6 +176,17 @@ export class DashboardComponent implements OnInit {
     this.notificationService.delete(id).subscribe(() => {
       this.loadNotifications();
     });
+  }
+
+  removeFav(id: string) {
+    const index = this.favourites.indexOf(id);
+    if (index === -1) {
+      return;
+    }
+    this.favourites.splice(index, 1);
+    localStorage.setItem('favourites', JSON.stringify(this.favourites));
+
+    this.store.dispatch(notifyFavUpdate({}));
   }
 
   protected readonly UserStatus = UserStatus;

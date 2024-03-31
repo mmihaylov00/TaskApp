@@ -78,7 +78,7 @@ export class SideNavComponent implements OnInit {
 
   currentRoute = '/';
 
-  projects = [];
+  projects: ProjectDto[] = [];
 
   createNewProject() {
     this.dialog.open(CreateProjectModal, {});

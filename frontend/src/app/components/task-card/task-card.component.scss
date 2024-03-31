@@ -37,16 +37,18 @@ mat-card-header {
 }
 
 ::ng-deep {
-  .mat-mdc-card-header-text {
-    width: 100%;
-  }
+  .card-header {
+    .mat-mdc-card-header-text {
+      width: 100%;
+    }
 
-  .mat-mdc-chip-action-label {
-    font-size: 13px;
-    font-synthesis-small-caps: auto;
-    letter-spacing: 1px;
-    padding-top: 2px;
-    font-weight: bold;
+    .mat-mdc-chip-action-label {
+      font-size: 13px;
+      font-synthesis-small-caps: auto;
+      letter-spacing: 1px;
+      padding-top: 2px;
+      font-weight: bold;
+    }
   }
 }
 
