@@ -1,5 +1,5 @@
 <mat-card class="board-card">
-  <mat-card-header class="board-header">
+  <mat-card-header class="board-header d-flex flex-justify-between">
     <mat-card-title>{{ boardName }}</mat-card-title>
     <nav
       mat-tab-nav-bar
@@ -25,9 +25,7 @@
         <h3>{{ stage.name }}</h3>
         <app-task-card
           [id]="task.id"
-          class="task hover-pointer"
-          matRipple
-          matRippleColor="#0000001C"
+          class="task"
           [task]="task"
           [color]="stage.color"
           [thumbnail]="loadedAttachments[task.thumbnail]"

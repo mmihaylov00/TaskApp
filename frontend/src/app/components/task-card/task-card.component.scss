@@ -1,7 +1,3 @@
-.task:hover {
-  cursor: pointer;
-}
-
 .task,
 .dragged {
   width: 96%;
@@ -55,7 +51,7 @@ mat-card-header {
 mat-card-content {
   padding: 6px;
 
-  &:last-child {
+  .last {
     padding-bottom: 6px;
   }
 }

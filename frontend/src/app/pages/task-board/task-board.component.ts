@@ -69,6 +69,12 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
       this.taskService.getCompleted(this.boardId).subscribe((tasks) => {
         this.completedTasks = tasks;
       });
+    } else {
+      setTimeout(() => {
+        for (let stage of this.stages) {
+          this.makeSortable(stage.id);
+        }
+      }, 1);
     }
   }
 
@@ -182,36 +188,37 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
             for (const task of stage.tasks) {
               this.getAttachment(task.thumbnail);
             }
-            Sortable.create(document.getElementById(`${stage.id}`), {
-              group: 'tasks',
-              animation: 250,
-              draggable: '.task',
-              direction: 'vertical',
-              swapThreshold: 0.1,
-              easing: 'cubic-bezier(1, 0, 0, 1)',
-              onEnd: (event) => {
-                const index = event.newDraggableIndex;
-                const stageId = event.to.id;
-                if (
-                  event.from.id === stageId &&
-                  event.oldDraggableIndex === index
-                ) {
-                  return;
-                }
-                const taskId = event.item.id;
-                this.taskService
-                  .move(taskId, { stageId, index, boardId: this.boardId })
-                  .subscribe(() => {});
-              },
-              ghostClass: 'ghost',
-              dragClass: 'dragged',
-            });
+            this.makeSortable(stage.id);
           }
         }, 1);
       },
       error: async () => {
         await this.router.navigate(['']);
       },
+    });
+  }
+
+  makeSortable(stageId: string) {
+    Sortable.create(document.getElementById(stageId), {
+      group: 'tasks',
+      animation: 250,
+      draggable: '.task',
+      direction: 'vertical',
+      swapThreshold: 0.1,
+      easing: 'cubic-bezier(1, 0, 0, 1)',
+      onEnd: (event) => {
+        const index = event.newDraggableIndex;
+        const stageId = event.to.id;
+        if (event.from.id === stageId && event.oldDraggableIndex === index) {
+          return;
+        }
+        const taskId = event.item.id;
+        this.taskService
+          .move(taskId, { stageId, index, boardId: this.boardId })
+          .subscribe(() => {});
+      },
+      ghostClass: 'ghost',
+      dragClass: 'dragged',
     });
   }
 

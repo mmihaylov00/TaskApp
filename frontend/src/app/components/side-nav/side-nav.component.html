@@ -83,9 +83,7 @@
     <mat-divider />
   </li>
   <li *ngIf="hasRole({ roles: [Role.ADMIN, Role.PROJECT_MANAGER] })">
-    <a
-      [class]="{ selected: '/project' === currentRoute }"
-      (click)="createNewProject()">
+    <a class="hover-pointer" (click)="createNewProject()">
       <mat-icon fontIcon="add_box" class="icon" />
       <p class="text-truncated">New Project</p>
     </a>

@@ -42,7 +42,6 @@ import { TableComponent } from './components/table/table.component';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ManageBoardModal } from './modal/manage-board/manage-board.modal';
-import { CardComponent } from './components/card/card.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { UsersComponent } from './pages/users/users.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -105,7 +104,6 @@ import { TaskListComponent } from './components/task-list/task-list.component';
     ConfirmModal,
     ProjectComponent,
     TableComponent,
-    CardComponent,
     UsersComponent,
     UserSearchComponent,
     IconSelectComponent,

@@ -67,8 +67,10 @@ export class ManageBoardModal {
   ];
 
   dropStage(e) {
-    const element = this.stages.splice(e.oldIndex, 1);
-    this.stages.splice(e.newIndex, 0, ...element);
+    const element = this.stages.splice(e.oldDraggableIndex, 1, null);
+    this.stages.splice(e.oldDraggableIndex, 0, ...element);
+    const index = this.stages.findIndex((stage) => stage === null);
+    this.stages.splice(index, 1);
   }
 
   changeColor(stage: string, color: string) {

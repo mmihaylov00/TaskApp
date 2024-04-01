@@ -1,5 +1,8 @@
 <mat-card
   (click)="viewTask(task)"
+  class="hover-pointer"
+  matRipple
+  matRippleColor="#0000001C"
   [style]="{ 'background-color': color + '62' }">
   <mat-card-header class="card-header">
     <mat-card-title class="w-100">
@@ -37,7 +40,7 @@
         {{ task.attachments.length }}
       </div>
     </div>
-    <div class="d-flex flex-row flex-wrap flex-justify-start card-info">
+    <div class="d-flex flex-row flex-wrap flex-justify-start card-info last">
       <div
         class="d-flex flex-row flex-align-items-start flex-justify-start w-100"
         *ngIf="task.deadline">

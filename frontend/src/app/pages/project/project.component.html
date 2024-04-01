@@ -1,58 +1,63 @@
-<app-card [header]="'Project ' + (projectData.name || '')">
-  <button actions mat-flat-button color="primary" (click)="editProject()">
-    Edit
-  </button>
-  <div content class="d-flex flex-justify-between">
-    <div class="w-30">
-      <table mat-table *ngIf="projectData" [dataSource]="projectData.values">
-        <ng-container matColumnDef="key">
-          <td class="w-50" mat-cell *matCellDef="let element">
-            {{ element.title }}
-          </td>
-        </ng-container>
+<mat-card>
+  <mat-card-header class="d-flex flex-justify-between flex-align-items-start">
+    <mat-card-title>Project {{ projectData.name || '' }}</mat-card-title>
+    <button mat-flat-button color="primary" (click)="editProject()">
+      Edit
+    </button>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="d-flex flex-justify-between">
+      <div class="w-30">
+        <table mat-table *ngIf="projectData" [dataSource]="projectData.values">
+          <ng-container matColumnDef="key">
+            <td class="w-50" mat-cell *matCellDef="let element">
+              {{ element.title }}
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="value">
-          <td class="w-50" mat-cell *matCellDef="let element">
-            <ng-container *ngIf="!isUndefined(values[element.key])">
-              <mat-icon
-                *ngIf="element.key === 'color'"
-                [style]="'color:' + values[element.key]"
-                fontIcon="square"
-                [matTooltip]="values[element.key]" />
-              <div *ngIf="element.key !== 'icon' && element.key !== 'color'">
-                {{ values[element.key] }}
-              </div>
-              <mat-icon
-                *ngIf="element.key == 'icon'"
-                color="primary"
-                [style]="{
-                  color: values['color']
-                }"
-                [fontIcon]="values[element.key] || 'widgets'" />
-            </ng-container>
-            <ng-container *ngIf="isUndefined(values[element.key])">
-              <ngx-skeleton-loader
-                *ngIf="element.key === 'icon'"
-                appearance="circle" />
-              <ngx-skeleton-loader
-                *ngIf="element.key !== 'icon'"
-                appearance="line" />
-            </ng-container>
-          </td>
-        </ng-container>
-        <tr mat-row *matRowDef="let row; columns: ['key', 'value']"></tr>
-      </table>
+          <ng-container matColumnDef="value">
+            <td class="w-50" mat-cell *matCellDef="let element">
+              <ng-container *ngIf="!isUndefined(values[element.key])">
+                <mat-icon
+                  *ngIf="element.key === 'color'"
+                  [style]="'color:' + values[element.key]"
+                  fontIcon="square"
+                  [matTooltip]="values[element.key]" />
+                <div *ngIf="element.key !== 'icon' && element.key !== 'color'">
+                  {{ values[element.key] }}
+                </div>
+                <mat-icon
+                  *ngIf="element.key == 'icon'"
+                  color="primary"
+                  [style]="{
+                    color: values['color']
+                  }"
+                  [fontIcon]="values[element.key] || 'widgets'" />
+              </ng-container>
+              <ng-container *ngIf="isUndefined(values[element.key])">
+                <ngx-skeleton-loader
+                  *ngIf="element.key === 'icon'"
+                  appearance="circle" />
+                <ngx-skeleton-loader
+                  *ngIf="element.key !== 'icon'"
+                  appearance="line" />
+              </ng-container>
+            </td>
+          </ng-container>
+          <tr mat-row *matRowDef="let row; columns: ['key', 'value']"></tr>
+        </table>
+      </div>
+      <mat-divider [vertical]="true" />
+      <div class="w-33">
+        <app-bar-chart [options]="boardChartOptions" title="Tasks per Board" />
+      </div>
+      <mat-divider [vertical]="true" />
+      <div class="w-33 d-flex flex-justify-center">
+        <app-pie-chart [options]="stagesChartOption" title="Tasks per Stage" />
+      </div>
     </div>
-    <mat-divider [vertical]="true" />
-    <div class="w-33">
-      <app-bar-chart [options]="boardChartOptions" title="Tasks per Board" />
-    </div>
-    <mat-divider [vertical]="true" />
-    <div class="w-33 d-flex flex-justify-center">
-      <app-pie-chart [options]="stagesChartOption" title="Tasks per Stage" />
-    </div>
-  </div>
-</app-card>
+  </mat-card-content>
+</mat-card>
 
 <app-table header="Boards" [columns]="boardColumns" [data]="boardData">
   <button actions mat-flat-button color="primary" (click)="createBoard()">
