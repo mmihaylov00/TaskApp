@@ -19,9 +19,6 @@ import { NotificationModule } from '../notification/notification.module';
           pass: configuration().mail.password,
         },
       },
-      defaults: {
-        from: '"From Name" <client@task.app>',
-      },
       template: {
         dir: join(__dirname, '..', '..', 'mail', 'templates'),
         adapter: new EjsAdapter(),

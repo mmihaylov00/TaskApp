@@ -12,6 +12,7 @@ import { Project } from '../database/entity/project.entity';
 import {
   CreateUserDto,
   SearchUserDto,
+  UserInvitedDto,
   UserStatsDto,
 } from 'taskapp-common/dist/src/dto/user.dto';
 import { TaskAppError } from '../error/task-app.error';
@@ -21,6 +22,7 @@ import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import sequelize, { Op, QueryTypes } from 'sequelize';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AuthService } from '../auth/auth.service';
+import configuration from '../config/configuration';
 
 @Injectable()
 export class UserService {
@@ -105,7 +107,7 @@ export class UserService {
     );
   }
 
-  async invite(user: JwtUser, data: CreateUserDto): Promise<UserDetailsDto> {
+  async invite(user: JwtUser, data: CreateUserDto): Promise<UserInvitedDto> {
     const dbUser = await User.findByPk(user.id);
 
     try {
@@ -134,13 +136,20 @@ export class UserService {
 
       const userDetails = createdUser.toDto();
 
+      const invitationLink = `${configuration().frontend_url}/invitation/${
+        createdUser.invitationLink
+      }`;
+
       this.eventEmitter.emit('user.invitation', {
         user: userDetails,
-        invitationLink: createdUser.invitationLink,
+        invitationLink,
         invitedBy: dbUser.toDto(),
       });
 
-      return userDetails;
+      return {
+        link: invitationLink,
+        mailSent: !configuration().mail.disabled,
+      };
     } catch (_) {
       throw new TaskAppError('user_exists', HttpStatus.BAD_REQUEST);
     }

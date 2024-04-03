@@ -1,0 +1,51 @@
+version: '3'
+
+volumes:
+  postgres_data:
+  taskapp_data:
+
+services:
+  frontend:
+    image: taskapp-frontend:1.0.0
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "80:80"
+
+  backend:
+    image: taskapp-backend:1.0.0
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      - PORT=3000
+      - APP_SECRET=JWT_SECRET
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=taskapp
+      - DB_USERNAME=root
+      - DB_PASSWORD=pass
+      - MAIL_DISABLED=true
+    volumes:
+      - taskapp_data:/backend/attachments/
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: taskapp
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: pass
+
+networks:
+  default:
+    name: taskapp-network

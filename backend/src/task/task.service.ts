@@ -125,6 +125,9 @@ export class TaskService {
     let task = await Task.findByPk(id, {
       include: [Attachment, { model: Stage }],
     });
+    if (!task || task.completed) {
+      throw new TaskAppError('invalid_task', HttpStatus.BAD_REQUEST);
+    }
 
     const board = await this.boardService.getBoard(task.stage.boardId, user);
     const stage = board.stages.find((s) => s.id === data.stage);

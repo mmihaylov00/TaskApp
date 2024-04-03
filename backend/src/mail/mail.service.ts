@@ -19,13 +19,12 @@ export class MailService {
     invitationLink: string;
     invitedBy: UserDetailsDto;
   }) {
-    const invitationLink = `${configuration().frontend_url}/invitation/${
-      data.invitationLink
-    }`;
+    if (!configuration().mail.disabled) return;
     let name = `${data.user.firstName} ${data.user.lastName}`.trim();
     if (name.length) {
       name = `, ${name}`;
     }
+
     await this.mailerService.sendMail({
       to: data.user.email,
       subject: 'TaskApp Invitation',
@@ -33,7 +32,7 @@ export class MailService {
       context: {
         name,
         invitedBy: `${data.invitedBy.firstName} ${data.invitedBy.lastName}`,
-        invitationLink,
+        invitationLink: data.invitationLink,
       },
     });
   }
@@ -52,6 +51,9 @@ export class MailService {
       data.message,
       data.link,
     );
+
+    if (configuration().mail.disabled) return;
+
     await this.mailerService.sendMail({
       to: data.receiver,
       subject: 'TaskApp: ' + data.title,

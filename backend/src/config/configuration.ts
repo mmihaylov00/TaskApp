@@ -10,7 +10,9 @@ export default () => ({
     password: process.env['DB_PASSWORD'] || 'password',
   },
   mail: {
+    disabled: process.env['MAIL_DISABLED'] === 'true' || false,
     host: process.env['MAIL_HOST'] || 'smtp.gmail.com',
+    secure: process.env['MAIL_SECURE'] === 'true' || false,
     port: parseInt(process.env['MAIL_PORT'] || '465'),
     user: process.env['MAIL_USER'] || 'username',
     password: process.env['MAIL_PASSWORD'] || 'password',

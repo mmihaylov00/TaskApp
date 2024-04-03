@@ -1,0 +1,12 @@
+node_modules
+common/node_modules
+common/dist
+frontend/node_modules
+frontend/dist
+frontend/.angular
+backend/node_modules
+backend/dist
+backend/attachments
+.git
+.gitignore
+docker-compose.yaml

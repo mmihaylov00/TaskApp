@@ -1,5 +1,4 @@
 import { Role } from '../enums/role.enum';
-import { UserStatus } from '../enums/user-status.enum';
 
 export interface CreateUserDto {
   firstName?: string;
@@ -7,6 +6,11 @@ export interface CreateUserDto {
   projectIds?: string[];
   email: string;
   role: Role;
+}
+
+export interface UserInvitedDto {
+  link: string;
+  mailSent: boolean;
 }
 
 export interface SearchUserDto {
