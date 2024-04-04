@@ -6,6 +6,7 @@ import {
   DataType,
   ForeignKey,
   Index,
+  Sequelize,
   Table,
 } from 'sequelize-typescript';
 import { NotificationDto } from 'taskapp-common/dist/src/dto/notification.dto';
@@ -34,7 +35,7 @@ export class Notification extends UUIDEntity {
   declare userId: string;
 
   @Index
-  @Column({ defaultValue: new Date() })
+  @Column({ defaultValue: Sequelize.fn('now') })
   declare createdAt: Date;
 
   toDto(): NotificationDto {

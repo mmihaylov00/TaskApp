@@ -14,6 +14,7 @@ import {
   ForeignKey,
   HasMany,
   Index,
+  Sequelize,
   Table,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
@@ -72,7 +73,7 @@ export class Task extends UUIDEntity {
   @Column({ allowNull: true })
   declare deadline?: Date;
 
-  @Column({ defaultValue: new Date() })
+  @Column({ defaultValue: Sequelize.fn('now') })
   declare createdAt: Date;
 
   @Column
