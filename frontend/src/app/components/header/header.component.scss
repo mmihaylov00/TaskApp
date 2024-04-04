@@ -11,6 +11,10 @@ header {
   align-items: center;
   justify-content: space-between;
 
+  h1 {
+    user-select: none;
+  }
+
   &::before {
     background: $navigationBackground;
     background-size: 200%;
