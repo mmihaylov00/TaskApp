@@ -8,6 +8,7 @@ import {
 import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import {
   CreateUserDto,
+  UserInvitedDto,
   UserStatsDto,
 } from 'taskapp-common/dist/src/dto/user.dto';
 import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
@@ -35,7 +36,7 @@ export class UserService {
   }
 
   invite(data: CreateUserDto) {
-    return this.http.post<UserDetailsDto>('users', data);
+    return this.http.post<UserInvitedDto>('users', data);
   }
 
   update(id: string, data: CreateUserDto) {

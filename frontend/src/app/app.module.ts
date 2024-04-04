@@ -80,6 +80,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { NotifierModule } from 'angular-notifier';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TaskListComponent } from './components/task-list/task-list.component';
+import { UserInvitationLinkModal } from './modal/user-invitation-link/user-invitation-link.modal';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { TaskListComponent } from './components/task-list/task-list.component';
     ChangePasswordModal,
     AddUserModal,
     ConfirmModal,
+    UserInvitationLinkModal,
     ProjectComponent,
     TableComponent,
     UsersComponent,

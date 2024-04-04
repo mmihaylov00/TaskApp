@@ -1,0 +1,28 @@
+<div class="custom-modal">
+  <h2 mat-dialog-title>User Invited!</h2>
+  <mat-dialog-content class="no-scroll">
+    <p class="invited-text" *ngIf="data.mailSent">
+      The following invitation link has been sent to their email address!
+    </p>
+    <p class="invited-text" *ngIf="!data.mailSent">
+      Please send the following invitation link to the user!
+    </p>
+    <mat-form-field
+      appearance="outline"
+      subscriptSizing="dynamic"
+      class="w-100">
+      <input matInput [value]="data.link" type="text" readonly />
+      <mat-icon
+        matSuffix
+        [fontIcon]="linkCopied ? 'done' : 'content_copy'"
+        [style]="linkCopied ? 'color: green' : undefined"
+        (click)="copyLink($event, copyTooltip)"
+        [matTooltip]="linkCopied ? 'Link Copied!' : 'Copy!'"
+        class="hover-pointer"
+        #copyTooltip="matTooltip" />
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="bottom-buttons">
+    <button mat-flat-button color="primary" (click)="close()">Close</button>
+  </mat-dialog-actions>
+</div>

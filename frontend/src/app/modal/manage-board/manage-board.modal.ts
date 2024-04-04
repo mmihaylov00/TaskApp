@@ -67,18 +67,21 @@ export class ManageBoardModal {
   ];
 
   dropStage(e) {
-    const element = this.stages.splice(e.oldDraggableIndex, 1, null);
-    this.stages.splice(e.oldDraggableIndex, 0, ...element);
-    const index = this.stages.findIndex((stage) => stage === null);
-    this.stages.splice(index, 1);
+    setTimeout(() => {
+      const element = this.stages.splice(e.oldDraggableIndex, 1);
+      this.stages.splice(e.newDraggableIndex, 0, ...element);
+    }, 1);
   }
 
   changeColor(stage: string, color: string) {
     if (!color?.length) return;
+
     for (const s of this.stages) {
       if (s.name === stage) {
-        if (s.color === color) return;
-        s.color = color;
+        if (s.color !== color) {
+          s.color = color;
+        }
+        return;
       }
     }
   }
@@ -116,6 +119,7 @@ export class ManageBoardModal {
   }
 
   update() {
+    console.log(this.stages);
     const board = {
       id: this.data.board.id,
       name: this.boardNameControl.value,

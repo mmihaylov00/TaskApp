@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { select, Store } from '@ngrx/store';
 import { UserService } from '../../services/user.service';
 import { Role } from 'taskapp-common/dist/src/enums/role.enum';
@@ -8,6 +8,8 @@ import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
 import { ProjectData } from '../../states/project.reducer';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable } from 'rxjs';
+import { UserInvitationLinkModal } from '../user-invitation-link/user-invitation-link.modal';
+import { UserInvitedDto } from 'taskapp-common/dist/src/dto/user.dto';
 
 @Component({
   templateUrl: './invite-user.modal.html',
@@ -16,6 +18,7 @@ import { catchError, Observable } from 'rxjs';
 export class InviteUserModal {
   constructor(
     private readonly store: Store,
+    private readonly dialog: MatDialog,
     private readonly dialogRef: MatDialogRef<InviteUserModal>,
     private readonly userService: UserService,
   ) {
@@ -61,16 +64,17 @@ export class InviteUserModal {
         role: this.getRole(),
         projectIds: this.projectIdsControl.value,
       })
-      .pipe(catchError(this.handleError.bind(this)))
-      .subscribe(() => {
-        this.dialogRef.close(true);
+      .subscribe({
+        error: () => this.handleError(),
+        next: (data) => {
+          this.dialogRef.close(true);
+          this.dialog.open(UserInvitationLinkModal, { data });
+        },
       });
   }
 
-  private handleError(error: HttpErrorResponse) {
+  private handleError() {
     this.emailControl.setErrors({ notUnique: true });
-    // Return an observable with a user-facing error message.
-    return new Observable();
   }
 
   getRole() {

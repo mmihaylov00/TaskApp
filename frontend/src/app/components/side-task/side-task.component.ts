@@ -17,6 +17,7 @@ import { ConfirmModal } from '../../modal/confirm/confirm.modal';
 import { AttachmentService } from '../../services/attachment.service';
 import { AttachmentDataDto } from 'taskapp-common/dist/src/dto/attachment.dto';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-side-task',
@@ -402,7 +403,7 @@ export class SideTaskComponent implements OnInit {
     }
   }
 
-  async copyLink(copyTooltip) {
+  async copyLink(copyTooltip: MatTooltip) {
     this.linkCopied = true;
     await navigator.clipboard.writeText(window.location.href);
     setTimeout(() => copyTooltip.show(), 1);
