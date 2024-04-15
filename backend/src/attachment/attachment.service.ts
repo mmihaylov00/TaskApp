@@ -83,7 +83,7 @@ export class AttachmentService {
   }
 
   public isPartOfProject(user: JwtUser, project: Project) {
-    return project.users?.some((u) => (u.id = user.id));
+    return project.users?.some((u) => u.id == user.id);
   }
 
   static readonly UPLOAD_OPTIONS = {

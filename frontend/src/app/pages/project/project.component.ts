@@ -12,11 +12,12 @@ import { EditProjectModal } from '../../modal/edit-project/edit-project.modal';
 import { ConfirmModal } from '../../modal/confirm/confirm.modal';
 import { AddUserModal } from '../../modal/add-user/add-user.modal';
 import { notifyFavUpdate, removeBoard } from '../../states/project.reducer';
-import { Store } from '@ngrx/store';
-import { ROLE_COLORS } from 'taskapp-common/dist/src/enums/role.enum';
+import { select, Store } from '@ngrx/store';
+import { Role, ROLE_COLORS } from 'taskapp-common/dist/src/enums/role.enum';
 import { USER_STATUS_COLORS } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { ProjectStatsDto } from 'taskapp-common/dist/src/dto/project.dto';
 import { ChartOptions } from '../../components/chart/chart.component';
+import { ProfileData } from '../../states/profile.reducer';
 
 @Component({
   selector: 'app-project',
@@ -86,6 +87,7 @@ export class ProjectComponent implements OnInit {
   userPage: PageRequestDto = { page: 1, pageAmount: 20 };
   stats: ProjectStatsDto;
   userLoading = false;
+  role = Role.DEVELOPER;
 
   boardChartOptions: Partial<ChartOptions> = undefined;
   stagesChartOption: Partial<ChartOptions> = undefined;
@@ -97,6 +99,12 @@ export class ProjectComponent implements OnInit {
       this.loadBoards();
       this.loadUsers();
     });
+
+    this.store
+      .pipe(select((value: any) => value.profileData))
+      .subscribe((value: ProfileData) => {
+        this.role = value.role;
+      });
   }
 
   loadBoards() {

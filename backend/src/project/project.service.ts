@@ -15,7 +15,6 @@ import { Page, PageRequestDto } from 'taskapp-common/dist/src/dto/list.dto';
 import { UserProject } from '../database/entity/user-project.entity';
 import { QueryTypes } from 'sequelize';
 import configuration from '../config/configuration';
-import { Notification } from '../database/entity/notification.entity';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
@@ -261,6 +260,6 @@ export class ProjectService {
   }
 
   public isPartOfProject(user: JwtUser, project: Project) {
-    return project.users?.some((u) => (u.id = user.id));
+    return project.users?.some((u) => u.id == user.id);
   }
 }

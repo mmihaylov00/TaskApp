@@ -9,10 +9,8 @@ import { UserStatus } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { PageEvent } from '@angular/material/paginator';
 import { relativeDateFormat } from '../../utils/date-formatter.util';
 import { select, Store } from '@ngrx/store';
-import { ProfileData } from '../../states/profile.reducer';
 import { notifyFavUpdate, ProjectData } from '../../states/project.reducer';
 import { ProjectDto } from 'taskapp-common/dist/src/dto/project.dto';
-import { BoardDto } from 'taskapp-common/dist/src/dto/board.dto';
 
 @Component({
   selector: 'app-dashboard',

@@ -12,7 +12,6 @@ import {
 } from 'taskapp-common/dist/src/enums/user-status.enum';
 import { ConfirmModal } from '../../modal/confirm/confirm.modal';
 import { ROLE_COLORS } from 'taskapp-common/dist/src/enums/role.enum';
-import { UserInvitationLinkModal } from '../../modal/user-invitation-link/user-invitation-link.modal';
 
 @Component({
   selector: 'app-users',

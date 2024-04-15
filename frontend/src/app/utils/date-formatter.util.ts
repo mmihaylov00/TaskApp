@@ -37,7 +37,7 @@ function getSuffix(date: Date) {
   const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 
   return rtf.format(
-    Math.ceil(diffHours / 24),
+    Math.ceil(diffHours > 720 ? diffHours / 24 / 30 : diffHours / 24),
     Math.abs(diffHours) > 720 ? 'month' : 'day',
   );
 }

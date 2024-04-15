@@ -101,6 +101,7 @@
 </app-table>
 
 <app-table
+  *ngIf="role !== 'DEVELOPER'"
   header="Users"
   [columns]="userColumns"
   [loading]="userLoading"
