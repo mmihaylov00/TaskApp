@@ -9,7 +9,6 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
 import { JwtUser } from '../auth/decorator/jwt-user.dto';
-import { BoardService } from '../board/board.service';
 import { NotificationService } from '../notification/notification.service';
 
 @WebSocketGateway({

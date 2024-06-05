@@ -22,7 +22,7 @@ export class Stage extends UUIDEntity {
   @Column
   declare color: string;
 
-  @BelongsTo(() => Board, 'board_id')
+  @BelongsTo(() => Board, 'boardId')
   declare board: Board;
 
   @ForeignKey(() => Board)

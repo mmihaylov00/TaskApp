@@ -18,7 +18,6 @@ import { Op } from 'sequelize';
 import { Project } from '../database/entity/project.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import configuration from '../config/configuration';
-import { Notification } from '../database/entity/notification.entity';
 
 @Injectable()
 export class TaskService {

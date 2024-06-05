@@ -22,7 +22,7 @@ import { Attachment } from './attachment.entity';
 import { Project } from './project.entity';
 import { ThumbnailUpdatedDto } from 'taskapp-common/dist/src/dto/attachment.dto';
 
-@Table({ paranoid: true, timestamps: false })
+@Table({ timestamps: false })
 export class Task extends UUIDEntity {
   @Column
   declare name: string;

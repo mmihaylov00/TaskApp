@@ -62,8 +62,7 @@ CREATE TABLE "taskapp"."Stages"
     "tasksOrder" JSONB DEFAULT '[]'::JSONB,
     "createdAt"  TIMESTAMP WITH TIME ZONE NOT NULL,
     "updatedAt"  TIMESTAMP WITH TIME ZONE NOT NULL,
-    "deletedAt"  TIMESTAMP WITH TIME ZONE,
-    board_id     UUID                     REFERENCES "taskapp"."Boards" ON UPDATE CASCADE ON DELETE SET NULL
+    "deletedAt"  TIMESTAMP WITH TIME ZONE
 );
 
 CREATE TABLE "taskapp"."Tasks"

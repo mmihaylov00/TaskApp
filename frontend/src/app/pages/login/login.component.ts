@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -17,7 +16,6 @@ export class LoginComponent {
   constructor(
     private readonly fb: FormBuilder,
     private readonly authService: AuthService,
-    private readonly router: Router,
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -38,7 +36,7 @@ export class LoginComponent {
         next: async (response) => {
           await this.authService.setToken(response);
         },
-        error: (err) => {
+        error: () => {
           this.error = 'Invalid email or password!';
         },
       });

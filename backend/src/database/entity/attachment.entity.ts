@@ -10,7 +10,7 @@ import {
 import { Task } from './task.entity';
 import { AttachmentDataDto } from 'taskapp-common/dist/src/dto/attachment.dto';
 
-@Table({ paranoid: true, timestamps: false })
+@Table({ timestamps: false })
 export class Attachment extends UUIDEntity {
   @Column
   declare name: string;

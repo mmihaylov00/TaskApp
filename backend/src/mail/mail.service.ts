@@ -4,7 +4,6 @@ import { UserDetailsDto } from 'taskapp-common/dist/src/dto/auth.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import configuration from '../config/configuration';
 import { NotificationService } from '../notification/notification.service';
-import { Notification } from '../database/entity/notification.entity';
 
 @Injectable()
 export class MailService {
