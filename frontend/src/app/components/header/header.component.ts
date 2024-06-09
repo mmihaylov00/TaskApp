@@ -88,7 +88,9 @@ export class HeaderComponent implements OnDestroy {
       return str;
     }
     const regex = new RegExp(search, 'gi');
-    return str.replace(regex, (match) => `<b>${match}</b>`);
+    return str
+      .replace(regex, (match) => `<b>${match}</b>`)
+      .replace(new RegExp('\\s', 'g'), '&nbsp;');
   }
 
   loadNotificationCount() {
