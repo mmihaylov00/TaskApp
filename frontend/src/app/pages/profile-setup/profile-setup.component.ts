@@ -99,7 +99,11 @@ export class ProfileSetupComponent {
     this.error = undefined;
     this.validate(val);
 
-    if (this.form.valid && !this.error) {
+    if (this.error) {
+      return;
+    }
+
+    if (this.form.valid) {
       this.userService
         .setupProfile({ ...val, invitationLink: this.id })
         .subscribe(async (user) => {

@@ -20,9 +20,10 @@
       fontIcon="search"
       color="primary" />
     <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let task of tasks" [value]="task.id">
-        {{ task.title }}
-      </mat-option>
+      <mat-option
+        *ngFor="let task of tasks"
+        [value]="task.id"
+        [innerHTML]="boldTitle(task.title, searchControl.value)" />
     </mat-autocomplete>
     <button
       class="d-flex flex-justify-center bell"

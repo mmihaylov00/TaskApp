@@ -76,7 +76,7 @@ export class TaskService {
   async find(search: string, user: JwtUser) {
     const tasks = await Task.findAll({
       where: {
-        name: { [Op.substring]: search },
+        name: { [Op.iLike]: `%${search.toLowerCase()}%` },
         deleted: null,
         completed: null,
       },
@@ -171,7 +171,7 @@ export class TaskService {
 
   async assignNotification(user: JwtUser, task: Task, board: Board) {
     const dbUser = await User.findByPk(user.id);
-    const message = `You have been assigned to ${task.name} by ${dbUser.firstName} ${dbUser.lastName}`;
+    const message = `You have been assigned to "${task.name}" by ${dbUser.firstName} ${dbUser.lastName}`;
     const link = `${configuration().frontend_url}/project/${
       task.projectId
     }/board/${board.id}?task=${task.id}`;
@@ -318,7 +318,10 @@ export class TaskService {
   async getCompleted(user: JwtUser, boardId: string) {
     const board = await Board.findByPk(boardId, {
       include: [
-        Project,
+        {
+          model: Project,
+          include: [User],
+        },
         {
           model: Stage,
           include: [

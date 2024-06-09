@@ -83,6 +83,14 @@ export class HeaderComponent implements OnDestroy {
       .subscribe((tasks) => (this.tasks = tasks));
   }
 
+  boldTitle(str: string, search: string) {
+    if (!search || !search.length) {
+      return str;
+    }
+    const regex = new RegExp(search, 'gi');
+    return str.replace(regex, (match) => `<b>${match}</b>`);
+  }
+
   loadNotificationCount() {
     this.notificationService.getCount().subscribe(({ count }) => {
       this.notificationCount = count > 0 ? count : undefined;

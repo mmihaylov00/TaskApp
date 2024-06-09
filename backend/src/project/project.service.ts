@@ -98,7 +98,7 @@ export class ProjectService {
     project: Project,
     receiver: User,
   ) {
-    const message = `You have been added to ${project.name} by ${creator.firstName} ${creator.lastName}`;
+    const message = `You have been added to "${project.name}" by ${creator.firstName} ${creator.lastName}`;
     const link = `${configuration().frontend_url}/project/${project.id}`;
 
     this.eventEmitter.emit('user.notification', {
